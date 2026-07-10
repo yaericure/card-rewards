@@ -1,0 +1,14 @@
+{
+  "name": "card-rewards-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "台灣銀行信用卡回饋爬蟲",
+  "main": "run.js",
+  "scripts": {
+    "scrape": "node run.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "playwright": "^1.49.0"
+  }
+}

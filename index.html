@@ -1,0 +1,1056 @@
+<title>台灣信用卡回饋比較</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f5f6fa;
+    --card-bg: #ffffff;
+    --text: #1c1e26;
+    --muted: #6b7280;
+    --border: #e2e4ea;
+    --accent: #2563eb;
+    --accent-dark: #1d4ed8;
+    --accent-soft: #eaf0fe;
+    --danger: #b91c1c;
+    --danger-soft: #fdecec;
+    --gold: #b45309;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 16px 64px;
+  }
+  header.site-header {
+    padding: 24px 0 8px;
+  }
+  header.site-header h1 {
+    font-size: 1.5rem;
+    margin: 0 0 4px;
+  }
+  header.site-header p.sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .banner {
+    display: none;
+    background: #fff7e6;
+    border: 1px solid #f0c36d;
+    color: #92610f;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    margin: 12px 0;
+  }
+  .banner.show { display: block; }
+  .banner.error {
+    background: var(--danger-soft);
+    border-color: #f1a9a9;
+    color: var(--danger);
+  }
+  section.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin: 16px 0;
+  }
+  section.card h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  section.card h2 .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .bank-group { margin-bottom: 16px; }
+  .bank-group:last-child { margin-bottom: 0; }
+  .bank-group h3 {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .card-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .card-option:hover { background: var(--accent-soft); }
+  .card-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+  .card-option label {
+    cursor: pointer;
+    flex: 1;
+  }
+  .plan-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .plan-block:last-child { margin-bottom: 0; }
+  .plan-block .plan-card-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .plan-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .plan-choice:hover { background: var(--accent-soft); }
+  .plan-choice input[type="radio"] {
+    margin-top: 4px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+  .plan-choice .plan-name { font-weight: 500; }
+  .plan-choice .plan-condition { color: var(--muted); font-size: 0.85rem; }
+  .auto-selected {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  input[type="text"].store-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+  }
+  input[type="text"].store-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .autocomplete-wrap { position: relative; }
+  .suggestions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    max-height: 260px;
+    overflow-y: auto;
+    z-index: 20;
+    display: none;
+  }
+  .suggestions.show { display: block; }
+  .suggestion-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+  .suggestion-item:last-child { border-bottom: none; }
+  .suggestion-item:hover, .suggestion-item.active { background: var(--accent-soft); }
+  .suggestion-item .s-cat {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-left: 6px;
+  }
+  .no-match-hint {
+    margin-top: 10px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  @media (max-width: 480px) {
+    .category-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .category-btn {
+    padding: 10px 6px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--text);
+    text-align: center;
+  }
+  .category-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .category-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .selected-target {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  .selected-target b { color: var(--accent-dark); }
+  .result-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .result-rank {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--muted);
+    width: 28px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .result-rank.rank-1 { color: var(--gold); }
+  .result-body { flex: 1; min-width: 0; }
+  .result-body .result-cardname {
+    font-weight: 700;
+    font-size: 1.02rem;
+  }
+  .result-body .result-bank {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .result-body .result-plan {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+  .result-body .result-meta {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .result-body .result-meta div { margin-bottom: 2px; }
+  .result-pct {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--accent-dark);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .expired-tag {
+    display: inline-block;
+    background: var(--danger-soft);
+    color: var(--danger);
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+  }
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 8px;
+    font-size: 0.92rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn.primary:hover { background: var(--accent-dark); }
+  .btn:hover { border-color: var(--accent); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .hidden { display: none !important; }
+  .reset-row {
+    text-align: center;
+    margin-top: 24px;
+  }
+  .reset-row .btn { font-size: 0.85rem; padding: 8px 14px; }
+  .held-summary {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .held-summary b { color: var(--text); }
+  footer.site-footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 32px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #14151a;
+      --card-bg: #1d1f27;
+      --text: #e8e9ee;
+      --muted: #9aa0ab;
+      --border: #303341;
+      --accent: #5b8def;
+      --accent-dark: #7ea6f5;
+      --accent-soft: #22283a;
+      --danger: #ef6666;
+      --danger-soft: #3a2223;
+      --gold: #e0a94a;
+    }
+    input[type="text"].store-input { background: #232531; }
+    .suggestions { background: #232531; }
+    .category-btn { background: #232531; }
+    .banner { background: #3a3016; border-color: #6b5620; color: #f0c36d; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="site-header">
+    <h1>台灣信用卡回饋比較</h1>
+    <p class="sub">選你有的卡，輸入商店，馬上看哪張卡回饋最高</p>
+  </header>
+
+  <div id="demoBanner" class="banner">目前為示範資料，實際回饋請以各銀行公告為準。</div>
+  <div id="errorBanner" class="banner error"></div>
+
+  <div id="restoredBar" class="banner hidden" style="background:var(--accent-soft); border-color: var(--accent); color: var(--accent-dark);">
+    已自動帶入你上次的卡片設定。
+    <button class="btn" id="resetTopBtn" style="margin-left:8px; padding:4px 10px; font-size:0.8rem;">重新設定我的卡片</button>
+  </div>
+
+  <!-- Step 1 -->
+  <section class="card" id="step1">
+    <h2><span class="step-num">1</span>選擇你持有的卡片</h2>
+    <div id="bankGroups"></div>
+  </section>
+
+  <!-- Step 2 -->
+  <section class="card hidden" id="step2">
+    <h2><span class="step-num">2</span>選擇方案</h2>
+    <div id="planGroups"></div>
+    <div class="btn-row">
+      <button class="btn primary" id="toStep3Btn">下一步：輸入商店</button>
+    </div>
+  </section>
+
+  <!-- Step 3 -->
+  <section class="card hidden" id="step3">
+    <h2><span class="step-num">3</span>輸入商店名稱</h2>
+    <div class="held-summary" id="heldSummary"></div>
+    <div class="autocomplete-wrap">
+      <input type="text" class="store-input" id="storeInput" placeholder="例如：momo、全家、星巴克…" autocomplete="off" />
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+    <div class="no-match-hint" id="noMatchHint" style="display:none;">
+      找不到符合的商店，請直接選擇消費類別：
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+    <div class="selected-target hidden" id="selectedTarget"></div>
+  </section>
+
+  <!-- Results -->
+  <section class="card hidden" id="resultsSection">
+    <h2>比較結果</h2>
+    <div id="resultsList"></div>
+  </section>
+
+  <div class="reset-row">
+    <button class="btn" id="resetBtn">重新設定我的卡片</button>
+  </div>
+
+  <footer class="site-footer">資料僅供參考，實際回饋規則請以各銀行公告為準。</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var CATEGORIES = [
+    { id: "general", label: "一般消費" },
+    { id: "online", label: "網購" },
+    { id: "convenience", label: "超商" },
+    { id: "supermarket", label: "超市／量販" },
+    { id: "department", label: "百貨" },
+    { id: "dining", label: "餐飲" },
+    { id: "delivery", label: "外送平台" },
+    { id: "transport", label: "交通" },
+    { id: "gas", label: "加油" },
+    { id: "travel", label: "旅遊" },
+    { id: "overseas", label: "海外消費" },
+    { id: "streaming", label: "影音串流／數位訂閱" },
+    { id: "mobilepay", label: "行動支付" },
+    { id: "telecom", label: "電信費" },
+    { id: "insurance", label: "保費" },
+    { id: "utilities", label: "稅費／公用事業／學費" },
+    { id: "medical", label: "醫療" },
+    { id: "entertainment", label: "娛樂" }
+  ];
+  var CATEGORY_LABEL = {};
+  CATEGORIES.forEach(function (c) { CATEGORY_LABEL[c.id] = c.label; });
+
+  var STORAGE_KEY = "cardRewardsPrefs.v1";
+
+  var state = {
+    cardsData: null,
+    merchantsData: null,
+    usingSampleCards: false,
+    usingSampleMerchants: false,
+    heldCardIds: [],           // array of card id
+    selectedPlans: {},         // cardId -> planId
+    matchedMerchant: null,     // { name, category } | null
+    matchedCategory: null      // category id chosen directly (when no merchant match)
+  };
+
+  // ---------- utils ----------
+
+  function normalize(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/[\s\-]/g, "");
+  }
+
+  function todayStr() {
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+
+  function isExpired(validUntil) {
+    if (!validUntil) return false;
+    return validUntil < todayStr();
+  }
+
+  function findBankByCardId(cardId) {
+    var banks = state.cardsData.banks || [];
+    for (var i = 0; i < banks.length; i++) {
+      var cards = banks[i].cards || [];
+      for (var j = 0; j < cards.length; j++) {
+        if (cards[j].id === cardId) return { bank: banks[i], card: cards[j] };
+      }
+    }
+    return null;
+  }
+
+  function allCards() {
+    var out = [];
+    (state.cardsData.banks || []).forEach(function (bank) {
+      (bank.cards || []).forEach(function (card) {
+        out.push({ bank: bank, card: card });
+      });
+    });
+    return out;
+  }
+
+  // ---------- data loading ----------
+
+  function loadJson(primaryUrl, fallbackUrl) {
+    return fetch(primaryUrl, { cache: "no-store" })
+      .then(function (res) {
+        if (!res.ok) throw new Error("http " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        return { data: data, sample: false };
+      })
+      .catch(function () {
+        return fetch(fallbackUrl, { cache: "no-store" })
+          .then(function (res) {
+            if (!res.ok) throw new Error("fallback http " + res.status);
+            return res.json();
+          })
+          .then(function (data) {
+            return { data: data, sample: true };
+          });
+      });
+  }
+
+  function init() {
+    Promise.all([
+      loadJson("data/cards.json", "data/cards.sample.json"),
+      loadJson("data/merchants.json", "data/merchants.sample.json")
+    ])
+      .then(function (results) {
+        state.cardsData = results[0].data;
+        state.usingSampleCards = results[0].sample;
+        state.merchantsData = results[1].data;
+        state.usingSampleMerchants = results[1].sample;
+
+        if (state.usingSampleCards || state.usingSampleMerchants) {
+          document.getElementById("demoBanner").classList.add("show");
+        }
+
+        buildStep1();
+        buildCategoryGrid();
+        restorePrefs();
+      })
+      .catch(function (err) {
+        var eb = document.getElementById("errorBanner");
+        eb.textContent = "資料載入失敗，請稍後重新整理頁面。（" + err.message + "）";
+        eb.classList.add("show");
+      });
+  }
+
+  // ---------- Step 1: pick cards ----------
+
+  function buildStep1() {
+    var container = document.getElementById("bankGroups");
+    container.innerHTML = "";
+    (state.cardsData.banks || []).forEach(function (bank) {
+      var group = document.createElement("div");
+      group.className = "bank-group";
+
+      var h3 = document.createElement("h3");
+      h3.textContent = bank.name;
+      group.appendChild(h3);
+
+      (bank.cards || []).forEach(function (card) {
+        var row = document.createElement("div");
+        row.className = "card-option";
+
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.id = "card-" + card.id;
+        cb.value = card.id;
+        cb.addEventListener("change", onCardToggle);
+
+        var label = document.createElement("label");
+        label.setAttribute("for", cb.id);
+        label.textContent = card.name;
+
+        row.appendChild(cb);
+        row.appendChild(label);
+        group.appendChild(row);
+      });
+
+      container.appendChild(group);
+    });
+  }
+
+  function onCardToggle(e) {
+    var id = e.target.value;
+    if (e.target.checked) {
+      if (state.heldCardIds.indexOf(id) === -1) state.heldCardIds.push(id);
+    } else {
+      state.heldCardIds = state.heldCardIds.filter(function (x) { return x !== id; });
+      delete state.selectedPlans[id];
+    }
+    savePrefs();
+    refreshStep2Visibility();
+  }
+
+  function refreshStep2Visibility() {
+    var step2 = document.getElementById("step2");
+    if (state.heldCardIds.length === 0) {
+      step2.classList.add("hidden");
+      document.getElementById("step3").classList.add("hidden");
+      hideResults();
+      return;
+    }
+    buildStep2();
+    step2.classList.remove("hidden");
+  }
+
+  // ---------- Step 2: pick plan per held card ----------
+
+  function buildStep2() {
+    var container = document.getElementById("planGroups");
+    container.innerHTML = "";
+
+    state.heldCardIds.forEach(function (cardId) {
+      var found = findBankByCardId(cardId);
+      if (!found) return;
+      var card = found.card;
+      var plans = card.plans || [];
+
+      var block = document.createElement("div");
+      block.className = "plan-block";
+
+      var title = document.createElement("div");
+      title.className = "plan-card-name";
+      title.textContent = found.bank.name + "｜" + card.name;
+      block.appendChild(title);
+
+      if (plans.length <= 1) {
+        var only = plans[0];
+        if (only) {
+          state.selectedPlans[cardId] = only.id;
+          var info = document.createElement("div");
+          info.className = "auto-selected";
+          info.textContent = "已自動選定方案：" + only.name + "（" + (only.condition || "無條件") + "）";
+          block.appendChild(info);
+        }
+      } else {
+        if (!state.selectedPlans[cardId]) {
+          state.selectedPlans[cardId] = plans[0].id;
+        }
+        plans.forEach(function (plan) {
+          var choiceRow = document.createElement("div");
+          choiceRow.className = "plan-choice";
+
+          var radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "plan-" + cardId;
+          radio.id = "plan-" + cardId + "-" + plan.id;
+          radio.value = plan.id;
+          radio.checked = state.selectedPlans[cardId] === plan.id;
+          radio.addEventListener("change", function () {
+            state.selectedPlans[cardId] = plan.id;
+            savePrefs();
+          });
+
+          var labelWrap = document.createElement("label");
+          labelWrap.setAttribute("for", radio.id);
+          labelWrap.innerHTML =
+            '<div class="plan-name"></div><div class="plan-condition"></div>';
+          labelWrap.querySelector(".plan-name").textContent = plan.name;
+          labelWrap.querySelector(".plan-condition").textContent = plan.condition || "無條件";
+
+          choiceRow.appendChild(radio);
+          choiceRow.appendChild(labelWrap);
+          block.appendChild(choiceRow);
+        });
+      }
+
+      container.appendChild(block);
+    });
+
+    savePrefs();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("toStep3Btn").addEventListener("click", function () {
+      document.getElementById("step3").classList.remove("hidden");
+      buildHeldSummary();
+      document.getElementById("step3").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  function buildHeldSummary() {
+    var names = state.heldCardIds.map(function (id) {
+      var found = findBankByCardId(id);
+      return found ? found.card.name : id;
+    });
+    document.getElementById("heldSummary").textContent =
+      "已選 " + names.length + " 張卡：" + names.join("、");
+  }
+
+  // ---------- Step 3: store name / category ----------
+
+  function buildCategoryGrid() {
+    var grid = document.getElementById("categoryGrid");
+    grid.innerHTML = "";
+    CATEGORIES.forEach(function (cat) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "category-btn";
+      btn.textContent = cat.label;
+      btn.dataset.cat = cat.id;
+      btn.addEventListener("click", function () {
+        Array.prototype.forEach.call(grid.querySelectorAll(".category-btn"), function (b) {
+          b.classList.remove("active");
+        });
+        btn.classList.add("active");
+        state.matchedMerchant = null;
+        state.matchedCategory = cat.id;
+        showSelectedTarget();
+        computeAndRenderResults();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  function matchMerchants(query) {
+    var nq = normalize(query);
+    if (!nq) return [];
+    var exact = [], prefix = [], substr = [];
+    (state.merchantsData.merchants || []).forEach(function (m) {
+      var candidates = [m.name].concat(m.aliases || []);
+      var best = null; // 0 exact, 1 prefix, 2 substr
+      candidates.forEach(function (c) {
+        var nc = normalize(c);
+        if (!nc) return;
+        var rank;
+        if (nc === nq) rank = 0;
+        else if (nc.indexOf(nq) === 0 || nq.indexOf(nc) === 0) rank = 1;
+        else if (nc.indexOf(nq) !== -1 || nq.indexOf(nc) !== -1) rank = 2;
+        else return;
+        if (best === null || rank < best) best = rank;
+      });
+      if (best === 0) exact.push(m);
+      else if (best === 1) prefix.push(m);
+      else if (best === 2) substr.push(m);
+    });
+    return exact.concat(prefix).concat(substr);
+  }
+
+  function initAutocomplete() {
+    var input = document.getElementById("storeInput");
+    var box = document.getElementById("suggestions");
+    var noMatchHint = document.getElementById("noMatchHint");
+    var timer = null;
+
+    input.addEventListener("input", function () {
+      var val = input.value;
+      state.matchedMerchant = null;
+      hideSelectedTarget();
+      hideResults();
+      clearCategoryActive();
+
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (!val.trim()) {
+          box.classList.remove("show");
+          noMatchHint.style.display = "none";
+          return;
+        }
+        var matches = matchMerchants(val).slice(0, 8);
+        if (matches.length === 0) {
+          box.classList.remove("show");
+          noMatchHint.style.display = "block";
+          return;
+        }
+        noMatchHint.style.display = "none";
+        box.innerHTML = "";
+        matches.forEach(function (m) {
+          var item = document.createElement("div");
+          item.className = "suggestion-item";
+          item.innerHTML =
+            '<span></span><span class="s-cat"></span>';
+          item.querySelector("span").textContent = m.name;
+          item.querySelector(".s-cat").textContent = CATEGORY_LABEL[m.category] || m.category;
+          item.addEventListener("click", function () {
+            input.value = m.name;
+            state.matchedMerchant = { name: m.name, category: m.category };
+            state.matchedCategory = null;
+            box.classList.remove("show");
+            noMatchHint.style.display = "none";
+            showSelectedTarget();
+            computeAndRenderResults();
+          });
+          box.appendChild(item);
+        });
+        box.classList.add("show");
+      }, 120);
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!box.contains(e.target) && e.target !== input) {
+        box.classList.remove("show");
+      }
+    });
+  }
+
+  function clearCategoryActive() {
+    Array.prototype.forEach.call(
+      document.querySelectorAll(".category-btn"),
+      function (b) { b.classList.remove("active"); }
+    );
+  }
+
+  function showSelectedTarget() {
+    var el = document.getElementById("selectedTarget");
+    if (state.matchedMerchant) {
+      el.innerHTML =
+        "目前比對商店：<b>" + escapeHtml(state.matchedMerchant.name) + "</b>（" +
+        (CATEGORY_LABEL[state.matchedMerchant.category] || state.matchedMerchant.category) + "）";
+    } else if (state.matchedCategory) {
+      el.innerHTML = "目前比對類別：<b>" + escapeHtml(CATEGORY_LABEL[state.matchedCategory] || state.matchedCategory) + "</b>";
+    } else {
+      el.innerHTML = "";
+    }
+    el.classList.toggle("hidden", !(state.matchedMerchant || state.matchedCategory));
+  }
+
+  function hideSelectedTarget() {
+    state.matchedCategory = null;
+    document.getElementById("selectedTarget").classList.add("hidden");
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  // ---------- reward computation ----------
+
+  function bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory) {
+    var rewards = plan.rewards || [];
+    if (rewards.length === 0) return null;
+
+    // priority 1: merchant-named rewards
+    if (targetMerchantName) {
+      var nTarget = normalize(targetMerchantName);
+      var merchantHits = rewards.filter(function (r) {
+        return (r.merchants || []).some(function (m) { return normalize(m) === nTarget; });
+      });
+      if (merchantHits.length > 0) {
+        return merchantHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+      }
+    }
+
+    // priority 2: category match
+    if (targetCategory) {
+      var catHits = rewards.filter(function (r) { return r.category === targetCategory; });
+      if (catHits.length > 0) {
+        return catHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+      }
+    }
+
+    // priority 3: fallback to general
+    var generalHits = rewards.filter(function (r) { return r.category === "general"; });
+    if (generalHits.length > 0) {
+      return generalHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+    }
+
+    return null;
+  }
+
+  function computeAndRenderResults() {
+    var targetMerchantName = state.matchedMerchant ? state.matchedMerchant.name : null;
+    var targetCategory = state.matchedMerchant
+      ? state.matchedMerchant.category
+      : state.matchedCategory;
+
+    if (!targetMerchantName && !targetCategory) {
+      hideResults();
+      return;
+    }
+
+    var candidates = [];
+    var anyHeldCard = state.heldCardIds.length > 0;
+    var allExpired = true;
+
+    state.heldCardIds.forEach(function (cardId) {
+      var found = findBankByCardId(cardId);
+      if (!found) return;
+      var card = found.card;
+      var planId = state.selectedPlans[cardId];
+      var plan = (card.plans || []).find(function (p) { return p.id === planId; });
+      if (!plan) return;
+
+      if (isExpired(plan.validUntil)) {
+        return; // excluded, but tracked via allExpired flag below
+      }
+      allExpired = false;
+
+      var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
+      if (!reward) return;
+
+      candidates.push({
+        bankName: found.bank.name,
+        cardName: card.name,
+        planName: plan.name,
+        pct: reward.pct,
+        cap: reward.cap || "",
+        note: reward.note || "",
+        validUntil: plan.validUntil || ""
+      });
+    });
+
+    var resultsSection = document.getElementById("resultsSection");
+    var list = document.getElementById("resultsList");
+    list.innerHTML = "";
+
+    if (anyHeldCard && allExpired) {
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "方案已到期，待資料更新";
+      list.appendChild(empty);
+      resultsSection.classList.remove("hidden");
+      return;
+    }
+
+    if (candidates.length === 0) {
+      var empty2 = document.createElement("div");
+      empty2.className = "empty-state";
+      empty2.textContent = "目前持有的卡片沒有適用於這個商店／類別的回饋資料。";
+      list.appendChild(empty2);
+      resultsSection.classList.remove("hidden");
+      return;
+    }
+
+    candidates.sort(function (a, b) { return b.pct - a.pct; });
+    var top3 = candidates.slice(0, 3);
+
+    top3.forEach(function (c, idx) {
+      var row = document.createElement("div");
+      row.className = "result-card";
+
+      var rank = document.createElement("div");
+      rank.className = "result-rank" + (idx === 0 ? " rank-1" : "");
+      rank.textContent = "#" + (idx + 1);
+
+      var body = document.createElement("div");
+      body.className = "result-body";
+
+      var metaLines = [];
+      if (c.cap) metaLines.push("上限：" + c.cap);
+      if (c.note) metaLines.push("備註：" + c.note);
+      if (c.validUntil) metaLines.push("活動期限：" + c.validUntil);
+
+      body.innerHTML =
+        '<div class="result-cardname"></div>' +
+        '<div class="result-bank"></div>' +
+        '<div class="result-plan"></div>' +
+        '<div class="result-meta"></div>';
+      body.querySelector(".result-cardname").textContent = c.cardName;
+      body.querySelector(".result-bank").textContent = c.bankName;
+      body.querySelector(".result-plan").textContent = "方案：" + c.planName;
+      var metaEl = body.querySelector(".result-meta");
+      metaLines.forEach(function (line) {
+        var d = document.createElement("div");
+        d.textContent = line;
+        metaEl.appendChild(d);
+      });
+
+      var pct = document.createElement("div");
+      pct.className = "result-pct";
+      pct.textContent = (Math.round(c.pct * 100) / 100) + "%";
+
+      row.appendChild(rank);
+      row.appendChild(body);
+      row.appendChild(pct);
+      list.appendChild(row);
+    });
+
+    resultsSection.classList.remove("hidden");
+    resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function hideResults() {
+    document.getElementById("resultsSection").classList.add("hidden");
+    document.getElementById("resultsList").innerHTML = "";
+  }
+
+  // ---------- persistence ----------
+
+  function savePrefs() {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          heldCardIds: state.heldCardIds,
+          selectedPlans: state.selectedPlans
+        })
+      );
+    } catch (e) {
+      // localStorage unavailable, ignore
+    }
+  }
+
+  function restorePrefs() {
+    var raw;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch (e) {
+      raw = null;
+    }
+    if (!raw) return;
+    var parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      return;
+    }
+    if (!parsed || !Array.isArray(parsed.heldCardIds) || parsed.heldCardIds.length === 0) return;
+
+    // only keep ids that still exist in current data
+    var validIds = parsed.heldCardIds.filter(function (id) { return findBankByCardId(id); });
+    if (validIds.length === 0) return;
+
+    state.heldCardIds = validIds;
+    state.selectedPlans = parsed.selectedPlans || {};
+
+    validIds.forEach(function (id) {
+      var cb = document.getElementById("card-" + id);
+      if (cb) cb.checked = true;
+    });
+
+    document.getElementById("restoredBar").classList.remove("hidden");
+    document.getElementById("restoredBar").classList.add("show");
+    refreshStep2Visibility();
+  }
+
+  function resetAll() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
+    state.heldCardIds = [];
+    state.selectedPlans = {};
+    state.matchedMerchant = null;
+    state.matchedCategory = null;
+
+    document.getElementById("restoredBar").classList.add("hidden");
+    document.getElementById("restoredBar").classList.remove("show");
+    document.getElementById("step2").classList.add("hidden");
+    document.getElementById("step3").classList.add("hidden");
+    hideResults();
+
+    var storeInput = document.getElementById("storeInput");
+    if (storeInput) storeInput.value = "";
+    document.getElementById("noMatchHint").style.display = "none";
+
+    buildStep1();
+    buildCategoryGrid();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initAutocomplete();
+    document.getElementById("resetBtn").addEventListener("click", resetAll);
+    document.getElementById("resetTopBtn").addEventListener("click", resetAll);
+    init();
+  });
+})();
+</script>

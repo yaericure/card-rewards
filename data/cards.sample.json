@@ -1,0 +1,134 @@
+{
+  "updatedAt": "2026-07-10T00:00:00.000Z",
+  "banks": [
+    {
+      "id": "taishin",
+      "name": "台新銀行",
+      "cards": [
+        {
+          "id": "taishin-gogo",
+          "name": "@GoGo 卡",
+          "url": "https://www.taishinbank.com.tw/（示範資料，非實際來源）",
+          "plans": [
+            {
+              "id": "digital",
+              "name": "數位帳戶方案",
+              "condition": "需綁定 Richart 帳戶自動扣繳",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
+              "rewards": [
+                {
+                  "category": "online",
+                  "pct": 3.8,
+                  "merchants": ["momo購物網", "蝦皮購物"],
+                  "cap": "每期回饋上限 NT$500",
+                  "note": "限指定通路；示範資料"
+                },
+                { "category": "general", "pct": 0.3 }
+              ]
+            },
+            {
+              "id": "general",
+              "name": "一般方案",
+              "condition": "無條件",
+              "validFrom": "",
+              "validUntil": "",
+              "rewards": [
+                { "category": "general", "pct": 1.0, "note": "效期未確認；示範資料" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "taishin-richart",
+          "name": "Richart 現金回饋卡",
+          "url": "https://www.taishinbank.com.tw/（示範資料，非實際來源）",
+          "plans": [
+            {
+              "id": "default",
+              "name": "一般",
+              "condition": "無條件",
+              "validFrom": "2024-01-01",
+              "validUntil": "2024-12-31",
+              "rewards": [
+                { "category": "general", "pct": 5.0, "note": "示範資料：此方案已過期" },
+                {
+                  "category": "convenience",
+                  "pct": 6.0,
+                  "merchants": ["7-ELEVEN", "全家便利商店"],
+                  "cap": "每月上限 NT$300",
+                  "note": "示範資料：此方案已過期"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esun",
+      "name": "玉山銀行",
+      "cards": [
+        {
+          "id": "esun-egold",
+          "name": "玉山 Only 卡",
+          "url": "https://www.esunbank.com.tw/（示範資料，非實際來源）",
+          "plans": [
+            {
+              "id": "default",
+              "name": "一般",
+              "condition": "無條件",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
+              "rewards": [
+                { "category": "online", "pct": 2.0, "note": "示範資料" },
+                { "category": "dining", "pct": 3.0, "note": "示範資料" },
+                { "category": "general", "pct": 0.5 }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "esun-world",
+          "name": "玉山 World 卡",
+          "url": "https://www.esunbank.com.tw/（示範資料，非實際來源）",
+          "plans": [
+            {
+              "id": "student",
+              "name": "學生方案",
+              "condition": "年滿18歲在學學生",
+              "validFrom": "2026-03-01",
+              "validUntil": "2027-02-28",
+              "rewards": [
+                {
+                  "category": "convenience",
+                  "pct": 8.0,
+                  "merchants": ["7-ELEVEN"],
+                  "cap": "每月上限 NT$300",
+                  "note": "限超商咖啡；示範資料"
+                },
+                { "category": "general", "pct": 0.5 }
+              ]
+            },
+            {
+              "id": "general",
+              "name": "一般方案",
+              "condition": "無條件",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-08-01",
+              "rewards": [
+                {
+                  "category": "online",
+                  "pct": 1.5,
+                  "merchants": ["momo購物網"],
+                  "note": "示範資料"
+                },
+                { "category": "general", "pct": 0.3 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

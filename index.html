@@ -256,6 +256,12 @@
     font-size: 0.85rem;
     margin-top: 2px;
   }
+  .result-body .result-recommend {
+    color: var(--accent-dark);
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
   .result-body .result-meta {
     margin-top: 6px;
     font-size: 0.8rem;
@@ -374,7 +380,7 @@
 
   <!-- Step 2 -->
   <section class="card hidden" id="step2">
-    <h2><span class="step-num">2</span>選擇方案</h2>
+    <h2><span class="step-num">2</span>選擇你的等級／資格</h2>
     <div id="planGroups"></div>
     <div class="btn-row">
       <button class="btn primary" id="toStep3Btn">下一步：輸入商店</button>
@@ -385,6 +391,7 @@
   <section class="card hidden" id="step3">
     <h2><span class="step-num">3</span>輸入商店名稱</h2>
     <div class="held-summary" id="heldSummary"></div>
+    <div class="held-summary hidden" id="skipStep2Note"></div>
     <div class="autocomplete-wrap">
       <input type="text" class="store-input" id="storeInput" placeholder="例如：momo、全家、星巴克…" autocomplete="off" />
       <div class="suggestions" id="suggestions"></div>
@@ -588,28 +595,72 @@
     refreshStep2Visibility();
   }
 
-  function refreshStep2Visibility() {
-    var step2 = document.getElementById("step2");
-    if (state.heldCardIds.length === 0) {
-      step2.classList.add("hidden");
-      document.getElementById("step3").classList.add("hidden");
-      hideResults();
-      return;
-    }
-    buildStep2();
-    step2.classList.remove("hidden");
+  // A card needs an explicit plan choice in step 2 only when it has more than
+  // one plan AND it is not "switchable" (switchable = user can freely switch
+  // between plans any time, so we auto-pick whichever is best per query instead
+  // of asking). Multi-plan cards missing planKind are treated as "tier" per
+  // SCHEMA.md (conservative default: ask rather than assume).
+  function isSwitchableMultiPlan(card) {
+    var plans = card.plans || [];
+    return plans.length > 1 && card.planKind === "switchable";
   }
 
-  // ---------- Step 2: pick plan per held card ----------
+  function needsPlanSelection(card) {
+    var plans = card.plans || [];
+    return plans.length > 1 && card.planKind !== "switchable";
+  }
 
-  function buildStep2() {
-    var container = document.getElementById("planGroups");
-    container.innerHTML = "";
-
+  function getTierSelectionEntries() {
+    var out = [];
     state.heldCardIds.forEach(function (cardId) {
       var found = findBankByCardId(cardId);
       if (!found) return;
-      var card = found.card;
+      if (needsPlanSelection(found.card)) out.push({ cardId: cardId, bank: found.bank, card: found.card });
+    });
+    return out;
+  }
+
+  function refreshStep2Visibility() {
+    var step2 = document.getElementById("step2");
+    var step3 = document.getElementById("step3");
+    var skipNote = document.getElementById("skipStep2Note");
+
+    if (state.heldCardIds.length === 0) {
+      step2.classList.add("hidden");
+      step3.classList.add("hidden");
+      skipNote.classList.add("hidden");
+      hideResults();
+      return;
+    }
+
+    var tierEntries = getTierSelectionEntries();
+
+    if (tierEntries.length > 0) {
+      buildStep2(tierEntries);
+      step2.classList.remove("hidden");
+      step3.classList.add("hidden");
+      skipNote.classList.add("hidden");
+      hideResults();
+    } else {
+      // nothing needs manual selection (single-plan and/or switchable cards
+      // only) -> skip step 2 entirely and go straight to step 3
+      step2.classList.add("hidden");
+      step3.classList.remove("hidden");
+      buildHeldSummary();
+      skipNote.textContent = "你選的卡片都不需要另外選擇方案／等級，已自動判定回饋，可直接輸入商店。";
+      skipNote.classList.remove("hidden");
+    }
+  }
+
+  // ---------- Step 2: pick plan per held tier-type card ----------
+
+  function buildStep2(tierEntries) {
+    var container = document.getElementById("planGroups");
+    container.innerHTML = "";
+
+    tierEntries.forEach(function (entry) {
+      var cardId = entry.cardId;
+      var card = entry.card;
       var plans = card.plans || [];
 
       var block = document.createElement("div");
@@ -617,49 +668,38 @@
 
       var title = document.createElement("div");
       title.className = "plan-card-name";
-      title.textContent = found.bank.name + "｜" + card.name;
+      title.textContent = entry.bank.name + "｜" + card.name;
       block.appendChild(title);
 
-      if (plans.length <= 1) {
-        var only = plans[0];
-        if (only) {
-          state.selectedPlans[cardId] = only.id;
-          var info = document.createElement("div");
-          info.className = "auto-selected";
-          info.textContent = "已自動選定方案：" + only.name + "（" + (only.condition || "無條件") + "）";
-          block.appendChild(info);
-        }
-      } else {
-        if (!state.selectedPlans[cardId]) {
-          state.selectedPlans[cardId] = plans[0].id;
-        }
-        plans.forEach(function (plan) {
-          var choiceRow = document.createElement("div");
-          choiceRow.className = "plan-choice";
-
-          var radio = document.createElement("input");
-          radio.type = "radio";
-          radio.name = "plan-" + cardId;
-          radio.id = "plan-" + cardId + "-" + plan.id;
-          radio.value = plan.id;
-          radio.checked = state.selectedPlans[cardId] === plan.id;
-          radio.addEventListener("change", function () {
-            state.selectedPlans[cardId] = plan.id;
-            savePrefs();
-          });
-
-          var labelWrap = document.createElement("label");
-          labelWrap.setAttribute("for", radio.id);
-          labelWrap.innerHTML =
-            '<div class="plan-name"></div><div class="plan-condition"></div>';
-          labelWrap.querySelector(".plan-name").textContent = plan.name;
-          labelWrap.querySelector(".plan-condition").textContent = plan.condition || "無條件";
-
-          choiceRow.appendChild(radio);
-          choiceRow.appendChild(labelWrap);
-          block.appendChild(choiceRow);
-        });
+      if (!state.selectedPlans[cardId] || !plans.some(function (p) { return p.id === state.selectedPlans[cardId]; })) {
+        state.selectedPlans[cardId] = plans[0].id;
       }
+      plans.forEach(function (plan) {
+        var choiceRow = document.createElement("div");
+        choiceRow.className = "plan-choice";
+
+        var radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "plan-" + cardId;
+        radio.id = "plan-" + cardId + "-" + plan.id;
+        radio.value = plan.id;
+        radio.checked = state.selectedPlans[cardId] === plan.id;
+        radio.addEventListener("change", function () {
+          state.selectedPlans[cardId] = plan.id;
+          savePrefs();
+        });
+
+        var labelWrap = document.createElement("label");
+        labelWrap.setAttribute("for", radio.id);
+        labelWrap.innerHTML =
+          '<div class="plan-name"></div><div class="plan-condition"></div>';
+        labelWrap.querySelector(".plan-name").textContent = plan.name;
+        labelWrap.querySelector(".plan-condition").textContent = plan.condition || "無條件";
+
+        choiceRow.appendChild(radio);
+        choiceRow.appendChild(labelWrap);
+        block.appendChild(choiceRow);
+      });
 
       container.appendChild(block);
     });
@@ -669,6 +709,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("toStep3Btn").addEventListener("click", function () {
+      document.getElementById("skipStep2Note").classList.add("hidden");
       document.getElementById("step3").classList.remove("hidden");
       buildHeldSummary();
       document.getElementById("step3").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -875,27 +916,62 @@
       var found = findBankByCardId(cardId);
       if (!found) return;
       var card = found.card;
-      var planId = state.selectedPlans[cardId];
-      var plan = (card.plans || []).find(function (p) { return p.id === planId; });
-      if (!plan) return;
+      var plans = card.plans || [];
+      if (plans.length === 0) return;
 
-      if (isExpired(plan.validUntil)) {
-        return; // excluded, but tracked via allExpired flag below
+      if (isSwitchableMultiPlan(card)) {
+        // switchable: consider every non-expired plan for THIS query and take
+        // whichever plan gives the highest reward for the merchant/category.
+        var nonExpired = plans.filter(function (p) { return !isExpired(p.validUntil); });
+        if (nonExpired.length === 0) return; // all plans expired
+
+        allExpired = false;
+
+        var bestPlan = null, bestReward = null;
+        nonExpired.forEach(function (plan) {
+          var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
+          if (reward && (!bestReward || reward.pct > bestReward.pct)) {
+            bestReward = reward;
+            bestPlan = plan;
+          }
+        });
+        if (!bestReward) return;
+
+        candidates.push({
+          bankName: found.bank.name,
+          cardName: card.name,
+          planName: null,
+          recommendedPlanName: bestPlan.name,
+          pct: bestReward.pct,
+          cap: bestReward.cap || "",
+          note: bestReward.note || "",
+          validUntil: bestPlan.validUntil || ""
+        });
+      } else {
+        var plan = plans.length === 1
+          ? plans[0]
+          : plans.find(function (p) { return p.id === state.selectedPlans[cardId]; });
+        if (!plan) return;
+
+        if (isExpired(plan.validUntil)) {
+          return; // excluded, but tracked via allExpired flag below
+        }
+        allExpired = false;
+
+        var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
+        if (!reward) return;
+
+        candidates.push({
+          bankName: found.bank.name,
+          cardName: card.name,
+          planName: plan.name,
+          recommendedPlanName: null,
+          pct: reward.pct,
+          cap: reward.cap || "",
+          note: reward.note || "",
+          validUntil: plan.validUntil || ""
+        });
       }
-      allExpired = false;
-
-      var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-      if (!reward) return;
-
-      candidates.push({
-        bankName: found.bank.name,
-        cardName: card.name,
-        planName: plan.name,
-        pct: reward.pct,
-        cap: reward.cap || "",
-        note: reward.note || "",
-        validUntil: plan.validUntil || ""
-      });
     });
 
     var resultsSection = document.getElementById("resultsSection");
@@ -942,11 +1018,15 @@
       body.innerHTML =
         '<div class="result-cardname"></div>' +
         '<div class="result-bank"></div>' +
-        '<div class="result-plan"></div>' +
+        (c.recommendedPlanName ? '<div class="result-recommend"></div>' : '<div class="result-plan"></div>') +
         '<div class="result-meta"></div>';
       body.querySelector(".result-cardname").textContent = c.cardName;
       body.querySelector(".result-bank").textContent = c.bankName;
-      body.querySelector(".result-plan").textContent = "方案：" + c.planName;
+      if (c.recommendedPlanName) {
+        body.querySelector(".result-recommend").textContent = "建議方案：" + c.recommendedPlanName;
+      } else {
+        body.querySelector(".result-plan").textContent = "方案：" + c.planName;
+      }
       var metaEl = body.querySelector(".result-meta");
       metaLines.forEach(function (line) {
         var d = document.createElement("div");
@@ -1035,6 +1115,7 @@
     document.getElementById("restoredBar").classList.remove("show");
     document.getElementById("step2").classList.add("hidden");
     document.getElementById("step3").classList.add("hidden");
+    document.getElementById("skipStep2Note").classList.add("hidden");
     hideResults();
 
     var storeInput = document.getElementById("storeInput");

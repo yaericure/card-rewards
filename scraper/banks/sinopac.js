@@ -203,6 +203,7 @@ function scrapeDualCurrency(text) {
     id: 'sinopac-dual-currency',
     name: '永豐幣倍卡',
     url: URLS.dual,
+    planKind: 'tier',
     plans,
   };
 }
@@ -341,6 +342,7 @@ function scrapeDawho(text) {
     id: 'sinopac-dawho',
     name: 'DAWHO現金回饋信用卡',
     url: URLS.dawho,
+    planKind: 'tier',
     plans,
   };
 }
@@ -448,6 +450,7 @@ function scrapeSport(text) {
     id: 'sinopac-sport',
     name: '永豐SPORT卡',
     url: URLS.sport,
+    planKind: 'tier',
     plans,
   };
 }

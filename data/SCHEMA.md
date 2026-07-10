@@ -68,8 +68,12 @@
 ```
 
 規則：
-- **銀行 id 固定**：taishin 台新、esun 玉山、fubon 台北富邦、chb 彰化、sinopac 永豐、tcb 合作金庫、hncb 華南。
+- **銀行 id 固定**：taishin 台新、esun 玉山、fubon 台北富邦、cathay 國泰世華、sinopac 永豐。
 - 卡片若有不同方案／等級（如一般 vs 數位帳戶、御璽 vs 無限），每個一筆 `plans[]`；只有單一方案的卡也要有一個 plan（id: "default", name: "一般"）。
+- `planKind`（card 層級，**多 plans 的卡必填**，單一 plan 免填）：
+  - `"switchable"`＝**方案**：持卡人可自行切換（如國泰 CUBE 權益方案、台新 Richart 切換方案、玉山 Unicard）。前端**不**在第二步詢問；結果頁對每個消費情境自動取回饋最高的方案，並附註「建議方案：○○」。
+  - `"tier"`＝**等級／資格**：回饋取決於持卡人的等級或資格（如永豐 DAWHO 依存款等級、新戶限定、帳戶自動扣繳與否）。前端第二步請用戶選擇自己適用的等級。
+  - 前端對「多 plans 但缺 planKind」的卡按 `"tier"` 處理（保守：寧可多問一次，不替用戶假設）。
 - `pct` 為數字（3.8 代表 3.8%）。回饋若為點數（如玉山 e 點、富邦 momo 幣），換算成等值 % 並在 `note` 註明點數型態。
 - `validUntil`（YYYY-MM-DD）：活動頁有標「活動期間至」就必填；查不到留空並在 `note` 寫「效期未確認」。**不可編造日期**。
 - `rewards[].merchants`（選填）：回饋限指定商店時列出商店名，需與 merchants.json 的 `name` 或 `aliases` 對得上為佳。

@@ -231,7 +231,7 @@ async function scrapeRichart(page, cardName) {
     console.error('taishin: Richart 權益頁抓不到任何方案回饋，跳過此卡');
     return null;
   }
-  return { id: 'taishin-richart', name: cardName || '台新Richart卡', url: CARD_URL('cg047'), plans };
+  return { id: 'taishin-richart', name: cardName || '台新Richart卡', url: CARD_URL('cg047'), planKind: 'switchable', plans };
 }
 
 // ---------- 大全聯信用卡 ----------
@@ -315,7 +315,7 @@ async function scrapePxmart(page, cardName) {
     console.error('taishin: 大全聯活動頁抓不到任何回饋數字，跳過此卡');
     return null;
   }
-  return { id: 'taishin-pxmart', name: cardName || '大全聯信用卡', url: CARD_URL('cg010'), plans };
+  return { id: 'taishin-pxmart', name: cardName || '大全聯信用卡', url: CARD_URL('cg010'), planKind: 'tier', plans };
 }
 
 // ---------- 街口聯名卡 ----------

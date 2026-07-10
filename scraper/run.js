@@ -9,7 +9,7 @@ const path = require('path');
 const BANKS_DIR = path.join(__dirname, 'banks');
 const OUT_DIR = path.join(__dirname, 'output');
 const DATA_FILE = path.join(__dirname, '..', 'data', 'cards.json');
-const BANK_IDS = ['taishin', 'esun', 'fubon', 'chb', 'sinopac', 'tcb', 'hncb'];
+const BANK_IDS = ['taishin', 'esun', 'fubon', 'cathay', 'sinopac'];
 
 function validateBank(bank, id) {
   const errs = [];

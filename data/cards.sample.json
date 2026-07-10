@@ -7,58 +7,17 @@
       "cards": [
         {
           "id": "taishin-gogo",
-          "name": "@GoGo 卡",
-          "url": "https://www.taishinbank.com.tw/（示範資料，非實際來源）",
-          "plans": [
-            {
-              "id": "digital",
-              "name": "數位帳戶方案",
-              "condition": "需綁定 Richart 帳戶自動扣繳",
-              "validFrom": "2026-01-01",
-              "validUntil": "2026-12-31",
-              "rewards": [
-                {
-                  "category": "online",
-                  "pct": 3.8,
-                  "merchants": ["momo購物網", "蝦皮購物"],
-                  "cap": "每期回饋上限 NT$500",
-                  "note": "限指定通路；示範資料"
-                },
-                { "category": "general", "pct": 0.3 }
-              ]
-            },
-            {
-              "id": "general",
-              "name": "一般方案",
-              "condition": "無條件",
-              "validFrom": "",
-              "validUntil": "",
-              "rewards": [
-                { "category": "general", "pct": 1.0, "note": "效期未確認；示範資料" }
-              ]
-            }
-          ]
-        },
-        {
-          "id": "taishin-richart",
-          "name": "Richart 現金回饋卡",
+          "name": "台新 @GoGo 卡",
           "url": "https://www.taishinbank.com.tw/（示範資料，非實際來源）",
           "plans": [
             {
               "id": "default",
               "name": "一般",
               "condition": "無條件",
-              "validFrom": "2024-01-01",
-              "validUntil": "2024-12-31",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
               "rewards": [
-                { "category": "general", "pct": 5.0, "note": "示範資料：此方案已過期" },
-                {
-                  "category": "convenience",
-                  "pct": 6.0,
-                  "merchants": ["7-ELEVEN", "全家便利商店"],
-                  "cap": "每月上限 NT$300",
-                  "note": "示範資料：此方案已過期"
-                }
+                { "category": "general", "pct": 1.0, "note": "示範資料：單一方案卡" }
               ]
             }
           ]
@@ -87,43 +46,115 @@
               ]
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "fubon",
+      "name": "台北富邦銀行",
+      "cards": [
         {
-          "id": "esun-world",
-          "name": "玉山 World 卡",
-          "url": "https://www.esunbank.com.tw/（示範資料，非實際來源）",
+          "id": "fubon-j",
+          "name": "台北富邦 J 卡",
+          "url": "https://www.fubon.com/（示範資料，非實際來源）",
           "plans": [
             {
-              "id": "student",
-              "name": "學生方案",
-              "condition": "年滿18歲在學學生",
-              "validFrom": "2026-03-01",
-              "validUntil": "2027-02-28",
+              "id": "default",
+              "name": "一般",
+              "condition": "無條件",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
               "rewards": [
                 {
                   "category": "convenience",
-                  "pct": 8.0,
-                  "merchants": ["7-ELEVEN"],
+                  "pct": 5.0,
+                  "merchants": ["7-ELEVEN", "全家便利商店"],
                   "cap": "每月上限 NT$300",
-                  "note": "限超商咖啡；示範資料"
+                  "note": "示範資料：單一方案卡"
                 },
-                { "category": "general", "pct": 0.5 }
+                { "category": "general", "pct": 0.3 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cathay",
+      "name": "國泰世華銀行",
+      "cards": [
+        {
+          "id": "cathay-cube",
+          "name": "國泰 CUBE 卡",
+          "url": "https://www.cathaybk.com.tw/（示範資料，非實際來源）",
+          "planKind": "switchable",
+          "plans": [
+            {
+              "id": "digital",
+              "name": "數位方案",
+              "condition": "需以數位帳戶自動扣繳",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
+              "rewards": [
+                { "category": "online", "pct": 3.0, "note": "示範資料" },
+                { "category": "general", "pct": 0.3 }
+              ]
+            },
+            {
+              "id": "travel",
+              "name": "旅遊方案",
+              "condition": "需於官網勾選旅遊權益",
+              "validFrom": "2025-01-01",
+              "validUntil": "2025-12-31",
+              "rewards": [
+                { "category": "travel", "pct": 5.0, "note": "示範資料：此方案已過期，僅供測試過期排除邏輯" },
+                { "category": "general", "pct": 0.3 }
               ]
             },
             {
               "id": "general",
               "name": "一般方案",
               "condition": "無條件",
-              "validFrom": "2026-01-01",
-              "validUntil": "2026-08-01",
+              "validFrom": "",
+              "validUntil": "",
               "rewards": [
-                {
-                  "category": "online",
-                  "pct": 1.5,
-                  "merchants": ["momo購物網"],
-                  "note": "示範資料"
-                },
+                { "category": "general", "pct": 1.0, "note": "示範資料" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sinopac",
+      "name": "永豐銀行",
+      "cards": [
+        {
+          "id": "sinopac-dawho",
+          "name": "永豐 DAWHO 卡",
+          "url": "https://bank.sinopac.com/（示範資料，非實際來源）",
+          "planKind": "tier",
+          "plans": [
+            {
+              "id": "tier1",
+              "name": "存款月平均 10 萬以下",
+              "condition": "存款月平均餘額未達 10 萬元",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
+              "rewards": [
+                { "category": "online", "pct": 1.0, "note": "示範資料" },
                 { "category": "general", "pct": 0.3 }
+              ]
+            },
+            {
+              "id": "tier3",
+              "name": "存款月平均 100 萬以上",
+              "condition": "存款月平均餘額達 100 萬元以上",
+              "validFrom": "2026-01-01",
+              "validUntil": "2026-12-31",
+              "rewards": [
+                { "category": "online", "pct": 3.0, "note": "示範資料" },
+                { "category": "general", "pct": 1.0 }
               ]
             }
           ]

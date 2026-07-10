@@ -74,6 +74,7 @@
 - `validUntil`（YYYY-MM-DD）：活動頁有標「活動期間至」就必填；查不到留空並在 `note` 寫「效期未確認」。**不可編造日期**。
 - `rewards[].merchants`（選填）：回饋限指定商店時列出商店名，需與 merchants.json 的 `name` 或 `aliases` 對得上為佳。
 - 抓不到、不確定的值：留空＋note 標「未確認」，絕不憑印象填。
+- `staleSince`（bank 或 card 層級，選填，由 run.js 合併時自動加）：該筆資料在最近一次更新中未能重抓、沿用舊資料的時間戳（ISO）。爬蟲模組不要自己寫這個欄位；重抓成功後會自動消失。
 
 ## data/merchants.json
 

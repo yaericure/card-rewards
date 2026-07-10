@@ -53,14 +53,43 @@ async function scrapeBanks(targets) {
 }
 
 function merge() {
-  // 只合併已知銀行的檔案，避免 output/ 內其他工具產物（報告、測試結果）混入資料
-  const files = BANK_IDS.map((id) => id + '.json').filter((f) => fs.existsSync(path.join(OUT_DIR, f)));
-  const banks = files
-    .map((f) => JSON.parse(fs.readFileSync(path.join(OUT_DIR, f), 'utf8')))
-    .sort((a, b) => BANK_IDS.indexOf(a.id) - BANK_IDS.indexOf(b.id));
+  // 以上一版 data/cards.json 作備援：本次沒抓到的銀行／卡片沿用舊資料並標 staleSince，
+  // 避免暫時性抓取失敗（如 CI 的 IP 被銀行擋）讓銀行從網站上消失；下次抓到即自動覆蓋。
+  let prev = { banks: [] };
+  try {
+    prev = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+  } catch {}
+  const prevBanks = Object.fromEntries((prev.banks || []).map((b) => [b.id, b]));
+  const prevStamp = prev.updatedAt || null;
+
+  const banks = [];
+  let stale = 0;
+  for (const id of BANK_IDS) {
+    // 只合併已知銀行的檔案，避免 output/ 內其他工具產物（報告、測試結果）混入資料
+    const file = path.join(OUT_DIR, id + '.json');
+    const old = prevBanks[id];
+    if (fs.existsSync(file)) {
+      const fresh = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (old) {
+        const freshIds = new Set(fresh.cards.map((c) => c.id));
+        for (const c of old.cards) {
+          if (!freshIds.has(c.id)) {
+            console.warn(`warn: ${id}/${c.id} 本次未抓到，沿用上一版`);
+            fresh.cards.push({ ...c, staleSince: c.staleSince || prevStamp });
+            stale++;
+          }
+        }
+      }
+      banks.push(fresh);
+    } else if (old) {
+      console.warn(`warn: ${id} 本次無新資料，整家沿用上一版`);
+      banks.push({ ...old, staleSince: old.staleSince || prevStamp });
+      stale++;
+    }
+  }
   const data = { updatedAt: new Date().toISOString(), banks };
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-  console.log(`merged ${banks.length} 家銀行 → data/cards.json`);
+  console.log(`merged ${banks.length} 家銀行 → data/cards.json${stale ? `（${stale} 筆沿用舊資料）` : ''}`);
 }
 
 (async () => {

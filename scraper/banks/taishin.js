@@ -1,29 +1,37 @@
-// 台新銀行（taishin）信用卡回饋爬蟲
+// 台新銀行（taishin）信用卡回饋爬蟲 — v2 改版（商店優先：見 ../../data/SCHEMA.md）
+//
+// v2 改版重點（相對 v1 的差異）：
+//   v1 把「指定通路清單」壓扁成 category 大類（例：Richart卡「天天刷」的日常採買，
+//   v1 只記 supermarket/convenience 大類，官方原始清單裡的每一家店都遺失）。
+//   v2 規則：每個回饋方案，只要官方頁面列出「指定通路清單」，rewards[].merchants
+//   就必須逐家收錄，並用 merchantsComplete 標記是否為官方全清單。
 //
 // 來源 URL（2026-07-10 人工核對過結構，之後若改版需重新核對）：
 //   - 信用卡總覽（含卡片清單）：https://www.taishinbank.com.tw/TSB/personal/credit/
 //   - 台新Richart卡（cg047）／大全聯信用卡（cg010）／街口聯名卡（cg038）之卡片頁：
 //     https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/<cgNNN>/
 //   - 各卡的回饋細節在「活動/權益頁」，其 URL 是會變動的 GUID 或短網址，
-//     因此不寫死，而是每次從卡片頁上的連結文字動態找出來（見下）。
+//     因此不寫死，而是每次從卡片頁上的連結文字動態找出來（見 renderCardLinks）。
 //
-// 解析假設：
-//   - 總覽頁 /TSB/personal/credit/ 是靜態頁：卡片清單以
-//     href="/TSB/personal/credit/intro/overview/cgNNN/?from=index" class="pic" ...
-//     <div class="title"><p>卡名</p> 的固定結構出現，用 regex 抓 cg 編號→卡名 對照。
-//   - 各卡片頁（cgNNN）的內容區是 JS 動態載入 → 需要 playwright 渲染後才能拿到
-//     活動/權益頁連結；連結靠「連結文字關鍵字」找（比 GUID 網址穩定）：
-//       * Richart卡：連結文字「Richart卡權益介紹」（tsbk.tw 短網址 → mkp.taishinbank.com.tw）
-//       * 大全聯卡：連結文字含「新版權益」（→ /intro/overview/future/<GUID>）
-//       * 街口卡：  連結文字含「回饋攻略」且不含「已結束」（→ future/<GUID>）
-//   - Richart 權益頁（mkp.taishinbank.com.tw）也是 JS 渲染 → playwright innerText 後用
-//     「方案名（天天刷/大筆刷/好饗刷/數趣刷/玩旅刷…）+ 緊接百分比」的 regex 抓。
-//     Richart卡是「7+1大刷」切換方案制：每個「刷」是一個可切換方案 → 各記一筆 plan。
-//   - 大全聯/街口的活動頁（/intro/overview/future/<GUID>）是靜態伺服器渲染 → fetch 即可。
+// 解析假設（2026-07-10 實測）：
+//   - Richart 權益頁（mkp.taishinbank.com.tw，經 tsbk.tw 短網址導向）是單頁滾動式版面
+//     （不是分頁籤切換），playwright innerText('body') 一次即可拿到「Pay著刷／天天刷／
+//     大筆刷／好饗刷／數趣刷／玩旅刷／假日刷／保費」全部方案的完整指定通路清單，
+//     以及期間限定「Chill刷」（瘋聚會/沉浸娛樂/獨自升級 三大類、共 9 個子方案）的完整清單。
+//     清單在頁面上以「子類別標籤」＋「緊接一行的商店清單（｜分隔大項、、分隔同項內的店）」
+//     或（Chill刷區塊）「【子類別】pct%」＋「緊接一行以 / 分隔的商店清單」出現，
+//     故用「lines() 陣列 + 逐行對照」解析，而非單一 regex，避免把不同子類別的商店混在一起。
+//   - 好饗刷「指定飯店」的完整品牌清單另外出現在頁尾「注意事項」段落
+//     （＊【好饗刷3.3%｜指定飯店適用品牌】...），比正文的精簡列表更完整，故取用該段。
+//   - Pay著刷（台新Pay／台新Pay+ 綁定支付）官方文字明講「詳見台新Pay官網」/「詳見台灣Pay場域」，
+//     只列出範例商店、非完整清單 → merchantsComplete: false，note 附來源頁 URL。
+//   - 大全聯信用卡／街口聯名卡的活動頁是靜態伺服器渲染 → fetch 即可；兩頁皆把完整指定
+//     通路清單直接寫在文案裡（大全聯只需綁定 PX Pay 本身即為通路；街口聯名卡的「精選通路」
+//     依「旅遊/交通/百貨/日常/外送/美食/影城/K歌」分類逐家列出）。
 //   - 點數換算（皆為頁面原文所載）：台新Point(信用卡)官網直接以 % 表述；
 //     大全聯福利點「10點=NT$1」；街口幣「1元街口幣=新臺幣1元」。均在 note 註明點數型態。
-//   - Richart 的 7大刷權益頁未標活動迄日（僅 Chill刷有 2026/7/8-9/30）→ 其餘 plan 不填
-//     validUntil，note 註明效期未確認。
+//   - Richart 的 7+1 大刷權益頁未標「天天刷」等常態方案的活動迄日（僅 Chill刷有明確期間）
+//     → 常態方案不填 validUntil，note 註明效期未確認；Chill刷、大全聯、街口皆有明確活動期間。
 
 const cheerio = require('cheerio');
 const { fetchHtml, sleep, UA } = require('../lib/util');
@@ -34,9 +42,43 @@ const CARD_URL = (cg) => `https://www.taishinbank.com.tw/TSB/personal/credit/int
 const POINT_NOTE_RICHART = '台新Point(信用卡)點數回饋';
 const POINT_NOTE_PX = '福利點點數回饋（福利點10點=NT$1，可折抵全聯/大全聯店內消費）';
 const POINT_NOTE_JKO = '街口幣回饋（1元街口幣=新臺幣1元）';
+const NO_EXPIRY = '效期未確認（權益頁未標活動迄日）';
 
 function isoFrom(y, m, d) {
   return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+// ---------- 共用文字解析工具 ----------
+function toLines(text) {
+  return text.split('\n').map((s) => s.trim());
+}
+// 依單一分隔字元拆商店清單，但不拆括號內的內容（例：「Mitsui Shopping Park LaLaport(南港/台中)」
+// 是 1 家商店，括號內是附註不是分隔符）。支援半形/全形括號。
+function splitOutsideParens(str, delimiter) {
+  if (!str) return [];
+  const out = [];
+  let depth = 0;
+  let cur = '';
+  for (const ch of str) {
+    if (ch === '(' || ch === '（') depth++;
+    if (ch === ')' || ch === '）') depth = Math.max(0, depth - 1);
+    if (ch === delimiter && depth === 0) {
+      out.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out.filter(Boolean);
+}
+// 「全家及7-11(兩大超商限台新Pay)｜萬家福、樂家康｜...」→ 依｜、、拆成單店陣列
+function splitPipeComma(str) {
+  return splitOutsideParens(str, '｜').flatMap((seg) => splitOutsideParens(seg, '、'));
+}
+// Chill刷區塊「詹記麻辣火鍋 / 萬客什鍋 / 海底撈 / ...」→ 依 / 拆（括號內的 / 不拆）
+function splitSlash(str) {
+  return splitOutsideParens(str, '/');
 }
 
 // 從總覽頁靜態 HTML 抓 cg編號 → 卡名
@@ -67,60 +109,93 @@ async function scrapeRichart(page, cardName) {
     console.error('taishin: cg047 頁面找不到「Richart卡權益介紹」連結，跳過 Richart 卡');
     return null;
   }
-  // mkp 權益頁常有長輪詢，networkidle 會逾時 → 用 domcontentloaded + 固定等待
   await page.goto(rightsLink.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.waitForTimeout(3500);
-  const text = (await page.innerText('body')).replace(/\s+/g, ' ');
+  const rawText = await page.innerText('body');
+  const rightsUrl = page.url();
+  const L = toLines(rawText);
+  const flat = rawText.replace(/\s+/g, ' ');
 
-  const noExpiry = '效期未確認（權益頁未標活動迄日）';
   const plans = [];
 
-  // Chill刷（限時方案，有明確期間）
-  const chillPeriod = text.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s*-\s*(\d{4})\/(\d{1,2})\/(\d{1,2})\s*快樂上市/);
-  const chillDining = text.match(/【歡聚微醺】([\d.]+)%/);
-  const chillStream = text.match(/【熬夜追更】([\d.]+)%/);
-  const chillOnline = text.match(/【數位外掛】([\d.]+)%/);
-  if (chillDining) {
-    const validUntil = chillPeriod ? isoFrom(chillPeriod[4], chillPeriod[5], chillPeriod[6]) : undefined;
-    const rewards = [];
-    const add = (category, m, note, merchants) => {
-      if (!m) return;
-      const r = { category, pct: parseFloat(m[1]), note: `${POINT_NOTE_RICHART}；${note}` };
-      if (merchants) r.merchants = merchants;
-      if (validUntil) r.validUntil = validUntil;
-      rewards.push(r);
+  // --- Chill刷（期間限定）：瘋聚會／沉浸娛樂／獨自升級，共 9 個子方案 ---
+  const chillPeriod = flat.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})\s*-\s*(\d{4})\/(\d{1,2})\/(\d{1,2})\s*快樂上市/);
+  if (chillPeriod) {
+    const validFrom = isoFrom(chillPeriod[1], chillPeriod[2], chillPeriod[3]);
+    const validUntil = isoFrom(chillPeriod[4], chillPeriod[5], chillPeriod[6]);
+    // 【子類別】pct% 這一行 + 緊接商店清單一行（/ 分隔），一路蒐集到「Pay著刷」出現為止
+    const CHILL_CATEGORY = {
+      歡聚微醺: 'dining',
+      日常續命: 'dining',
+      約會犒賞: 'dining',
+      應援追星: 'entertainment',
+      熬夜追更: 'streaming',
+      數位外掛: 'online',
+      營養補給: 'medical',
+      體態養成: 'entertainment',
+      運動品牌: 'department',
     };
-    add('dining', chillDining, 'Chill刷【歡聚微醺】【日常續命】指定餐飲/手搖飲通路', ['海底撈', '50嵐', '貳樓']);
-    add('streaming', chillStream, 'Chill刷【熬夜追更】指定串流/內容平台', ['Netflix', 'Disney+', '巴哈姆特']);
-    add('online', chillOnline, 'Chill刷【數位外掛】指定通路', ['蝦皮購物', '淘寶', 'Uber Eats']);
+    const rewards = [];
+    const startIdx = L.indexOf('瘋聚會');
+    const endIdx = L.indexOf('Pay著刷');
+    for (let i = startIdx; i >= 0 && i < endIdx; i++) {
+      const m = L[i] && L[i].match(/^【(.+?)】([\d.]+)%$/);
+      if (!m) continue;
+      const subLabel = m[1];
+      const pct = parseFloat(m[2]);
+      const merchants = splitSlash(L[i + 1]);
+      const category = CHILL_CATEGORY[subLabel] || 'general';
+      if (!merchants.length) continue;
+      rewards.push({
+        category,
+        pct,
+        merchants,
+        merchantsComplete: true,
+        validFrom,
+        validUntil,
+        note: `${POINT_NOTE_RICHART}；Chill刷【${subLabel}】期間限定加碼（來源：${rightsUrl}）`,
+      });
+    }
     if (rewards.length) {
       plans.push({
         id: 'chill',
         name: 'Chill刷',
-        condition: '需於Richart Life APP切換至「Chill刷」方案；限指定支付方式',
-        validFrom: chillPeriod ? isoFrom(chillPeriod[1], chillPeriod[2], chillPeriod[3]) : undefined,
+        condition: `需於Richart Life APP切換至「Chill刷」方案；限指定支付方式；活動期間 ${validFrom} ~ ${validUntil}`,
+        validFrom,
         validUntil,
         rewards,
       });
     }
   }
 
-  // Pay著刷（行動支付）
-  const tsPay = text.match(/台新Pay\s*及\s*台新Pay\+\s*綁定支付享\s*([\d.]+)\s*%/);
-  const linePay = text.match(/LINE Pay\s*及\s*全盈\+Pay[^綁]*綁定支付享\s*([\d.]+)\s*%/);
+  // --- Pay著刷（行動支付綁定）：官方僅列範例商店，非完整清單 ---
+  const tsPay = flat.match(/台新Pay\s*及\s*台新Pay\+\s*綁定支付享\s*([\d.]+)\s*%/);
+  const linePay = flat.match(/LINE Pay\s*及\s*全盈\+Pay[^綁]*綁定支付享\s*([\d.]+)\s*%/);
+  const tsPayExamples = flat.match(/台新Pay｜([^*]+?)，詳見台新Pay官網/);
+  const twPayExamples = flat.match(/台新Pay\(TWQR、台灣Pay\)｜([^*]+?)，詳見台灣Pay場域/);
   if (tsPay || linePay) {
     const rewards = [];
-    if (tsPay)
-      rewards.push({
+    if (tsPay) {
+      const merchants = [
+        ...splitPipeComma(tsPayExamples ? tsPayExamples[1] : ''),
+        ...splitPipeComma(twPayExamples ? twPayExamples[1] : ''),
+      ];
+      const r = {
         category: 'mobilepay',
         pct: parseFloat(tsPay[1]),
-        note: `${POINT_NOTE_RICHART}；台新Pay及台新Pay+綁定支付（全家、7-11、新光三越等指定場域）；${noExpiry}`,
-      });
+        note: `${POINT_NOTE_RICHART}；台新Pay及台新Pay+綁定支付；官方頁面僅列部分範例商店，完整清單請見台新Pay官網／台灣Pay官方場域公告（來源：${rightsUrl}）；${NO_EXPIRY}`,
+      };
+      if (merchants.length) {
+        r.merchants = merchants;
+        r.merchantsComplete = false;
+      }
+      rewards.push(r);
+    }
     if (linePay)
       rewards.push({
         category: 'mobilepay',
         pct: parseFloat(linePay[1]),
-        note: `${POINT_NOTE_RICHART}；LINE Pay及全盈+Pay綁定支付；${noExpiry}`,
+        note: `${POINT_NOTE_RICHART}；LINE Pay及全盈+Pay綁定支付（不限特定商店）；${NO_EXPIRY}`,
       });
     plans.push({
       id: 'pay',
@@ -130,100 +205,232 @@ async function scrapeRichart(page, cardName) {
     });
   }
 
-  // 其餘五大刷 + 假日刷：方案名 + 緊接百分比
-  const simplePlans = [
-    {
-      id: 'daily',
-      name: '天天刷',
-      re: /天天刷\s*([\d.]+)\s*%/,
-      rewards: (pct) => [
-        { category: 'convenience', pct, merchants: ['全家', '7-ELEVEN'], note: '日常採買（兩大超商限台新Pay）' },
-        { category: 'supermarket', pct, merchants: ['唐吉訶德'], note: '日常採買（萬家福、樂家康、大買家、唐吉訶德等）' },
-        { category: 'transport', pct, merchants: ['台灣高鐵', 'Uber', '台灣大車隊'], note: '通勤交通（臺鐵/高鐵/計程車/Uber）' },
-        { category: 'gas', pct, merchants: ['中油直營'], note: '加油充電（中油直營、全國加油、充電樁業者）' },
-      ],
-    },
-    {
-      id: 'department',
-      name: '大筆刷',
-      re: /大筆刷\s*([\d.]+)\s*%/,
-      rewards: (pct) => [
-        {
-          category: 'department',
-          pct,
-          merchants: ['新光三越', '遠東百貨', '遠東SOGO', '台北101', 'IKEA', 'UNIQLO'],
-          note: '指定百貨/Outlet/居家裝修/時尚品牌',
-        },
-      ],
-    },
-    {
-      id: 'dining',
-      name: '好饗刷',
-      re: /好饗刷\s*([\d.]+)\s*%/,
-      rewards: (pct) => [
-        { category: 'dining', pct, note: '全臺餐飲（不含餐券）' },
-        { category: 'delivery', pct, merchants: ['Uber Eats', 'foodpanda'], note: '外送平台' },
-        { category: 'entertainment', pct, merchants: ['拓元售票', 'KKTIX', '錢櫃', '好樂迪'], note: '購票/指定KTV' },
-        { category: 'travel', pct, merchants: ['晶華國際酒店集團', '老爺酒店集團'], note: '指定飯店（不含餐券/住宿券）' },
-      ],
-    },
-    {
-      id: 'digital',
-      name: '數趣刷',
-      re: /數趣刷\s*([\d.]+)\s*%/,
-      rewards: (pct) => [
-        { category: 'online', pct, merchants: ['蝦皮購物', 'momo購物網', 'PChome線上購物', '淘寶', 'Amazon'], note: '網購平台' },
-        { category: 'streaming', pct, merchants: ['Netflix', 'Disney+', 'ChatGPT'], note: '遊戲影音/AI服務/線上課程' },
-        { category: 'entertainment', pct, merchants: ['MyCard', 'Steam', 'PlayStation', 'Nintendo'], note: '遊戲平台' },
-      ],
-    },
-    {
-      id: 'travel',
-      name: '玩旅刷',
-      re: /玩旅刷\s*([\d.]+)\s*%/,
-      rewards: (pct) => [
-        { category: 'overseas', pct, note: '海外消費（含實體及線上、歐洲國家交易）' },
-        {
+  // --- 天天刷／大筆刷／好饗刷／數趣刷（label + 緊接一行商店清單，重複 N 組） ---
+  const TOP_LABELS = ['天天刷', '大筆刷', '好饗刷', '數趣刷', '玩旅刷', '假日刷'];
+  function readPct3Lines(label) {
+    const idx = L.indexOf(label);
+    if (idx < 0 || L[idx + 2] !== '%') return null;
+    return { idx, pct: parseFloat(L[idx + 1]) };
+  }
+  function collectSubPairs(startIdx) {
+    const subs = [];
+    let i = startIdx;
+    while (i < L.length && L[i] && !TOP_LABELS.includes(L[i]) && L[i] !== '保費') {
+      const subLabel = L[i];
+      const merchants = splitPipeComma(L[i + 1]);
+      subs.push({ subLabel, merchants, raw: L[i + 1] });
+      i += 2;
+    }
+    return subs;
+  }
+
+  // 天天刷
+  const daily = readPct3Lines('天天刷');
+  if (daily) {
+    const subs = collectSubPairs(daily.idx + 3);
+    const rewards = [];
+    for (const s of subs) {
+      if (s.subLabel === '日常採買') {
+        // 「全家及7-11(兩大超商限台新Pay)」是 2 家超商合寫，拆成獨立商店；其餘維持原文
+        const combo = '全家及7-11(兩大超商限台新Pay)';
+        const rest = s.merchants.filter((m) => m !== combo);
+        if (s.merchants.includes(combo)) {
+          rewards.push({
+            category: 'convenience',
+            pct: daily.pct,
+            merchants: ['全家', '7-ELEVEN'],
+            merchantsComplete: true,
+            note: `${POINT_NOTE_RICHART}；天天刷【日常採買】兩大超商，限台新Pay；${NO_EXPIRY}`,
+          });
+        }
+        if (rest.length) {
+          rewards.push({
+            category: 'supermarket',
+            pct: daily.pct,
+            merchants: rest,
+            merchantsComplete: true,
+            note: `${POINT_NOTE_RICHART}；天天刷【日常採買】量販/超市；${NO_EXPIRY}`,
+          });
+        }
+      } else if (s.subLabel === '通勤交通') {
+        rewards.push({
+          category: 'transport',
+          pct: daily.pct,
+          merchants: s.merchants,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；天天刷【通勤交通】；${NO_EXPIRY}`,
+        });
+      } else if (s.subLabel === '加油充電') {
+        rewards.push({
+          category: 'gas',
+          pct: daily.pct,
+          merchants: s.merchants,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；天天刷【加油充電】；${NO_EXPIRY}`,
+        });
+      } else if (s.subLabel === '藥妝藥局') {
+        rewards.push({
+          category: 'medical',
+          pct: daily.pct,
+          merchants: s.merchants,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；天天刷【藥妝藥局】；${NO_EXPIRY}`,
+        });
+      }
+    }
+    if (rewards.length) plans.push({ id: 'daily', name: '天天刷', condition: '需於Richart Life APP切換至「天天刷」方案', rewards });
+  }
+
+  // 大筆刷（指定百貨／指定Outlet／居家裝修／時尚品味 → 全併入 department）
+  const dept = readPct3Lines('大筆刷');
+  if (dept) {
+    const subs = collectSubPairs(dept.idx + 3);
+    const merchants = subs.flatMap((s) => s.merchants);
+    if (merchants.length) {
+      plans.push({
+        id: 'department',
+        name: '大筆刷',
+        condition: '需於Richart Life APP切換至「大筆刷」方案',
+        rewards: [
+          {
+            category: 'department',
+            pct: dept.pct,
+            merchants,
+            merchantsComplete: true,
+            note: `${POINT_NOTE_RICHART}；大筆刷（指定百貨/Outlet/居家裝修/時尚品牌，來源：${rightsUrl}）；${NO_EXPIRY}`,
+          },
+        ],
+      });
+    }
+  }
+
+  // 好饗刷（全臺餐飲／外送平台／購票娛樂+指定KTV→entertainment／指定飯店）
+  const dining = readPct3Lines('好饗刷');
+  if (dining) {
+    const subs = collectSubPairs(dining.idx + 3);
+    const rewards = [];
+    for (const s of subs) {
+      if (s.subLabel === '全臺餐飲') {
+        rewards.push({
+          category: 'dining',
+          pct: dining.pct,
+          note: `${POINT_NOTE_RICHART}；好饗刷【全臺餐飲】不含餐券；另享王品瘋Pay加碼；不限指定商店；${NO_EXPIRY}`,
+        });
+      } else if (s.subLabel === '外送平台') {
+        rewards.push({
+          category: 'delivery',
+          pct: dining.pct,
+          merchants: s.merchants,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；好饗刷【外送平台】；${NO_EXPIRY}`,
+        });
+      } else if (s.subLabel === '購票娛樂' || s.subLabel === '指定KTV') {
+        rewards.push({
+          category: 'entertainment',
+          pct: dining.pct,
+          merchants: s.merchants,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；好饗刷【${s.subLabel}】；${NO_EXPIRY}`,
+        });
+      }
+    }
+    // 指定飯店：正文精簡列表不完整，改用頁尾注意事項的完整品牌清單
+    const hotelNote = flat.match(/＊【好饗刷[\d.]*%｜指定飯店適用品牌】\s*([^＊]+?)(?:謹慎理財|$)/);
+    if (hotelNote) {
+      const hotels = splitOutsideParens(hotelNote[1].replace(/。\s*/g, ''), '、');
+      if (hotels.length) {
+        rewards.push({
           category: 'travel',
-          pct,
-          merchants: ['中華航空', '長榮航空', '星宇航空', 'Klook', 'KKday', 'Agoda', 'Booking.com', '雄獅旅遊', '易遊網'],
-          note: '航空公司/訂房平台/旅行社',
-        },
-      ],
-    },
-    {
+          pct: dining.pct,
+          merchants: hotels,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；好饗刷【指定飯店】不含餐券/住宿券等票券（品牌全清單，來源：${rightsUrl} 注意事項）；${NO_EXPIRY}`,
+        });
+      }
+    }
+    if (rewards.length) plans.push({ id: 'dining', name: '好饗刷', condition: '需於Richart Life APP切換至「好饗刷」方案', rewards });
+  }
+
+  // 數趣刷（網購平台→online；線上課程/遊戲影音/AI服務→streaming）
+  const digital = readPct3Lines('數趣刷');
+  if (digital) {
+    const subs = collectSubPairs(digital.idx + 3);
+    const rewards = [];
+    for (const s of subs) {
+      if (s.subLabel === '網購平台') {
+        rewards.push({
+          category: 'online',
+          pct: digital.pct,
+          merchants: s.merchants,
+          merchantsComplete: true,
+          note: `${POINT_NOTE_RICHART}；數趣刷【網購平台】；${NO_EXPIRY}`,
+        });
+      }
+    }
+    const streamMerchants = subs
+      .filter((s) => ['線上課程', '遊戲影音', 'AI服務'].includes(s.subLabel))
+      .flatMap((s) => s.merchants);
+    if (streamMerchants.length) {
+      rewards.push({
+        category: 'streaming',
+        pct: digital.pct,
+        merchants: streamMerchants,
+        merchantsComplete: true,
+        note: `${POINT_NOTE_RICHART}；數趣刷（線上課程/遊戲影音/AI服務）；${NO_EXPIRY}`,
+      });
+    }
+    if (rewards.length) plans.push({ id: 'digital', name: '數趣刷', condition: '需於Richart Life APP切換至「數趣刷」方案', rewards });
+  }
+
+  // 玩旅刷（第一行是「海外消費」敘述、非 label+清單配對；其後才是航空公司/海外交通網路/訂房平台/旅行社）
+  const travel = readPct3Lines('玩旅刷');
+  if (travel) {
+    const rewards = [
+      {
+        category: 'overseas',
+        pct: travel.pct,
+        note: `${POINT_NOTE_RICHART}；玩旅刷【海外消費】含實體及線上、歐洲國家交易；不限指定商店；${NO_EXPIRY}`,
+      },
+    ];
+    const subs = collectSubPairs(travel.idx + 4); // idx+3 是「海外消費(...)」單行敘述，故從 +4 開始配對
+    const travelMerchants = subs.flatMap((s) => s.merchants);
+    if (travelMerchants.length) {
+      rewards.push({
+        category: 'travel',
+        pct: travel.pct,
+        merchants: travelMerchants,
+        merchantsComplete: true,
+        note: `${POINT_NOTE_RICHART}；玩旅刷（航空公司/海外交通網路/訂房平台/旅行社，來源：${rightsUrl}）；${NO_EXPIRY}`,
+      });
+    }
+    plans.push({ id: 'travel', name: '玩旅刷', condition: '需於Richart Life APP切換至「玩旅刷」方案', rewards });
+  }
+
+  // 假日刷
+  const holiday = readPct3Lines('假日刷');
+  if (holiday) {
+    plans.push({
       id: 'holiday',
       name: '假日刷',
-      re: /節假日不限通路\(含保費\)消費享([\d.]+)%/,
-      rewards: (pct) => [{ category: 'general', pct, note: '限節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）' }],
-    },
-  ];
-  for (const sp of simplePlans) {
-    const m = text.match(sp.re);
-    if (!m) continue;
-    const pct = parseFloat(m[1]);
-    plans.push({
-      id: sp.id,
-      name: sp.name,
-      condition: sp.id === 'holiday' ? '免切換，節假日適用' : `需於Richart Life APP切換至「${sp.name}」方案`,
-      rewards: sp.rewards(pct).map((r) => ({ ...r, note: `${POINT_NOTE_RICHART}；${r.note}；${noExpiry}` })),
+      condition: '免切換，節假日適用',
+      rewards: [
+        {
+          category: 'general',
+          pct: holiday.pct,
+          note: `${POINT_NOTE_RICHART}；限節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）`,
+        },
+      ],
     });
   }
 
   // 保費（免切換）
-  const insurance = text.match(/保費\s*免切換免領券\s*最高([\d.]+)%/);
+  const insurance = flat.match(/保費\s*免切換免領券\s*最高([\d.]+)%/);
   if (insurance) {
     plans.push({
       id: 'insurance-base',
       name: '保費回饋（免切換）',
       condition: '免切換免領券，所有方案皆適用',
-      rewards: [
-        {
-          category: 'insurance',
-          pct: parseFloat(insurance[1]),
-          note: `${POINT_NOTE_RICHART}；${noExpiry}`,
-        },
-      ],
+      rewards: [{ category: 'insurance', pct: parseFloat(insurance[1]), note: `${POINT_NOTE_RICHART}；${NO_EXPIRY}` }],
     });
   }
 
@@ -250,38 +457,42 @@ async function scrapePxmart(page, cardName) {
   const period = text.match(/適用期間：(\d{4})\/(\d{1,2})\/(\d{1,2})-(\d{4})\/(\d{1,2})\/(\d{1,2})/);
   const validUntil = period ? isoFrom(period[4], period[5], period[6]) : undefined;
   const instore = text.match(/大全聯店內消費享每\s*100\s*元給最高\s*\d+\s*福利點\s*\(最高([\d.]+)%\)/);
-  const qpay = text.match(/全支付消費[\s\S]{0,300}?每消費100元給\d+點\(最高([\d.]+)%\)/);
-  const genAutopay = text.match(/每消費100元給8點\(最高([\d.]+)%\)/);
-  const genNone = text.match(/每消費100元給3點\(最高([\d.]+)%\)/);
   const cap = text.match(/店外全支付消費及其他一般消費合計每期最高回饋福利點([\d,]+)點/);
   const capNote = cap ? `店外消費合計每期回饋上限${cap[1]}福利點（正附卡合併）` : undefined;
+  // 店外消費依序有 3 組「每消費100元給N點(最高X%)」：全支付／已扣繳一般消費／未扣繳一般消費。
+  // 注意：店內消費的「基本權益+加碼回饋」拆解表也用同樣的句型（例：8點0.8%+4點0.4%=12點1.2%），
+  // 必須從「店外消費享」錨點之後截取，否則會誤抓到店內拆解表的前 2 筆數字。
+  const outStoreSection = text.slice(text.indexOf('店外消費享每'));
+  const outStoreValues = [...outStoreSection.matchAll(/每消費100元給\d+點\(最高([\d.]+)%\)/g)].map((m) => parseFloat(m[1]));
+  const [qpayPct, autopayPct, defaultPct] = outStoreValues;
 
-  function buildRewards(generalMatch, generalCond) {
+  function buildRewards(generalPct, generalCond) {
     const rewards = [];
     if (instore) {
       const r = {
         category: 'supermarket',
         pct: parseFloat(instore[1]),
         merchants: ['大全聯'],
+        merchantsComplete: true,
         note: `${POINT_NOTE_PX}；大全聯店內消費，回饋無上限，需綁定PX Pay會員`,
       };
       if (validUntil) r.validUntil = validUntil;
       rewards.push(r);
     }
-    if (qpay) {
+    if (qpayPct !== undefined) {
       const r = {
         category: 'mobilepay',
-        pct: parseFloat(qpay[1]),
+        pct: qpayPct,
         note: `${POINT_NOTE_PX}；全支付店外消費（不含大全聯/全聯）`,
       };
       if (capNote) r.cap = capNote;
       if (validUntil) r.validUntil = validUntil;
       rewards.push(r);
     }
-    if (generalMatch) {
+    if (generalPct !== undefined) {
       const r = {
         category: 'general',
-        pct: parseFloat(generalMatch[1]),
+        pct: generalPct,
         note: `${POINT_NOTE_PX}；其他一般消費（不含全支付、大全聯、全聯）；${generalCond}`,
       };
       if (capNote) r.cap = capNote;
@@ -292,23 +503,13 @@ async function scrapePxmart(page, cardName) {
   }
 
   const plans = [];
-  const autopayRewards = buildRewards(genAutopay, '有設定台新帳戶扣繳台新信用卡帳款');
+  const autopayRewards = buildRewards(autopayPct, '有設定台新帳戶扣繳台新信用卡帳款');
   if (autopayRewards.length) {
-    plans.push({
-      id: 'autopay',
-      name: '台新帳戶扣繳卡款',
-      condition: '有設定台新帳戶扣繳台新信用卡帳款',
-      rewards: autopayRewards,
-    });
+    plans.push({ id: 'autopay', name: '台新帳戶扣繳卡款', condition: '有設定台新帳戶扣繳台新信用卡帳款', rewards: autopayRewards });
   }
-  const defaultRewards = buildRewards(genNone, '未設定台新帳戶扣繳');
+  const defaultRewards = buildRewards(defaultPct, '未設定台新帳戶扣繳');
   if (defaultRewards.length) {
-    plans.push({
-      id: 'default',
-      name: '一般（未設定扣繳）',
-      condition: '未設定台新帳戶扣繳台新信用卡帳款',
-      rewards: defaultRewards,
-    });
+    plans.push({ id: 'default', name: '一般（未設定扣繳）', condition: '未設定台新帳戶扣繳台新信用卡帳款', rewards: defaultRewards });
   }
 
   if (!plans.length) {
@@ -329,50 +530,66 @@ async function scrapeJko(page, cardName) {
   const html = await fetchHtml(link.href);
   const $ = cheerio.load(html);
   $('script,style').remove();
-  const text = $('body').text().replace(/\s+/g, ' ').trim();
+  const text = $('body').text().replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').trim();
+  const flat = text.replace(/\s+/g, ' ');
+  const jkoUrl = link.href;
 
-  const period = text.match(/活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+  const period = flat.match(/活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+  const validFrom = period ? isoFrom(period[1], period[2], period[3]) : undefined;
   const validUntil = period ? isoFrom(period[4], period[5], period[6]) : undefined;
-  const featured = text.match(/【精選通路\s*最高\s*([\d.]+)\s*%街口幣】/);
-  const general = text.match(/【一般消費享\s*([\d.]+)\s*%街口幣\s*無上限】/);
-  const bills = text.match(/街口APP繳費享基本\s*([\d.]+)\s*%回饋無上限/);
-  const cap = text.match(/精選消費加碼合計\s*每月上限\$?([\d,]+)(?:元)?街口幣/);
+  const featured = flat.match(/【精選通路\s*最高([\d.]+)\s*%街口幣】/);
+  const general = flat.match(/【一般消費享\s*([\d.]+)\s*%街口幣\s*無上限】/);
+  const billsBase = flat.match(/街口APP繳費享基本([\d.]+)%回饋無上限/);
+  const billsBonus = flat.match(/滿NT\$?([\d,]+)[，,]\s*升級再享([\d.]+)%回饋/);
+  const cap = flat.match(/精選消費加碼合計每月上限\$?([\d,]+)街口幣/);
   const capNote = cap ? `精選通路加碼合計每月上限${cap[1]}街口幣` : undefined;
+
+  function merchantsAfterLabel(label) {
+    const re = new RegExp(label + '｜([^\\n*]+)');
+    const m = text.match(re);
+    return m ? splitOutsideParens(m[1], '、') : [];
+  }
 
   const rewards = [];
   if (general) {
-    const r = { category: 'general', pct: parseFloat(general[1]), note: `${POINT_NOTE_JKO}；一般消費回饋無上限，不限交易形式` };
+    const r = { category: 'general', pct: parseFloat(general[1]), note: `${POINT_NOTE_JKO}；一般消費回饋無上限，不限交易形式（4大超商及Apple媒體服務限街口支付綁定始享）` };
+    if (validFrom) r.validFrom = validFrom;
     if (validUntil) r.validUntil = validUntil;
     rewards.push(r);
   }
   if (featured) {
     const pct = parseFloat(featured[1]);
-    const featuredGroups = [
-      { category: 'travel', merchants: ['Klook', 'KKday', '易遊網', 'Agoda', 'Airbnb'], note: '精選旅遊通路' },
-      { category: 'transport', merchants: ['台灣高鐵', 'Uber'], note: '精選交通通路（高鐵/Uber/叫車吧/停車）' },
-      { category: 'department', merchants: ['新光三越', '遠東百貨', '遠東巨城', 'LaLaport'], note: '精選百貨通路' },
-      { category: 'delivery', merchants: ['Uber Eats', 'foodpanda', 'Foodomo'], note: '精選外送通路' },
-      { category: 'dining', merchants: ['EZTABLE', '85度C', '清心福全'], note: '精選美食通路' },
-      { category: 'entertainment', merchants: ['威秀影城', '國賓影城', '錢櫃', '好樂迪'], note: '精選影城/KTV通路' },
+    const groups = [
+      { category: 'travel', label: '旅遊' },
+      { category: 'transport', label: '交通' },
+      { category: 'department', label: '百貨' },
+      { category: 'supermarket', label: '日常' },
+      { category: 'delivery', label: '外送' },
+      { category: 'dining', label: '美食' },
+      { category: 'entertainment', label: '影城' },
+      { category: 'entertainment', label: 'Ｋ歌' },
     ];
-    for (const g of featuredGroups) {
+    for (const g of groups) {
+      const merchants = merchantsAfterLabel(g.label);
+      if (!merchants.length) continue;
       const r = {
         category: g.category,
         pct,
-        merchants: g.merchants,
-        note: `${POINT_NOTE_JKO}；${g.note}，最高回饋（含一般消費1%＋精選加碼）`,
+        merchants,
+        merchantsComplete: true,
+        note: `${POINT_NOTE_JKO}；精選通路【${g.label}】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：${jkoUrl}）`,
       };
       if (capNote) r.cap = capNote;
+      if (validFrom) r.validFrom = validFrom;
       if (validUntil) r.validUntil = validUntil;
       rewards.push(r);
     }
   }
-  if (bills) {
-    const r = {
-      category: 'utilities',
-      pct: parseFloat(bills[1]),
-      note: '街口APP繳費（水電瓦斯/電信/稅費等）基本回饋無上限；當月繳費滿NT$1,000另有限量升級2%街口券',
-    };
+  if (billsBase) {
+    let note = `街口APP繳費（水電瓦斯/電信/稅費/保費/學雜費等）基本回饋${billsBase[1]}%無上限`;
+    if (billsBonus) note += `；當月繳費滿NT$${billsBonus[1]}另升級享${billsBonus[2]}%回饋（每月每人上限20元街口券，限量）`;
+    const r = { category: 'utilities', pct: parseFloat(billsBase[1]), note };
+    if (validFrom) r.validFrom = validFrom;
     if (validUntil) r.validUntil = validUntil;
     rewards.push(r);
   }
@@ -385,7 +602,7 @@ async function scrapeJko(page, cardName) {
     id: 'taishin-jko',
     name: cardName || '街口聯名卡',
     url: CARD_URL('cg038'),
-    plans: [{ id: 'default', name: '一般', condition: '無條件（部分通路限街口支付綁定始享最高回饋）', rewards }],
+    plans: [{ id: 'default', name: '一般', condition: '無條件（部分通路限街口支付/LINE Pay/Apple Pay綁定始享最高回饋）', rewards }],
   };
 }
 

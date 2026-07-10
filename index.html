@@ -268,6 +268,17 @@
     color: var(--muted);
   }
   .result-body .result-meta div { margin-bottom: 2px; }
+  .result-body .result-reason {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+  }
+  .result-body .result-incomplete {
+    margin-top: 2px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
   .result-pct {
     font-size: 1.9rem;
     font-weight: 800;
@@ -450,9 +461,11 @@
     merchantsData: null,
     usingSampleCards: false,
     usingSampleMerchants: false,
+    merchantIndex: [],         // combined dictionary: cards.json rewards[].merchants ∪ merchants.json
     heldCardIds: [],           // array of card id
     selectedPlans: {},         // cardId -> planId
-    matchedMerchant: null,     // { name, category } | null
+    matchedMerchant: null,     // { name, category } | null ; category may be null when the
+                                // merchant is only known from cards.json (not in merchants.json)
     matchedCategory: null      // category id chosen directly (when no merchant match)
   };
 
@@ -498,6 +511,49 @@
     return out;
   }
 
+  // Build the combined search dictionary required by SCHEMA.md's v2 "前端比對優先序":
+  // (a) every rewards[].merchants entry across all of cards.json (primary — this is
+  //     what lets a specific store like IKEA resolve even when merchants.json has no
+  //     entry for it at all), unioned with (b) merchants.json name/aliases (used for
+  //     category resolution + autocomplete). merchants.json is indexed first so its
+  //     official name/category/aliases win as the canonical entry when both sources
+  //     mention the same store.
+  function buildMerchantIndex() {
+    var byNorm = {};
+    var idx = [];
+
+    function upsert(name, category) {
+      var n = normalize(name);
+      if (!n) return null;
+      if (!byNorm[n]) {
+        byNorm[n] = { name: name, category: category || null, aliases: [] };
+        idx.push(byNorm[n]);
+      } else if (category && !byNorm[n].category) {
+        byNorm[n].category = category;
+      }
+      return byNorm[n];
+    }
+
+    (state.merchantsData.merchants || []).forEach(function (m) {
+      var entry = upsert(m.name, m.category);
+      if (entry) {
+        (m.aliases || []).forEach(function (a) { entry.aliases.push(a); });
+      }
+    });
+
+    (state.cardsData.banks || []).forEach(function (bank) {
+      (bank.cards || []).forEach(function (card) {
+        (card.plans || []).forEach(function (plan) {
+          (plan.rewards || []).forEach(function (r) {
+            (r.merchants || []).forEach(function (m) { upsert(m, null); });
+          });
+        });
+      });
+    });
+
+    return idx;
+  }
+
   // ---------- data loading ----------
 
   function loadJson(primaryUrl, fallbackUrl) {
@@ -531,6 +587,7 @@
         state.usingSampleCards = results[0].sample;
         state.merchantsData = results[1].data;
         state.usingSampleMerchants = results[1].sample;
+        state.merchantIndex = buildMerchantIndex();
 
         if (state.usingSampleCards || state.usingSampleMerchants) {
           document.getElementById("demoBanner").classList.add("show");
@@ -754,7 +811,10 @@
     var nq = normalize(query);
     if (!nq) return [];
     var exact = [], prefix = [], substr = [];
-    (state.merchantsData.merchants || []).forEach(function (m) {
+    // Search the combined dictionary (cards.json rewards[].merchants ∪ merchants.json),
+    // not merchants.json alone — a store like IKEA that only appears inside a card's
+    // official channel list must still surface here (v2 core principle).
+    (state.merchantIndex || []).forEach(function (m) {
       var candidates = [m.name].concat(m.aliases || []);
       var best = null; // 0 exact, 1 prefix, 2 substr
       candidates.forEach(function (c) {
@@ -808,7 +868,7 @@
           item.innerHTML =
             '<span></span><span class="s-cat"></span>';
           item.querySelector("span").textContent = m.name;
-          item.querySelector(".s-cat").textContent = CATEGORY_LABEL[m.category] || m.category;
+          item.querySelector(".s-cat").textContent = m.category ? (CATEGORY_LABEL[m.category] || m.category) : "";
           item.addEventListener("click", function () {
             input.value = m.name;
             state.matchedMerchant = { name: m.name, category: m.category };
@@ -841,9 +901,12 @@
   function showSelectedTarget() {
     var el = document.getElementById("selectedTarget");
     if (state.matchedMerchant) {
+      var catLabel = state.matchedMerchant.category
+        ? (CATEGORY_LABEL[state.matchedMerchant.category] || state.matchedMerchant.category)
+        : null;
       el.innerHTML =
-        "目前比對商店：<b>" + escapeHtml(state.matchedMerchant.name) + "</b>（" +
-        (CATEGORY_LABEL[state.matchedMerchant.category] || state.matchedMerchant.category) + "）";
+        "目前比對商店：<b>" + escapeHtml(state.matchedMerchant.name) + "</b>" +
+        (catLabel ? "（" + escapeHtml(catLabel) + "）" : "");
     } else if (state.matchedCategory) {
       el.innerHTML = "目前比對類別：<b>" + escapeHtml(CATEGORY_LABEL[state.matchedCategory] || state.matchedCategory) + "</b>";
     } else {
@@ -865,33 +928,55 @@
 
   // ---------- reward computation ----------
 
+  // Returns { reward, reasonLabel, incomplete } | null.
+  // Priority order per SCHEMA.md v2 "前端比對優先序":
+  //   ① reward.merchants 直接命中該商店（最優先，無論 category）
+  //   ② 商店經 merchants.json 對到 category，且卡有該 category 的「整類通用」回饋
+  //      —— 只採計沒有自己 merchants 限制清單的 reward；一個限定在 7-11/全家的回饋
+  //      不能因為 category 相同就外溢到其他超商，那樣會違背指定通路清單的用意。
+  //   ③ fallback 到 general（同樣只採計整類通用的 general reward）
   function bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory) {
     var rewards = plan.rewards || [];
     if (rewards.length === 0) return null;
 
-    // priority 1: merchant-named rewards
+    function isCategoryWide(r) {
+      return !r.merchants || r.merchants.length === 0;
+    }
+
+    // priority 1: direct merchant hit inside rewards[].merchants
     if (targetMerchantName) {
       var nTarget = normalize(targetMerchantName);
       var merchantHits = rewards.filter(function (r) {
         return (r.merchants || []).some(function (m) { return normalize(m) === nTarget; });
       });
       if (merchantHits.length > 0) {
-        return merchantHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+        var bestM = merchantHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+        return {
+          reward: bestM,
+          reasonLabel: "指定通路命中：" + targetMerchantName,
+          incomplete: bestM.merchantsComplete === false
+        };
       }
     }
 
-    // priority 2: category match
+    // priority 2: category-wide reward (no merchants restriction of its own)
     if (targetCategory) {
-      var catHits = rewards.filter(function (r) { return r.category === targetCategory; });
+      var catHits = rewards.filter(function (r) { return r.category === targetCategory && isCategoryWide(r); });
       if (catHits.length > 0) {
-        return catHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+        var bestC = catHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+        return {
+          reward: bestC,
+          reasonLabel: "類別回饋：" + (CATEGORY_LABEL[targetCategory] || targetCategory),
+          incomplete: false
+        };
       }
     }
 
-    // priority 3: fallback to general
-    var generalHits = rewards.filter(function (r) { return r.category === "general"; });
+    // priority 3: fallback to general (category-wide only)
+    var generalHits = rewards.filter(function (r) { return r.category === "general" && isCategoryWide(r); });
     if (generalHits.length > 0) {
-      return generalHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+      var bestG = generalHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+      return { reward: bestG, reasonLabel: "一般消費回饋", incomplete: false };
     }
 
     return null;
@@ -927,25 +1012,27 @@
 
         allExpired = false;
 
-        var bestPlan = null, bestReward = null;
+        var bestPlan = null, bestPick = null;
         nonExpired.forEach(function (plan) {
-          var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-          if (reward && (!bestReward || reward.pct > bestReward.pct)) {
-            bestReward = reward;
+          var pick = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
+          if (pick && (!bestPick || pick.reward.pct > bestPick.reward.pct)) {
+            bestPick = pick;
             bestPlan = plan;
           }
         });
-        if (!bestReward) return;
+        if (!bestPick) return;
 
         candidates.push({
           bankName: found.bank.name,
           cardName: card.name,
           planName: null,
           recommendedPlanName: bestPlan.name,
-          pct: bestReward.pct,
-          cap: bestReward.cap || "",
-          note: bestReward.note || "",
-          validUntil: bestPlan.validUntil || ""
+          pct: bestPick.reward.pct,
+          cap: bestPick.reward.cap || "",
+          note: bestPick.reward.note || "",
+          validUntil: bestPlan.validUntil || "",
+          reasonLabel: bestPick.reasonLabel,
+          incomplete: bestPick.incomplete
         });
       } else {
         var plan = plans.length === 1
@@ -958,18 +1045,20 @@
         }
         allExpired = false;
 
-        var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-        if (!reward) return;
+        var pick2 = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
+        if (!pick2) return;
 
         candidates.push({
           bankName: found.bank.name,
           cardName: card.name,
           planName: plan.name,
           recommendedPlanName: null,
-          pct: reward.pct,
-          cap: reward.cap || "",
-          note: reward.note || "",
-          validUntil: plan.validUntil || ""
+          pct: pick2.reward.pct,
+          cap: pick2.reward.cap || "",
+          note: pick2.reward.note || "",
+          validUntil: plan.validUntil || "",
+          reasonLabel: pick2.reasonLabel,
+          incomplete: pick2.incomplete
         });
       }
     });
@@ -1019,6 +1108,8 @@
         '<div class="result-cardname"></div>' +
         '<div class="result-bank"></div>' +
         (c.recommendedPlanName ? '<div class="result-recommend"></div>' : '<div class="result-plan"></div>') +
+        '<div class="result-reason"></div>' +
+        (c.incomplete ? '<div class="result-incomplete"></div>' : '') +
         '<div class="result-meta"></div>';
       body.querySelector(".result-cardname").textContent = c.cardName;
       body.querySelector(".result-bank").textContent = c.bankName;
@@ -1026,6 +1117,10 @@
         body.querySelector(".result-recommend").textContent = "建議方案：" + c.recommendedPlanName;
       } else {
         body.querySelector(".result-plan").textContent = "方案：" + c.planName;
+      }
+      body.querySelector(".result-reason").textContent = c.reasonLabel || "";
+      if (c.incomplete) {
+        body.querySelector(".result-incomplete").textContent = "官方清單未完整收錄";
       }
       var metaEl = body.querySelector(".result-meta");
       metaLines.forEach(function (line) {

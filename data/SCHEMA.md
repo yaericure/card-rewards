@@ -1,6 +1,19 @@
-# 資料格式規格（cards.json / merchants.json）
+# 資料格式規格 v2（cards.json / merchants.json）
 
 所有產出資料的程式（爬蟲、前端、商店庫）都必須遵守本檔。欄位名一律 camelCase。
+
+## v2 核心原則：商店優先，不得壓扁成大類別
+
+v1 的致命錯誤：把「指定通路清單」簡化成 category（例：Richart 天天刷的指定通路含 IKEA、
+全聯等具體商店，v1 只記成 supermarket 大類，導致用戶查 IKEA 對不到回饋）。v2 規則：
+
+1. 回饋若有**官方指定通路清單**（頁面、彈窗、PDF 內列舉的商店），`rewards[].merchants`
+   **必須收錄完整清單**，一家不漏。清單在 PDF 就解析 PDF；在彈窗就用 playwright 展開。
+2. 真的無法取得完整清單時：收錄已確認的部分＋`note` 標「官方清單未完整收錄（來源：<URL>），
+   已收錄 N/總數」。**寧可標註不完整，不可用 category 頂替商店清單。**
+3. `category` 只用於兩種情況：(a) 整類通用、官方本來就沒有列舉商店的回饋（如「國內一般消費
+   1%」「海外消費 2%」）；(b) 有 merchants 清單時的輔助分類標籤（供 UI 分組與類別 fallback）。
+4. 前端搜尋必須直接比對 cards.json 內所有 rewards[].merchants（不只 merchants.json）。
 
 ## 通路類別（category）固定清單
 
@@ -76,7 +89,8 @@
   - 前端對「多 plans 但缺 planKind」的卡按 `"tier"` 處理（保守：寧可多問一次，不替用戶假設）。
 - `pct` 為數字（3.8 代表 3.8%）。回饋若為點數（如玉山 e 點、富邦 momo 幣），換算成等值 % 並在 `note` 註明點數型態。
 - `validUntil`（YYYY-MM-DD）：活動頁有標「活動期間至」就必填；查不到留空並在 `note` 寫「效期未確認」。**不可編造日期**。
-- `rewards[].merchants`（選填）：回饋限指定商店時列出商店名，需與 merchants.json 的 `name` 或 `aliases` 對得上為佳。
+- `rewards[].merchants`：回饋限指定通路時**必填且必須完整**（見 v2 核心原則）；商店名用官方清單上的原文寫法。
+- `rewards[].merchantsComplete`（布林，有 merchants 時必填）：true＝已收錄官方全清單；false＝不完整（note 必須說明來源與缺漏）。
 - 抓不到、不確定的值：留空＋note 標「未確認」，絕不憑印象填。
 - `staleSince`（bank 或 card 層級，選填，由 run.js 合併時自動加）：該筆資料在最近一次更新中未能重抓、沿用舊資料的時間戳（ISO）。爬蟲模組不要自己寫這個欄位；重抓成功後會自動消失。
 
@@ -94,9 +108,14 @@
 - `name` 用最常見的正式寫法；`aliases` 收常見別稱／英文／簡寫（比對時前端會做正規化：轉小寫、去空白與連字號）。
 - `category` 必須是上表的 id。
 
-## 前端比對優先序（index.html 實作依據）
+## 前端比對優先序（index.html 實作依據，v2）
 
-1. 用戶輸入商店名 → 正規化後與 merchants 的 name/aliases 比對（完全符合 > 前綴 > 子字串）。
-2. 對每張用戶持有的卡（含所選方案）：先找 `rewards[].merchants` 直接點名該商店的（最優先），再找 category 相符的，最後 fallback 到 `general`。
-3. `validUntil` 已過期的方案不參與計算，但可在 UI 標示「已到期，待下次更新」。
-4. 取 pct 最高者為該卡代表回饋，排序取前三名。
+1. 用戶輸入商店名 → 正規化（轉小寫、去空白與連字號）後比對**兩個來源**：
+   (a) cards.json 所有 rewards[].merchants 的商店名（主要）；(b) merchants.json 的
+   name/aliases（用於 autocomplete 與類別 fallback）。完全符合 > 前綴 > 子字串。
+2. 對每張用戶持有的卡（含所選/取優方案）依序找適用回饋：
+   ① `rewards[].merchants` 直接命中該商店（最優先）→ ② 商店經 merchants.json 對到
+   category、且卡有該 category 的「整類通用」回饋 → ③ fallback 到 `general`。
+3. 結果需標示命中原因：「指定通路命中：IKEA」／「類別回饋：超市量販」／「一般消費回饋」。
+4. `validUntil` 已過期的方案不參與計算，但可在 UI 標示「已到期，待下次更新」。
+5. 取 pct 最高者為該卡代表回饋，排序取前三名。

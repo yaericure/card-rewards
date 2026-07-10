@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-10T11:38:42.617Z",
+  "updatedAt": "2026-07-10T16:02:55.197Z",
   "banks": [
     {
       "id": "taishin",
@@ -14,42 +14,180 @@
             {
               "id": "chill",
               "name": "Chill刷",
-              "condition": "需於Richart Life APP切換至「Chill刷」方案；限指定支付方式",
+              "condition": "需於Richart Life APP切換至「Chill刷」方案；限指定支付方式；活動期間 2026-07-08 ~ 2026-09-30",
               "validFrom": "2026-07-08",
               "validUntil": "2026-09-30",
               "rewards": [
                 {
                   "category": "dining",
                   "pct": 10,
-                  "note": "台新Point(信用卡)點數回饋；Chill刷【歡聚微醺】【日常續命】指定餐飲/手搖飲通路",
                   "merchants": [
+                    "詹記麻辣火鍋",
+                    "萬客什鍋",
                     "海底撈",
-                    "50嵐",
-                    "貳樓"
+                    "屋馬燒肉",
+                    "茶六燒肉堂",
+                    "新村站著吃",
+                    "燒肉政宗",
+                    "碳佐麻里",
+                    "雞湯大叔",
+                    "gonna共樂遊",
+                    "BRUN 不然",
+                    "CAFE ACME",
+                    "The Antipodean",
+                    "貳樓",
+                    "樂子 the Diner",
+                    "Fake Sober",
+                    "Draft Land",
+                    "臺虎精釀(含啜飲室)",
+                    "ABV系列",
+                    "Bar TCRC",
+                    "Bar Home",
+                    "Phowa",
+                    "MOONROCK"
                   ],
-                  "validUntil": "2026-09-30"
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【歡聚微醺】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
+                },
+                {
+                  "category": "dining",
+                  "pct": 10,
+                  "merchants": [
+                    "50嵐",
+                    "得正",
+                    "八曜和茶",
+                    "五桐號",
+                    "龜記",
+                    "茶之魔手",
+                    "UG TEA",
+                    "叮哥茶飲",
+                    "CAFE!N",
+                    "%Arabica",
+                    "COMPOSE COFFEE"
+                  ],
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【日常續命】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
+                },
+                {
+                  "category": "dining",
+                  "pct": 5,
+                  "merchants": [
+                    "饗饗 INPARADISE",
+                    "NAGOMI"
+                  ],
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【約會犒賞】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
+                },
+                {
+                  "category": "entertainment",
+                  "pct": 5,
+                  "merchants": [
+                    "WEVERSE",
+                    "K-MONSTAR",
+                    "微樂客",
+                    "五大唱片",
+                    "仙女樹",
+                    "FANME",
+                    "NOL"
+                  ],
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【應援追星】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
                 },
                 {
                   "category": "streaming",
                   "pct": 5,
-                  "note": "台新Point(信用卡)點數回饋；Chill刷【熬夜追更】指定串流/內容平台",
                   "merchants": [
+                    "巴哈姆特",
+                    "BOOK WALKER",
+                    "Animate",
+                    "樂天KOBO",
+                    "Readmoo讀墨",
                     "Netflix",
                     "Disney+",
-                    "巴哈姆特"
+                    "愛爾達"
                   ],
-                  "validUntil": "2026-09-30"
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【熬夜追更】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
                 },
                 {
                   "category": "online",
                   "pct": 3.3,
-                  "note": "台新Point(信用卡)點數回饋；Chill刷【數位外掛】指定通路",
                   "merchants": [
-                    "蝦皮購物",
+                    "Apple 直營(含官網)",
+                    "Studio A",
+                    "DJI",
+                    "Insta360",
+                    "GoPro",
+                    "蝦皮",
                     "淘寶",
+                    "酷澎",
                     "Uber Eats"
                   ],
-                  "validUntil": "2026-09-30"
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【數位外掛】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
+                },
+                {
+                  "category": "medical",
+                  "pct": 5,
+                  "merchants": [
+                    "好好生醫",
+                    "好在乎",
+                    "營養師輕食",
+                    "VITABOX",
+                    "MYPROTEIN",
+                    "UrMart優馬選品"
+                  ],
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【營養補給】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
+                },
+                {
+                  "category": "entertainment",
+                  "pct": 5,
+                  "merchants": [
+                    "Anytime Fitness",
+                    "健身工廠",
+                    "World Gym",
+                    "超核心 Hypercore",
+                    "KX PILATES",
+                    "虎鐵健身 X 器械皮拉提斯",
+                    "17FIT"
+                  ],
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【體態養成】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
+                },
+                {
+                  "category": "department",
+                  "pct": 5,
+                  "merchants": [
+                    "Adidas",
+                    "New Balance",
+                    "PUMA",
+                    "Onitsuka Tiger",
+                    "Nike",
+                    "HOKA",
+                    "Salomon",
+                    "lululemon"
+                  ],
+                  "merchantsComplete": true,
+                  "validFrom": "2026-07-08",
+                  "validUntil": "2026-09-30",
+                  "note": "台新Point(信用卡)點數回饋；Chill刷【運動品牌】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）"
                 }
               ]
             },
@@ -61,12 +199,28 @@
                 {
                   "category": "mobilepay",
                   "pct": 3.8,
-                  "note": "台新Point(信用卡)點數回饋；台新Pay及台新Pay+綁定支付（全家、7-11、新光三越等指定場域）；效期未確認（權益頁未標活動迄日）"
+                  "note": "台新Point(信用卡)點數回饋；台新Pay及台新Pay+綁定支付；官方頁面僅列部分範例商店，完整清單請見台新Pay官網／台灣Pay官方場域公告（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）；效期未確認（權益頁未標活動迄日）",
+                  "merchants": [
+                    "全家",
+                    "7-11",
+                    "新光三越",
+                    "Richart Mart",
+                    "康是美",
+                    "IKEA",
+                    "NET 等",
+                    "神腦",
+                    "燦坤",
+                    "全國電子",
+                    "麥當勞",
+                    "美廉社",
+                    "大樹藥局等"
+                  ],
+                  "merchantsComplete": false
                 },
                 {
                   "category": "mobilepay",
                   "pct": 2.3,
-                  "note": "台新Point(信用卡)點數回饋；LINE Pay及全盈+Pay綁定支付；效期未確認（權益頁未標活動迄日）"
+                  "note": "台新Point(信用卡)點數回饋；LINE Pay及全盈+Pay綁定支付（不限特定商店）；效期未確認（權益頁未標活動迄日）"
                 }
               ]
             },
@@ -82,33 +236,68 @@
                     "全家",
                     "7-ELEVEN"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；日常採買（兩大超商限台新Pay）；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；天天刷【日常採買】兩大超商，限台新Pay；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "supermarket",
                   "pct": 3.3,
                   "merchants": [
-                    "唐吉訶德"
+                    "萬家福",
+                    "樂家康",
+                    "大買家",
+                    "唐吉訶德",
+                    "LOPIA",
+                    "智生活(7/8起新增)"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；日常採買（萬家福、樂家康、大買家、唐吉訶德等）；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；天天刷【日常採買】量販/超市；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "transport",
                   "pct": 3.3,
                   "merchants": [
-                    "台灣高鐵",
+                    "臺鐵",
+                    "高鐵",
+                    "台灣大車隊",
+                    "LINEGO",
+                    "Yoxi",
                     "Uber",
-                    "台灣大車隊"
+                    "台灣Bolt"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；通勤交通（臺鐵/高鐵/計程車/Uber）；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；天天刷【通勤交通】；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "gas",
                   "pct": 3.3,
                   "merchants": [
-                    "中油直營"
+                    "中油直營",
+                    "全國加油",
+                    "全國特急電",
+                    "源點EVOASIS",
+                    "華城電能EVALUE",
+                    "USPACE",
+                    "Autopass(車麻吉)"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；加油充電（中油直營、全國加油、充電樁業者）；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；天天刷【加油充電】；效期未確認（權益頁未標活動迄日）"
+                },
+                {
+                  "category": "medical",
+                  "pct": 3.3,
+                  "merchants": [
+                    "寶雅",
+                    "康是美",
+                    "屈臣氏",
+                    "杏一醫療",
+                    "大樹藥局",
+                    "丁丁藥局",
+                    "佑全保健藥妝",
+                    "健康人生藥局"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；天天刷【藥妝藥局】；效期未確認（權益頁未標活動迄日）"
                 }
               ]
             },
@@ -121,14 +310,40 @@
                   "category": "department",
                   "pct": 3.3,
                   "merchants": [
-                    "新光三越",
+                    "新光三越(含skm pay)",
                     "遠東百貨",
                     "遠東SOGO",
+                    "漢神巨蛋",
+                    "漢神百貨",
+                    "漢神洲際",
+                    "微風",
                     "台北101",
+                    "遠東巨城",
+                    "廣三SOGO",
+                    "南紡購物中心",
+                    "誠品生活(含線上)",
+                    "京站",
+                    "三創生活",
+                    "夢時代",
+                    "統一時代(含DREAM PLAZA)",
+                    "中友百貨",
+                    "Mitsui Shopping Park LaLaport(南港/台中)",
+                    "MITSUI OUTLET PARK (林口/台中港/台南)",
+                    "華泰名品城",
+                    "SKM Park Outlets",
                     "IKEA",
-                    "UNIQLO"
+                    "特力屋",
+                    "HOLA",
+                    "宜得利",
+                    "瑪黑家居",
+                    "UNIQLO",
+                    "GU",
+                    "ZARA",
+                    "NET",
+                    "lululemon"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；指定百貨/Outlet/居家裝修/時尚品牌；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；大筆刷（指定百貨/Outlet/居家裝修/時尚品牌，來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）；效期未確認（權益頁未標活動迄日）"
                 }
               ]
             },
@@ -140,16 +355,17 @@
                 {
                   "category": "dining",
                   "pct": 3.3,
-                  "note": "台新Point(信用卡)點數回饋；全臺餐飲（不含餐券）；效期未確認（權益頁未標活動迄日）"
+                  "note": "台新Point(信用卡)點數回饋；好饗刷【全臺餐飲】不含餐券；另享王品瘋Pay加碼；不限指定商店；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "delivery",
                   "pct": 3.3,
                   "merchants": [
                     "Uber Eats",
-                    "foodpanda"
+                    "Foodpanda"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；外送平台；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；好饗刷【外送平台】；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "entertainment",
@@ -157,19 +373,107 @@
                   "merchants": [
                     "拓元售票",
                     "KKTIX",
-                    "錢櫃",
-                    "好樂迪"
+                    "年代售票",
+                    "寬宏售票",
+                    "OPENTIX兩廳院文化生活",
+                    "FunNow"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；購票/指定KTV；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；好饗刷【購票娛樂】；效期未確認（權益頁未標活動迄日）"
+                },
+                {
+                  "category": "entertainment",
+                  "pct": 3.3,
+                  "merchants": [
+                    "錢櫃",
+                    "好樂迪",
+                    "ONCOR",
+                    "sing!go",
+                    "享溫馨"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；好饗刷【指定KTV】；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "travel",
                   "pct": 3.3,
                   "merchants": [
-                    "晶華國際酒店集團",
-                    "老爺酒店集團"
+                    "台北晶華酒店",
+                    "礁溪晶泉丰旅",
+                    "北投晶泉丰旅",
+                    "台南晶英酒店",
+                    "太魯閣晶英酒店",
+                    "蘭城晶英酒店",
+                    "捷絲旅",
+                    "君品酒店",
+                    "雲品溫泉酒店",
+                    "翰品酒店",
+                    "兆品酒店",
+                    "品文旅",
+                    "台北萬豪酒店",
+                    "高雄萬豪酒店",
+                    "W HOTEL",
+                    "台北喜來登大飯店",
+                    "台北士林萬麗酒店",
+                    "台北國泰萬怡酒店",
+                    "台北六福萬怡酒店",
+                    "林口亞昕福朋喜來登酒店",
+                    "八里福朋喜來登酒店",
+                    "桃園喜來登酒店",
+                    "新竹豐邑喜來登大飯店",
+                    "宜蘭礁溪福朋喜來登酒店",
+                    "台東桂田喜來登酒店",
+                    "澎湖福朋喜來登酒店",
+                    "然一酒店",
+                    "台北寒舍艾美酒店",
+                    "台北賦樂旅居",
+                    "台北宿之酒店．臻品之選",
+                    "台北中山雅樂軒酒店",
+                    "台北北投雅樂軒酒店",
+                    "台南安平雅樂軒酒店",
+                    "桃園大溪笠復威斯汀度假酒店",
+                    "宜蘭力麗威斯汀度假酒店",
+                    "台中李方艾美酒店",
+                    "台中萬楓酒店",
+                    "台中豐邑MOXY酒店",
+                    "花蓮潔西艾美酒店",
+                    "煙波花蓮太魯閣",
+                    "煙波新竹湖濱館",
+                    "煙波新竹都會館",
+                    "煙波花蓮館",
+                    "煙波蘇澳四季雙泉館",
+                    "煙波宜蘭館",
+                    "煙波台南館",
+                    "煙波花時間 宜蘭傳藝",
+                    "煙波花時間 花蓮",
+                    "礁溪老爺酒店",
+                    "知本老爺酒店",
+                    "新竹老爺酒店",
+                    "北投老爺酒店",
+                    "台北老爺酒店",
+                    "台南老爺行旅",
+                    "台中大毅老爺行旅",
+                    "南港老爺行旅",
+                    "老爺會館台北南西",
+                    "老爺會館台北林森",
+                    "台北福華大飯店",
+                    "石門水庫福華渡假飯店",
+                    "新竹福華大飯店",
+                    "台中福華大飯店",
+                    "溪頭福華渡假飯店",
+                    "雲林華安大飯店",
+                    "高雄福華大飯店",
+                    "墾丁福華渡假飯店",
+                    "台北漢來大飯店",
+                    "高雄漢來大飯店",
+                    "漢來日月行館",
+                    "台北君悅酒店",
+                    "臺中勤美洲際酒店",
+                    "高雄洲際酒店",
+                    "礁溪寒沐酒店"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；指定飯店（不含餐券/住宿券）；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；好饗刷【指定飯店】不含餐券/住宿券等票券（品牌全清單，來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html 注意事項）；效期未確認（權益頁未標活動迄日）"
                 }
               ]
             },
@@ -182,34 +486,48 @@
                   "category": "online",
                   "pct": 3.3,
                   "merchants": [
-                    "蝦皮購物",
-                    "momo購物網",
-                    "PChome線上購物",
+                    "蝦皮",
+                    "momo",
+                    "酷澎(Coupang)",
+                    "PChome",
                     "淘寶",
-                    "Amazon"
+                    "Amazon",
+                    "東森",
+                    "博客來",
+                    "Richart Mart",
+                    "PayEasy",
+                    "iHerb",
+                    "SHEIN",
+                    "Farfetch",
+                    "Olive Young"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；網購平台；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；數趣刷【網購平台】；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "streaming",
                   "pct": 3.3,
                   "merchants": [
-                    "Netflix",
-                    "Disney+",
-                    "ChatGPT"
-                  ],
-                  "note": "台新Point(信用卡)點數回饋；遊戲影音/AI服務/線上課程；效期未確認（權益頁未標活動迄日）"
-                },
-                {
-                  "category": "entertainment",
-                  "pct": 3.3,
-                  "merchants": [
+                    "知識衛星",
+                    "Amazing Talker",
+                    "Tutor ABC",
+                    "Hahow",
+                    "PressPlay",
                     "MyCard",
+                    "遊戲橘子",
                     "Steam",
                     "PlayStation",
-                    "Nintendo"
+                    "Nintendo",
+                    "Netflix",
+                    "Disney+",
+                    "ChatGPT",
+                    "Notion",
+                    "Canva",
+                    "Perplexity",
+                    "Claude"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；遊戲平台；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；數趣刷（線上課程/遊戲影音/AI服務）；效期未確認（權益頁未標活動迄日）"
                 }
               ]
             },
@@ -221,7 +539,7 @@
                 {
                   "category": "overseas",
                   "pct": 3.3,
-                  "note": "台新Point(信用卡)點數回饋；海外消費（含實體及線上、歐洲國家交易）；效期未確認（權益頁未標活動迄日）"
+                  "note": "台新Point(信用卡)點數回饋；玩旅刷【海外消費】含實體及線上、歐洲國家交易；不限指定商店；效期未確認（權益頁未標活動迄日）"
                 },
                 {
                   "category": "travel",
@@ -230,14 +548,49 @@
                     "中華航空",
                     "長榮航空",
                     "星宇航空",
+                    "台灣虎航",
+                    "國泰航空",
+                    "華信航空",
+                    "立榮航空",
+                    "樂桃航空",
+                    "阿聯酋航空",
+                    "亞洲航空",
+                    "酷航",
+                    "捷星航空",
+                    "新加坡航空",
+                    "日本航空",
+                    "越捷航空",
+                    "Uber",
+                    "Grab",
+                    "SUICA",
+                    "ICOCA",
+                    "PASMO",
+                    "WOWPASS",
+                    "AIRSIM",
                     "Klook",
                     "KKday",
                     "Agoda",
                     "Booking.com",
+                    "Trip.com",
+                    "Airbnb",
+                    "Hotels.com",
+                    "Expedia",
                     "雄獅旅遊",
-                    "易遊網"
+                    "易遊網",
+                    "東南旅遊",
+                    "可樂旅遊",
+                    "長汎假期",
+                    "五福旅遊",
+                    "喜鴻假期",
+                    "易飛旅遊",
+                    "燦星旅遊",
+                    "加利利旅行社",
+                    "鳳凰國際旅行社",
+                    "山富旅遊",
+                    "行健旅遊"
                   ],
-                  "note": "台新Point(信用卡)點數回饋；航空公司/訂房平台/旅行社；效期未確認（權益頁未標活動迄日）"
+                  "merchantsComplete": true,
+                  "note": "台新Point(信用卡)點數回饋；玩旅刷（航空公司/海外交通網路/訂房平台/旅行社，來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html）；效期未確認（權益頁未標活動迄日）"
                 }
               ]
             },
@@ -249,7 +602,7 @@
                 {
                   "category": "general",
                   "pct": 2,
-                  "note": "台新Point(信用卡)點數回饋；限節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）；效期未確認（權益頁未標活動迄日）"
+                  "note": "台新Point(信用卡)點數回饋；限節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）"
                 }
               ]
             },
@@ -284,6 +637,7 @@
                   "merchants": [
                     "大全聯"
                   ],
+                  "merchantsComplete": true,
                   "note": "福利點點數回饋（福利點10點=NT$1，可折抵全聯/大全聯店內消費）；大全聯店內消費，回饋無上限，需綁定PX Pay會員",
                   "validUntil": "2026-12-31"
                 },
@@ -314,6 +668,7 @@
                   "merchants": [
                     "大全聯"
                   ],
+                  "merchantsComplete": true,
                   "note": "福利點點數回饋（福利點10點=NT$1，可折抵全聯/大全聯店內消費）；大全聯店內消費，回饋無上限，需綁定PX Pay會員",
                   "validUntil": "2026-12-31"
                 },
@@ -343,37 +698,51 @@
             {
               "id": "default",
               "name": "一般",
-              "condition": "無條件（部分通路限街口支付綁定始享最高回饋）",
+              "condition": "無條件（部分通路限街口支付/LINE Pay/Apple Pay綁定始享最高回饋）",
               "rewards": [
                 {
                   "category": "general",
                   "pct": 1,
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；一般消費回饋無上限，不限交易形式",
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；一般消費回饋無上限，不限交易形式（4大超商及Apple媒體服務限街口支付綁定始享）",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
                   "category": "travel",
                   "pct": 3.5,
                   "merchants": [
+                    "日本PayPay(限使用街口支付)",
+                    "韓國",
                     "Klook",
                     "KKday",
                     "易遊網",
                     "Agoda",
-                    "Airbnb"
+                    "Airbnb",
+                    "DJB",
+                    "酷遊卡"
                   ],
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選旅遊通路，最高回饋（含一般消費1%＋精選加碼）",
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【旅遊】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
                   "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
                   "category": "transport",
                   "pct": 3.5,
                   "merchants": [
-                    "台灣高鐵",
-                    "Uber"
+                    "高鐵",
+                    "Uber",
+                    "叫車吧",
+                    "台灣快綫",
+                    "聯通",
+                    "USPACE",
+                    "俥亭停車"
                   ],
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選交通通路（高鐵/Uber/叫車吧/停車），最高回饋（含一般消費1%＋精選加碼）",
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【交通】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
                   "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
@@ -383,10 +752,27 @@
                     "新光三越",
                     "遠東百貨",
                     "遠東巨城",
-                    "LaLaport"
+                    "LaLaport",
+                    "三井(MITSUI OUTLET PARK)"
                   ],
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選百貨通路，最高回饋（含一般消費1%＋精選加碼）",
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【百貨】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
                   "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31"
+                },
+                {
+                  "category": "supermarket",
+                  "pct": 3.5,
+                  "merchants": [
+                    "康是美",
+                    "美廉社",
+                    "聖德科斯"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【日常】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
+                  "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
@@ -397,8 +783,10 @@
                     "foodpanda",
                     "Foodomo"
                   ],
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選外送通路，最高回饋（含一般消費1%＋精選加碼）",
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【外送】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
                   "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
@@ -407,10 +795,13 @@
                   "merchants": [
                     "EZTABLE",
                     "85度C",
-                    "清心福全"
+                    "清心福全",
+                    "三商餐飲"
                   ],
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選美食通路，最高回饋（含一般消費1%＋精選加碼）",
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【美食】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
                   "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
@@ -419,17 +810,39 @@
                   "merchants": [
                     "威秀影城",
                     "國賓影城",
-                    "錢櫃",
-                    "好樂迪"
+                    "新光影城",
+                    "喜樂時代影城",
+                    "秀泰影城"
                   ],
-                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選影城/KTV通路，最高回饋（含一般消費1%＋精選加碼）",
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【影城】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
                   "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31"
+                },
+                {
+                  "category": "entertainment",
+                  "pct": 3.5,
+                  "merchants": [
+                    "錢櫃",
+                    "好樂迪",
+                    "享溫馨",
+                    "凱悅KTV",
+                    "星聚點",
+                    "Sing Go",
+                    "ONCOR響艷都市會所"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "街口幣回饋（1元街口幣=新臺幣1元）；精選通路【Ｋ歌】，最高回饋（含一般消費1%＋精選加碼2.5%，來源：https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/67e63e69-defd-11f0-b50f-0050568c09e3）",
+                  "cap": "精選通路加碼合計每月上限10,000街口幣",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 },
                 {
                   "category": "utilities",
                   "pct": 0.15,
-                  "note": "街口APP繳費（水電瓦斯/電信/稅費等）基本回饋無上限；當月繳費滿NT$1,000另有限量升級2%街口券",
+                  "note": "街口APP繳費（水電瓦斯/電信/稅費/保費/學雜費等）基本回饋0.15%無上限；當月繳費滿NT$1,000另升級享2%回饋（每月每人上限20元街口券，限量）",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 }
               ]
@@ -446,40 +859,144 @@
           "id": "esun-ecard",
           "name": "玉山數位e卡",
           "url": "https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card",
+          "planKind": "tier",
           "plans": [
             {
-              "id": "digital-autopay",
-              "name": "帳單e化＋自動扣繳方案",
-              "condition": "需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費",
+              "id": "light",
+              "name": "輕時尚版",
+              "condition": "核卡時選擇輕時尚版卡面；需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費",
               "rewards": [
                 {
                   "category": "general",
                   "pct": 0.5,
-                  "note": "玉山e point點數回饋（1點=1元）；需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費"
+                  "note": "玉山e point點數回饋（1點=1元）；需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31"
                 },
                 {
-                  "category": "department",
-                  "pct": 3,
-                  "cap": "加碼部分歸戶每期回饋上限250點（玉山e point）",
-                  "note": "玉山e point點數回饋；已含基本回饋0.5%＋指定百貨/美妝加碼；需同時申請帳單e化及自動扣繳卡費"
-                },
-                {
-                  "category": "dining",
-                  "pct": 3,
-                  "cap": "加碼部分歸戶每期回饋上限250點（玉山e point）",
-                  "note": "玉山e point點數回饋；指定咖啡／行動支付通路，已含基本回饋0.5%＋加碼2.5%；需同時申請帳單e化及自動扣繳卡費"
+                  "category": "transport",
+                  "pct": 5,
+                  "merchants": [
+                    "特爾電力App",
+                    "特斯拉",
+                    "格上Go Smart",
+                    "iRent",
+                    "GoShare",
+                    "WeMo",
+                    "Gogoro電池資費"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "加碼4.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；環保有機e起來【網路消費】類（含基本回饋0.5%＋加碼4.5%）；需同時申請帳單e化及自動扣繳卡費；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
                 },
                 {
                   "category": "supermarket",
                   "pct": 5,
-                  "cap": "加碼部分歸戶每期回饋上限250點（玉山e point）",
                   "merchants": [
                     "里仁",
                     "棉花田",
                     "聖德科斯",
                     "主婦聯盟"
                   ],
-                  "note": "玉山e point點數回饋；指定類別（含里仁/棉花田/聖德科斯/主婦聯盟等及部分電動車能源通路），已含基本回饋0.5%＋加碼4.5%；需同時申請帳單e化及自動扣繳卡費"
+                  "merchantsComplete": true,
+                  "cap": "加碼4.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；環保有機e起來【網路+實體消費】類（含基本回饋0.5%＋加碼4.5%）；僅限開立該店發票之門市，需同時申請帳單e化及自動扣繳卡費；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
+                },
+                {
+                  "category": "department",
+                  "pct": 3,
+                  "merchants": [
+                    "新光三越(含skm Pay)",
+                    "遠東百貨(含HAPPY GO Pay)",
+                    "SOGO(含HAPPY GO Pay)",
+                    "屈臣氏(含門市/官網/APP)",
+                    "寶雅(含線上購物、寶雅Pay)",
+                    "康是美(不含線上購物)"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "加碼2.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；【輕時尚版】指定百貨/美妝通路（含基本回饋0.5%＋加碼2.5%）；除特別標註外僅限實體消費並以玉山Wallet/Apple Pay/Google Pay/Garmin Pay/Fitbit Pay/Samsung Pay支付；需同時申請帳單e化及自動扣繳卡費；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
+                }
+              ]
+            },
+            {
+              "id": "pet",
+              "name": "寵生活版",
+              "condition": "核卡時選擇寵生活版卡面；需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費",
+              "rewards": [
+                {
+                  "category": "general",
+                  "pct": 0.5,
+                  "note": "玉山e point點數回饋（1點=1元）；需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31"
+                },
+                {
+                  "category": "transport",
+                  "pct": 5,
+                  "merchants": [
+                    "特爾電力App",
+                    "特斯拉",
+                    "格上Go Smart",
+                    "iRent",
+                    "GoShare",
+                    "WeMo",
+                    "Gogoro電池資費"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "加碼4.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；環保有機e起來【網路消費】類（含基本回饋0.5%＋加碼4.5%）；需同時申請帳單e化及自動扣繳卡費；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
+                },
+                {
+                  "category": "supermarket",
+                  "pct": 5,
+                  "merchants": [
+                    "里仁",
+                    "棉花田",
+                    "聖德科斯",
+                    "主婦聯盟"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "加碼4.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；環保有機e起來【網路+實體消費】類（含基本回饋0.5%＋加碼4.5%）；僅限開立該店發票之門市，需同時申請帳單e化及自動扣繳卡費；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
+                },
+                {
+                  "category": "dining",
+                  "pct": 3,
+                  "merchants": [
+                    "cama(含官網線上購物、cama pay)",
+                    "路易莎",
+                    "星巴克(含線上儲值)"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "加碼2.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；【寵生活版】指定咖啡通路（含基本回饋0.5%＋加碼2.5%）；僅限開立該店發票之門市；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
+                },
+                {
+                  "category": "mobilepay",
+                  "pct": 3,
+                  "merchants": [
+                    "全盈+PAY",
+                    "悠遊付",
+                    "icash Pay"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "加碼2.5%歸戶每期回饋上限250點（玉山e point）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；【寵生活版】指定支付通路（含基本回饋0.5%＋加碼2.5%）；於超商/政府服務/學校服務等非一般消費通路不適用加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card"
                 }
               ]
             }
@@ -494,19 +1011,208 @@
             {
               "id": "ebill-only",
               "name": "僅申辦帳單e化",
-              "condition": "僅申辦帳單e化（Email電子帳單或簡訊帳單）",
+              "condition": "僅申辦帳單e化（Email電子帳單或簡訊帳單），適用「簡單選」百大指定消費（全部涵蓋，加碼較低）",
               "rewards": [
                 {
                   "category": "general",
                   "pct": 0.3,
                   "note": "玉山e point點數回饋（1點=1元）"
+                },
+                {
+                  "category": "mobilepay",
+                  "pct": 2,
+                  "merchants": [
+                    "玉山Wallet電子支付",
+                    "LINE Pay",
+                    "全支付",
+                    "街口支付",
+                    "悠遊付",
+                    "全盈+PAY",
+                    "iPASS MONEY",
+                    "icash Pay",
+                    "支付寶"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【行動支付】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "online",
+                  "pct": 2,
+                  "merchants": [
+                    "momo購物網",
+                    "蝦皮購物",
+                    "淘寶網",
+                    "Coupang酷澎"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【電商平台】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "department",
+                  "pct": 2,
+                  "merchants": [
+                    "新光三越百貨(含SKM Park Outlets高雄草衙)",
+                    "遠東SOGO",
+                    "遠東Garden City(大巨蛋)",
+                    "遠東百貨",
+                    "Big City遠東巨城購物中心",
+                    "漢神百貨(不含漢神巨蛋)",
+                    "台中漢神洲際購物廣場",
+                    "微風百貨",
+                    "台北101",
+                    "華泰名品城",
+                    "三井OUTLET",
+                    "誠品生活(含誠品書店與誠品線上)",
+                    "秀泰生活",
+                    "LaLaport",
+                    "統一時代百貨(台北店/DREAM PLAZA)",
+                    "昇恆昌",
+                    "Global Mall環球購物中心"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "department",
+                  "pct": 2,
+                  "merchants": [
+                    "萬家福/樂家康",
+                    "屈臣氏",
+                    "康是美",
+                    "特力屋",
+                    "HOLA",
+                    "hoi好好生活",
+                    "UNIQLO",
+                    "NET",
+                    "杏一藥局",
+                    "卡多摩"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【生活採買】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "delivery",
+                  "pct": 2,
+                  "merchants": [
+                    "Uber Eats",
+                    "foodpanda",
+                    "王品瘋Pay"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【餐飲美食】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "gas",
+                  "pct": 2,
+                  "merchants": [
+                    "台灣中油(直營店)",
+                    "台塑石油PAY",
+                    "55688(台灣大車隊、機場接送)",
+                    "台鐵",
+                    "高鐵",
+                    "Uber"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【加油交通】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "travel",
+                  "pct": 2,
+                  "merchants": [
+                    "中華航空",
+                    "長榮航空",
+                    "日本航空",
+                    "台灣虎航",
+                    "樂桃航空",
+                    "酷航",
+                    "Trip.com",
+                    "Booking.com",
+                    "Hotels.com",
+                    "Expedia",
+                    "KKday",
+                    "Klook",
+                    "雄獅旅遊",
+                    "可樂旅遊",
+                    "東南旅遊",
+                    "Agoda",
+                    "五福旅遊",
+                    "加利利旅行社",
+                    "找到了旅行社",
+                    "喜鴻假期",
+                    "鳳凰旅遊"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【航空旅遊】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "department",
+                  "pct": 2,
+                  "merchants": [
+                    "Apple直營店",
+                    "小米台灣",
+                    "全國電子",
+                    "燦坤",
+                    "拓元售票",
+                    "威秀影城",
+                    "國賓影城",
+                    "新光影城",
+                    "錢櫃KTV"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【精選商家】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "general",
+                  "pct": 2,
+                  "merchants": [
+                    "玉山Wallet愛心捐款-單筆捐款",
+                    "玉山Wallet愛心捐款-定期定額",
+                    "特斯拉"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【ESG消費】簡單選（預設方案，涵蓋全部100項）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "overseas",
+                  "pct": 2,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；百大指定消費【國外實體】簡單選（預設方案，涵蓋全部100項）加碼；指定國家：日本、韓國、泰國、越南、新加坡、馬來西亞、菲律賓、中國、香港、澳門、美國、加拿大、英國、法國、德國、義大利、澳洲、紐西蘭（為國家非商店，故不列入merchants）；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
                 }
               ]
             },
             {
               "id": "ebill-autopay",
-              "name": "帳單e化＋臺幣帳戶自動扣繳",
-              "condition": "需同時申辦帳單e化及玉山銀行臺幣帳戶自動扣繳卡費",
+              "name": "帳單e化＋臺幣帳戶自動扣繳（UP選）",
+              "condition": "需同時申辦帳單e化及玉山銀行臺幣帳戶自動扣繳卡費；並訂閱「UP選」方案",
               "rewards": [
                 {
                   "category": "general",
@@ -514,11 +1220,213 @@
                   "note": "玉山e point點數回饋（1點=1元），回饋無上限"
                 },
                 {
+                  "category": "mobilepay",
+                  "pct": 3.5,
+                  "merchants": [
+                    "玉山Wallet電子支付",
+                    "LINE Pay",
+                    "全支付",
+                    "街口支付",
+                    "悠遊付",
+                    "全盈+PAY",
+                    "iPASS MONEY",
+                    "icash Pay",
+                    "支付寶"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【行動支付】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
                   "category": "online",
                   "pct": 3.5,
-                  "cap": "每月（歸戶）回饋上限5,000點（玉山e point）",
-                  "note": "百大指定消費「UP選」方案加碼（行動支付、加油交通、生活採買、國內百貨等通路可自選）；需另於玉山Wallet完成任務或以點數訂閱",
-                  "validUntil": "2026-12-31"
+                  "merchants": [
+                    "momo購物網",
+                    "蝦皮購物",
+                    "淘寶網",
+                    "Coupang酷澎"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【電商平台】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "department",
+                  "pct": 3.5,
+                  "merchants": [
+                    "新光三越百貨(含SKM Park Outlets高雄草衙)",
+                    "遠東SOGO",
+                    "遠東Garden City(大巨蛋)",
+                    "遠東百貨",
+                    "Big City遠東巨城購物中心",
+                    "漢神百貨(不含漢神巨蛋)",
+                    "台中漢神洲際購物廣場",
+                    "微風百貨",
+                    "台北101",
+                    "華泰名品城",
+                    "三井OUTLET",
+                    "誠品生活(含誠品書店與誠品線上)",
+                    "秀泰生活",
+                    "LaLaport",
+                    "統一時代百貨(台北店/DREAM PLAZA)",
+                    "昇恆昌",
+                    "Global Mall環球購物中心"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "department",
+                  "pct": 3.5,
+                  "merchants": [
+                    "萬家福/樂家康",
+                    "屈臣氏",
+                    "康是美",
+                    "特力屋",
+                    "HOLA",
+                    "hoi好好生活",
+                    "UNIQLO",
+                    "NET",
+                    "杏一藥局",
+                    "卡多摩"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【生活採買】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "delivery",
+                  "pct": 3.5,
+                  "merchants": [
+                    "Uber Eats",
+                    "foodpanda",
+                    "王品瘋Pay"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【餐飲美食】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "gas",
+                  "pct": 3.5,
+                  "merchants": [
+                    "台灣中油(直營店)",
+                    "台塑石油PAY",
+                    "55688(台灣大車隊、機場接送)",
+                    "台鐵",
+                    "高鐵",
+                    "Uber"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【加油交通】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "travel",
+                  "pct": 3.5,
+                  "merchants": [
+                    "中華航空",
+                    "長榮航空",
+                    "日本航空",
+                    "台灣虎航",
+                    "樂桃航空",
+                    "酷航",
+                    "Trip.com",
+                    "Booking.com",
+                    "Hotels.com",
+                    "Expedia",
+                    "KKday",
+                    "Klook",
+                    "雄獅旅遊",
+                    "可樂旅遊",
+                    "東南旅遊",
+                    "Agoda",
+                    "五福旅遊",
+                    "加利利旅行社",
+                    "找到了旅行社",
+                    "喜鴻假期",
+                    "鳳凰旅遊"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【航空旅遊】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "department",
+                  "pct": 3.5,
+                  "merchants": [
+                    "Apple直營店",
+                    "小米台灣",
+                    "全國電子",
+                    "燦坤",
+                    "拓元售票",
+                    "威秀影城",
+                    "國賓影城",
+                    "新光影城",
+                    "錢櫃KTV"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【精選商家】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "general",
+                  "pct": 3.5,
+                  "merchants": [
+                    "玉山Wallet愛心捐款-單筆捐款",
+                    "玉山Wallet愛心捐款-定期定額",
+                    "特斯拉"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋（1點=1元）；百大指定消費【ESG消費】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                },
+                {
+                  "category": "overseas",
+                  "pct": 3.5,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；百大指定消費【國外實體】UP選（訂閱後涵蓋全部100項，需符合免費訂閱任務或以149點升級）加碼；指定國家：日本、韓國、泰國、越南、新加坡、馬來西亞、菲律賓、中國、香港、澳門、美國、加拿大、英國、法國、德國、義大利、澳洲、紐西蘭（為國家非商店，故不列入merchants）；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
+                }
+              ]
+            },
+            {
+              "id": "ebill-autopay-choice8",
+              "name": "帳單e化＋臺幣帳戶自動扣繳（任意選）",
+              "condition": "需同時申辦帳單e化及玉山銀行臺幣帳戶自動扣繳卡費；「任意選」需自行從百大指定消費清單中最多選8家，每月可切換，本店家範圍與「UP選」相同（見 esun-unicard 卡「帳單e化＋臺幣帳戶自動扣繳（UP選）」plan 之 merchants），僅實際生效的最多8家可享加碼，不等同全清單皆適用",
+              "rewards": [
+                {
+                  "category": "general",
+                  "pct": 1,
+                  "note": "玉山e point點數回饋（1點=1元），回饋無上限"
+                },
+                {
+                  "category": "general",
+                  "pct": 2.5,
+                  "cap": "每月回饋上限5,000點（玉山e point，正附卡合併）",
+                  "validFrom": "2026-07-01",
+                  "validUntil": "2026-12-31",
+                  "note": "玉山e point點數回饋；百大指定消費「任意選」加碼，需自行指定最多8家（範圍同百大指定消費列表），故不列出merchants以免誤導為全清單適用；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard"
                 }
               ]
             }
@@ -538,6 +1446,7 @@
                   "category": "general",
                   "pct": 0.4,
                   "note": "現金直接折抵次期帳單消費，回饋無上限；單筆消費7,999元(含)以下回饋0.2%，8,000元(含)以上回饋0.4%",
+                  "validFrom": "2026-01-01",
                   "validUntil": "2026-12-31"
                 }
               ]
@@ -557,12 +1466,14 @@
                 {
                   "category": "general",
                   "pct": 1,
+                  "validFrom": "2026-03-01",
                   "validUntil": "2026-08-31",
                   "note": "玉山Pi拍錢包P幣回饋（1 P幣=1元）；需申請帳單e化，未申辦帳單e化者僅0.3%；每月國內外一般消費累積滿NT$10,000~29,999加碼至最高1.8%，滿NT$30,000(含)以上加碼至最高3%（每月每歸戶上限1,000P幣，需登錄活動）"
                 },
                 {
                   "category": "insurance",
                   "pct": 1.2,
+                  "validFrom": "2026-03-01",
                   "validUntil": "2026-12-31",
                   "note": "玉山Pi拍錢包P幣回饋（1 P幣=1元）；保費一次付清享回饋無上限；或單筆滿NT$6,000登錄6期0利率、滿NT$15,000登錄12期0利率（不含躉繳保費）"
                 },
@@ -572,7 +1483,9 @@
                   "merchants": [
                     "全家"
                   ],
+                  "merchantsComplete": true,
                   "cap": "每月每卡上限100 P幣",
+                  "validFrom": "2026-03-01",
                   "validUntil": "2026-08-31",
                   "note": "玉山Pi拍錢包P幣回饋（1 P幣=1元）；限綁定Pi拍錢包APP於全家便利商店消費"
                 }
@@ -593,6 +1506,7 @@
                 {
                   "category": "general",
                   "pct": 1,
+                  "validFrom": "2026-03-01",
                   "validUntil": "2026-08-31",
                   "note": "現金回饋，回饋無上限，於當期帳單直接折抵；需綁定帳單e化或申辦玉山銀行臺幣帳戶自動扣繳享0.5%，兩者皆辦享1%"
                 },
@@ -600,8 +1514,9 @@
                   "category": "online",
                   "pct": 3,
                   "cap": "每期回饋上限NT$150",
+                  "validFrom": "2026-03-01",
                   "validUntil": "2026-08-31",
-                  "note": "現金回饋；已含基本回饋1%＋網路消費加碼2%（加碼2%需綁定帳單e化），於當期帳單直接折抵"
+                  "note": "現金回饋；已含基本回饋1%＋網路消費加碼2%（加碼2%需綁定帳單e化），於當期帳單直接折抵；不限指定商店（行動支付/國內外線上消費/App綁卡付款皆適用，保費/超商/小額支付平台/指定數位訂閱平台除外）"
                 },
                 {
                   "category": "streaming",
@@ -614,9 +1529,11 @@
                     "Nintendo",
                     "PlayStation"
                   ],
+                  "merchantsComplete": true,
                   "cap": "每期回饋上限NT$100（正附卡合併計算）",
+                  "validFrom": "2026-03-01",
                   "validUntil": "2026-08-31",
-                  "note": "現金回饋；指定數位訂閱平台，於當期帳單直接折抵"
+                  "note": "現金回饋；指定數位訂閱平台（官方公告全清單，來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear），於當期帳單直接折抵；Gemini限直接綁卡於Google消費且請款名稱顯示Google One/Google Services"
                 }
               ]
             }
@@ -642,9 +1559,14 @@
                   "category": "online",
                   "pct": 3,
                   "merchants": [
-                    "momo購物網"
+                    "momo購物網",
+                    "電視購物",
+                    "型錄",
+                    "mo店+",
+                    "跨境電商"
                   ],
-                  "note": "mo幣回饋（1點=1元）",
+                  "merchantsComplete": true,
+                  "note": "mo幣回饋（1點=1元）；momo通路官方定義之完整通路清單",
                   "cap": "正附卡合併計算，歸戶每期帳單回饋上限1,000 mo幣"
                 },
                 {
@@ -674,14 +1596,77 @@
                 {
                   "category": "online",
                   "pct": 2,
-                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300",
-                  "validUntil": "2027-01-31"
+                  "merchants": [
+                    "Yahoo奇摩購物中心",
+                    "超級商城",
+                    "拍賣",
+                    "PChome線上購物",
+                    "PChome商店街",
+                    "淘寶",
+                    "天貓",
+                    "蝦皮購物",
+                    "myfone購物",
+                    "udn買東西",
+                    "台灣樂天市場",
+                    "Friday購物",
+                    "博客來",
+                    "誠品線上",
+                    "生活市集",
+                    "好吃市集",
+                    "松果購物",
+                    "citiesocial找好東西",
+                    "Zalora",
+                    ".."
+                  ],
+                  "merchantsComplete": false,
+                  "validUntil": "2027-01-31",
+                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300；網路購物（官網原文用「如...等」列舉範例，非封閉清單，來源：https://www.fubon.com/banking/personal/credit_card/all_card/digitallife/digitallife.htm，已收錄官網列出的所有範例商店）"
+                },
+                {
+                  "category": "online",
+                  "pct": 2,
+                  "merchants": [
+                    "momo",
+                    "東森",
+                    "森森",
+                    "Viva"
+                  ],
+                  "merchantsComplete": true,
+                  "validUntil": "2027-01-31",
+                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300；四大電視/網路/型錄購物"
+                },
+                {
+                  "category": "telecom",
+                  "pct": 2,
+                  "merchants": [
+                    "台灣大哥大",
+                    "中華電信",
+                    "遠傳"
+                  ],
+                  "merchantsComplete": true,
+                  "validUntil": "2027-01-31",
+                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300；電信手機資費自動扣繳"
+                },
+                {
+                  "category": "mobilepay",
+                  "pct": 2,
+                  "merchants": [
+                    "LINE PAY",
+                    "街口",
+                    "GOMAJI Pay",
+                    "歐付寶行動支付",
+                    "Pi錢包",
+                    "friDay錢包"
+                  ],
+                  "merchantsComplete": false,
+                  "validUntil": "2027-01-31",
+                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300；手機APP綁定支付（官網原文用「...等」列舉範例，非封閉清單，來源：https://www.fubon.com/banking/personal/credit_card/all_card/digitallife/digitallife.htm，已收錄官網列出的所有範例支付工具）"
                 },
                 {
                   "category": "overseas",
                   "pct": 2,
-                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300",
-                  "validUntil": "2027-01-31"
+                  "validUntil": "2027-01-31",
+                  "note": "已含基本回饋0.5%＋加碼回饋1.5%（當期帳單新增消費滿NT$5,000才有加碼，否則以0.5%計算）；加碼部分每期帳單上限NT$300；海外一般消費，屬概括式描述非限定商店清單"
                 },
                 {
                   "category": "general",
@@ -713,6 +1698,7 @@
                   "merchants": [
                     "好市多 Costco"
                   ],
+                  "merchantsComplete": true,
                   "note": "好多金回饋（1點=1元），回饋無上限",
                   "validUntil": "2027-12-31"
                 },
@@ -722,8 +1708,82 @@
                   "merchants": [
                     "Uber Eats"
                   ],
+                  "merchantsComplete": true,
                   "note": "限UberEats好市多專區；好多金回饋，無上限",
                   "validUntil": "2026-12-31"
+                },
+                {
+                  "category": "overseas",
+                  "pct": 5,
+                  "cap": "正附卡合併計算，每月每戶加碼回饋合計上限600元好多金（含原權益1%），需每月至指定管道登錄始生效",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31",
+                  "note": "好多金回饋（1點=1元）；原權益1%回饋無上限＋精選海外旅遊加碼最高4%＝5%；國外實體商店消費，屬概括式描述非限定商店清單"
+                },
+                {
+                  "category": "travel",
+                  "pct": 3,
+                  "merchants": [
+                    "中華航空",
+                    "長榮航空",
+                    "華信航空",
+                    "立榮航空",
+                    "國泰航空",
+                    "星宇航空",
+                    "阿聯酋航空"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "正附卡合併計算，每月每戶加碼回饋合計上限600元好多金（含原權益1%），需每月至指定管道登錄始生效",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31",
+                  "note": "好多金回饋（1點=1元）；原權益1%回饋無上限＋精選海外旅遊加碼最高2%＝3%；精選航空公司"
+                },
+                {
+                  "category": "travel",
+                  "pct": 3,
+                  "merchants": [
+                    "易遊網",
+                    "雄獅旅行社",
+                    "可樂旅遊",
+                    "山富旅遊",
+                    "東南旅行社",
+                    "鳳凰旅遊",
+                    "加利利旅行社"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "正附卡合併計算，每月每戶加碼回饋合計上限600元好多金（含原權益1%），需每月至指定管道登錄始生效",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31",
+                  "note": "好多金回饋（1點=1元）；原權益1%回饋無上限＋精選海外旅遊加碼最高2%＝3%；精選旅行社"
+                },
+                {
+                  "category": "travel",
+                  "pct": 3,
+                  "merchants": [
+                    "agoda",
+                    "trip.com",
+                    "Booking.com",
+                    "Hotels.com",
+                    "Expedia"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "正附卡合併計算，每月每戶加碼回饋合計上限600元好多金（含原權益1%），需每月至指定管道登錄始生效",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31",
+                  "note": "好多金回饋（1點=1元）；原權益1%回饋無上限＋精選海外旅遊加碼最高2%＝3%；指定訂房平台"
+                },
+                {
+                  "category": "overseas",
+                  "pct": 3,
+                  "merchants": [
+                    "昇恆昌",
+                    "采盟"
+                  ],
+                  "merchantsComplete": true,
+                  "cap": "正附卡合併計算，每月每戶加碼回饋合計上限600元好多金（含原權益1%），需每月至指定管道登錄始生效",
+                  "validFrom": "2026-01-01",
+                  "validUntil": "2026-12-31",
+                  "note": "好多金回饋（1點=1元）；原權益1%回饋無上限＋精選海外旅遊加碼最高2%＝3%；指定免稅店"
                 }
               ]
             }
@@ -752,16 +1812,26 @@
                   "category": "streaming",
                   "pct": 2,
                   "merchants": [
-                    "Netflix",
-                    "Disney+",
-                    "Spotify",
-                    "YouTube Premium",
+                    "ChatGPT",
+                    "Canva",
+                    "Claude",
+                    "Cursor",
+                    "Duolingo",
+                    "Gamma",
+                    "Gemini",
+                    "Notion",
+                    "Perplexity",
+                    "Speak",
                     "Apple 媒體服務",
                     "Google Play",
-                    "ChatGPT",
-                    "Claude"
+                    "Disney+",
+                    "Netflix",
+                    "Spotify",
+                    "YouTube Premium",
+                    "Max"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；AI工具/數位串流平台"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；AI工具＋數位/串流平台（官方分組，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）"
                 },
                 {
                   "category": "online",
@@ -769,12 +1839,13 @@
                   "merchants": [
                     "蝦皮購物",
                     "momo購物網",
-                    "PChome 24h購物",
-                    "小樹購",
-                    "Coupang酷澎(台灣)",
+                    "PChome 24h購物(不含儲值及電子票券)",
+                    "小樹購(不含電子票券)",
+                    "Coupang 酷澎(台灣)",
                     "淘寶/天貓"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；網購平台/國際電商"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；網購平台＋國際電商（官方分組，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）"
                 }
               ]
             },
@@ -789,15 +1860,43 @@
                   "category": "department",
                   "pct": 2,
                   "merchants": [
-                    "新光三越",
                     "遠東SOGO百貨",
+                    "遠東Garden City",
+                    "新光三越",
                     "遠東百貨",
                     "台北101",
+                    "BELLAVITA",
                     "微風廣場",
+                    "統一時代台北店(不含DREAM PLAZA)",
                     "誠品生活",
-                    "大江國際購物中心"
+                    "ATT 4 FUN",
+                    "京站",
+                    "美麗華",
+                    "NOKE忠泰樂生活",
+                    "大葉高島屋",
+                    "Mitsui Shopping Park LaLaport(南港、台中)",
+                    "宏匯廣場",
+                    "台茂購物中心",
+                    "大江國際購物中心",
+                    "Big City遠東巨城購物中心",
+                    "中友百貨",
+                    "廣三SOGO",
+                    "南紡購物中心",
+                    "耐斯廣場",
+                    "夢時代",
+                    "漢神百貨",
+                    "漢神巨蛋",
+                    "新月廣場",
+                    "CITYLINK",
+                    "秀泰生活",
+                    "環球購物中心",
+                    "太平洋百貨",
+                    "華泰名品城",
+                    "SKM Park",
+                    "MITSUI OUTLET PARK(林口、台中港、台南)"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；國內指定百貨（不含店中櫃）"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；國內指定百貨（不含店中櫃，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）"
                 },
                 {
                   "category": "delivery",
@@ -806,15 +1905,13 @@
                     "Uber Eats",
                     "foodpanda"
                   ],
+                  "merchantsComplete": true,
                   "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；國內外送平台"
                 },
                 {
                   "category": "dining",
                   "pct": 2,
-                  "merchants": [
-                    "麥當勞"
-                  ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；國內餐飲(不含餐券)及連鎖速食"
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；國內餐飲(不含餐券)，依聯合信用卡中心MCC code(5811/5812/5814/5462)認定，非限定商店清單，幾乎涵蓋全台合格餐飲業者；官方另點名「連鎖速食－麥當勞」為例，但不限於此"
                 },
                 {
                   "category": "medical",
@@ -823,6 +1920,7 @@
                     "康是美",
                     "屈臣氏"
                   ],
+                  "merchantsComplete": true,
                   "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；國內藥妝（SCHEMA無「藥妝」分類，暫歸類medical，請以官網為準）"
                 }
               ]
@@ -837,17 +1935,24 @@
                 {
                   "category": "overseas",
                   "pct": 2,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；海外實體消費(含國外餐飲、飯店到店付款等)，屬概括式描述非限定商店清單"
+                },
+                {
+                  "category": "entertainment",
+                  "pct": 2,
                   "merchants": [
                     "東京迪士尼樂園",
-                    "大阪環球影城(USJ)",
-                    "東京華納兄弟哈利波特影城"
+                    "東京華納兄弟哈利波特影城",
+                    "大阪環球影城(USJ)"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；海外實體消費(含國外餐飲/飯店到店付款)及日本指定遊樂園"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；日本指定遊樂園（SCHEMA無「主題樂園」分類，暫歸類entertainment）"
                 },
                 {
                   "category": "transport",
                   "pct": 2,
                   "merchants": [
+                    "Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)",
                     "Uber",
                     "Grab",
                     "台灣高鐵",
@@ -857,7 +1962,8 @@
                     "和運租車",
                     "格上租車"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定國內外交通(含短程叫車/高鐵/租車/Apple錢包SUICA·PASMO·ICOCA)"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定國內外交通"
                 },
                 {
                   "category": "travel",
@@ -866,15 +1972,73 @@
                     "中華航空",
                     "長榮航空",
                     "星宇航空",
+                    "台灣虎航",
+                    "國泰航空",
+                    "樂桃航空",
+                    "阿聯酋航空",
+                    "酷航",
+                    "捷星航空",
+                    "日本航空",
+                    "ANA全日空",
+                    "亞洲航空",
+                    "聯合航空",
+                    "新加坡航空",
+                    "越捷航空",
+                    "大韓航空",
+                    "達美航空",
+                    "土耳其航空",
+                    "卡達航空",
+                    "法國航空"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定航空公司"
+                },
+                {
+                  "category": "travel",
+                  "pct": 2,
+                  "merchants": [
+                    "國內飯店住宿",
+                    "星野集團",
+                    "全球迪士尼飯店",
+                    "東橫INN"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定飯店住宿"
+                },
+                {
+                  "category": "travel",
+                  "pct": 2,
+                  "merchants": [
                     "KKday",
                     "Klook",
                     "Agoda",
                     "Airbnb",
                     "Booking.com",
-                    "雄獅旅遊",
-                    "可樂旅遊"
+                    "Trip.com",
+                    "ezTravel易遊網"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定航空公司/飯店住宿/旅遊訂房平台/旅行社"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定旅遊/訂房平台"
+                },
+                {
+                  "category": "travel",
+                  "pct": 2,
+                  "merchants": [
+                    "雄獅旅遊",
+                    "可樂旅遊",
+                    "東南旅遊",
+                    "五福旅遊",
+                    "燦星旅遊",
+                    "山富旅遊",
+                    "長汎假期",
+                    "鳳凰旅行社",
+                    "Ezfly易飛網",
+                    "理想旅遊",
+                    "永利旅行社",
+                    "三賀旅行社"
+                  ],
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；回饋依CUBE App當月權益分級而異：Level 1（核卡即享）2%、Level 2（以CUBE App繳費或申請自動扣繳，次月生效）3%、Level 3（財富管理貴賓，次月生效）3.3%；此處採任何持卡人皆可得之Level 1基礎值；指定旅行社"
                 }
               ]
             },
@@ -896,15 +2060,17 @@
                     "TAIL",
                     "iCharging"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；指定加油站及充電站(SCHEMA無「充電」分類，歸類於gas)"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；指定加油站＋充電站（SCHEMA無「充電」分類，歸類於gas）"
                 },
                 {
                   "category": "transport",
                   "pct": 2,
                   "merchants": [
-                    "車麻吉",
-                    "uTagGo"
+                    "車麻吉(不含加油、充電)",
+                    "uTagGo(不含月租停車)"
                   ],
+                  "merchantsComplete": true,
                   "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；停車費"
                 },
                 {
@@ -913,17 +2079,19 @@
                   "merchants": [
                     "家樂福",
                     "LOPIA台灣",
-                    "全聯福利中心"
+                    "全聯福利中心 實體門市(不含大全聯)"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；量販超市(全聯限實體門市，不含大全聯)"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；量販超市"
                 },
                 {
                   "category": "convenience",
                   "pct": 2,
                   "merchants": [
-                    "7-ELEVEN",
-                    "全家便利商店"
+                    "7-ELEVEN (7-11) 實體門市",
+                    "全家便利商店 實體門市"
                   ],
+                  "merchantsComplete": true,
                   "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；指定超商實體門市"
                 },
                 {
@@ -932,7 +2100,8 @@
                   "merchants": [
                     "IKEA宜家家居"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；生活家居(SCHEMA無「居家」分類，暫歸類department)"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；集精選不分CUBE權益分級，統一回饋2%；生活家居（SCHEMA無「居家」分類，暫歸類department）"
                 }
               ]
             },
@@ -950,19 +2119,21 @@
                     "台塑石油加油站",
                     "台亞加油站",
                     "福懋加油站",
-                    "統一速邁樂加油站"
+                    "統一速邁樂(限本島)加油站"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；台塑通路指定加油站(限本島統一速邁樂)"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；台塑通路指定加油站"
                 },
                 {
                   "category": "medical",
                   "pct": 2,
                   "merchants": [
-                    "台塑生醫",
-                    "長庚生技",
-                    "台塑蔬菜"
+                    "台塑生醫實體門市",
+                    "長庚生技實體門市",
+                    "台塑蔬菜實體門市"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；健康生活實體門市(SCHEMA無「健康生活」分類，暫歸類medical，請以官網為準)"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；健康生活實體門市（SCHEMA無「健康生活」分類，暫歸類medical，請以官網為準）"
                 },
                 {
                   "category": "online",
@@ -970,16 +2141,18 @@
                   "merchants": [
                     "台塑購物網"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；台塑購物網"
+                  "merchantsComplete": true,
+                  "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；台塑集團購物網"
                 },
                 {
                   "category": "convenience",
                   "pct": 2,
                   "merchants": [
-                    "7-ELEVEN",
-                    "全家便利商店",
-                    "萊爾富"
+                    "7-ELEVEN (7-11) 實體門市",
+                    "全家便利商店 實體門市",
+                    "萊爾富實體門市"
                   ],
+                  "merchantsComplete": true,
                   "note": "小樹點(信用卡)回饋，1點=1元；台塑家不分CUBE權益分級，統一回饋2%；指定超商實體門市"
                 }
               ]
@@ -998,6 +2171,7 @@
                     "全聯福利中心",
                     "大全聯"
                   ],
+                  "merchantsComplete": true,
                   "note": "小樹點(信用卡)回饋，1點=1元；全支付不分CUBE權益分級，統一回饋2%；須選定「全支付」方案並以全支付綁定CUBE信用卡刷卡消費方可獲回饋；量販超市"
                 },
                 {
@@ -1006,7 +2180,8 @@
                   "merchants": [
                     "全支付"
                   ],
-                  "note": "小樹點(信用卡)回饋，1點=1元；全支付不分CUBE權益分級，統一回饋2%；須選定「全支付」方案並以全支付綁定CUBE信用卡刷卡消費方可獲回饋；全支付國內通路及合作通路"
+                  "merchantsComplete": false,
+                  "note": "小樹點(信用卡)回饋，1點=1元；全支付不分CUBE權益分級，統一回饋2%；須選定「全支付」方案並以全支付綁定CUBE信用卡刷卡消費方可獲回饋；全支付國內合作通路，官方定義為「登記於我國境內且以新台幣交易、貼有TWQR標誌等，並得接受全支付綁定CUBE信用卡支付之通路」，屬開放式通路非封閉清單（來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json），已收錄「全支付」作為代表性商家名稱"
                 }
               ]
             }
@@ -1062,38 +2237,49 @@
                     "旅行社",
                     "Booking.com",
                     "Agoda",
-                    "Hotels.com",
+                    "Hotels",
                     "Expedia",
                     "Trip.com",
                     "Airbnb",
                     "Klook",
-                    "KKday"
+                    "KKDAY",
+                    "Trivago",
+                    "AsiaYo",
+                    "歐特儀松山機場停車消費"
                   ],
+                  "merchantsComplete": true,
                   "cap": "每帳單週期上限NT$800（與精選通路其他子項共用）",
                   "validUntil": "2026-12-31",
-                  "note": "旅遊通路加碼"
+                  "note": "旅遊通路加碼（官方逐一列舉之完整清單，含航空公司/旅行社/訂房平台/機場停車）"
                 },
                 {
                   "category": "online",
                   "pct": 4,
                   "merchants": [
+                    "日本三大交通卡(SUICA、PASMO、ICOCA)儲值",
+                    "大國藥妝",
+                    "Sugi藥妝",
                     "Rakuten",
-                    "Amazon",
                     "Mercari",
+                    "Amazon",
                     "iHerb",
+                    "Selfridges",
                     "eBay",
-                    "淘寶"
+                    "淘寶",
+                    "Gmarket",
+                    "Olive Young"
                   ],
+                  "merchantsComplete": true,
                   "cap": "每帳單週期上限NT$800（與精選通路其他子項共用）",
                   "validUntil": "2026-12-31",
-                  "note": "國外網購通路加碼"
+                  "note": "網購消費通路加碼（官方逐一列舉之完整清單，含海外藥妝與交通卡儲值）"
                 },
                 {
                   "category": "overseas",
                   "pct": 4,
                   "cap": "每帳單週期上限NT$800（與精選通路其他子項共用）",
                   "validUntil": "2026-12-31",
-                  "note": "國外實體消費（交易地區非臺灣且非新臺幣）、日本三大交通卡儲值加碼"
+                  "note": "國外實體消費加碼：交易地區非臺灣，且非新臺幣之實體商店一般消費，屬概括式描述非限定商店清單"
                 }
               ]
             },
@@ -1109,6 +2295,7 @@
                     "Apple Pay",
                     "Google Pay"
                   ],
+                  "merchantsComplete": true,
                   "cap": "每消費月份上限NT$200",
                   "validUntil": "2026-12-31"
                 }
@@ -1131,6 +2318,7 @@
                     "55688 APP",
                     "Mitsui Shopping Park Pay"
                   ],
+                  "merchantsComplete": true,
                   "cap": "單筆最高NT$500，回饋為刷卡金非現金回饋，回饋名額5,200名（額滿為止）",
                   "validUntil": "2026-12-31"
                 }
@@ -1236,6 +2424,7 @@
                     "55688 APP",
                     "Mitsui Shopping Park Pay"
                   ],
+                  "merchantsComplete": true,
                   "cap": "單筆最高NT$500，回饋為刷卡金非現金回饋，回饋名額10,000名（額滿為止）",
                   "validUntil": "2026-12-31"
                 }
@@ -1289,8 +2478,9 @@
                     "Samsung Pay",
                     "Garmin Pay"
                   ],
+                  "merchantsComplete": true,
                   "validUntil": "2026-12-31",
-                  "note": "豐點回饋換算；基礎+運動獎勵2%+指定支付加碼3%"
+                  "note": "豐點回饋換算；基礎+運動獎勵2%+指定支付加碼3%；指定行動支付綁定消費"
                 },
                 {
                   "category": "entertainment",
@@ -1299,17 +2489,33 @@
                     "World Gym",
                     "健身工廠",
                     "Curves",
+                    "喬山健康科技(限街邊實體門市)",
+                    "Welltivity數位大健康生活平台",
                     "台北市運動中心",
                     "新北市運動中心",
-                    "DAZN",
-                    "App Store",
-                    "Google Play商店",
+                    "Nuli女力APP(限官網刷卡訂閱)",
+                    "摩曼頓",
+                    "Anytime Fitness",
+                    "超核心健身中心",
+                    "DAZN"
+                  ],
+                  "merchantsComplete": true,
+                  "validUntil": "2026-12-31",
+                  "note": "運動健身通路加碼；官網無「健身房」對應類別，暫歸類 entertainment，請以官網為準"
+                },
+                {
+                  "category": "entertainment",
+                  "pct": 5,
+                  "merchants": [
+                    "APP Store",
+                    "Google Play商店應用程式",
                     "Nintendo",
                     "PlayStation",
                     "Steam"
                   ],
+                  "merchantsComplete": true,
                   "validUntil": "2026-12-31",
-                  "note": "運動健身／電競娛樂通路加碼；官網無「健身房」對應類別，暫歸類 entertainment，請以官網為準"
+                  "note": "電競娛樂通路加碼"
                 },
                 {
                   "category": "medical",
@@ -1318,8 +2524,13 @@
                     "屈臣氏",
                     "康是美",
                     "寶雅",
-                    "杏一藥局"
+                    "好心肝健檢中心",
+                    "杏一藥局",
+                    "大樹藥局",
+                    "丁丁藥局",
+                    "新高橋藥局"
                   ],
+                  "merchantsComplete": true,
                   "validUntil": "2026-12-31",
                   "note": "醫藥保健通路加碼"
                 }
@@ -1342,6 +2553,7 @@
                     "55688 APP",
                     "Mitsui Shopping Park Pay"
                   ],
+                  "merchantsComplete": true,
                   "cap": "單筆最高NT$500，回饋為刷卡金非現金回饋，回饋名額1,800名（額滿為止）",
                   "validUntil": "2026-12-31"
                 }

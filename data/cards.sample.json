@@ -17,6 +17,14 @@
               "validFrom": "2026-01-01",
               "validUntil": "2026-12-31",
               "rewards": [
+                {
+                  "category": "supermarket",
+                  "pct": 5.0,
+                  "merchants": ["IKEA", "全聯福利中心", "家樂福", "大潤發", "好市多"],
+                  "merchantsComplete": true,
+                  "cap": "每月上限 NT$500",
+                  "note": "示範資料：官方指定通路清單（已收錄完整），用來測試 IKEA 這類只在 cards.json 出現、不在 merchants.json 大類別裡的具體商店"
+                },
                 { "category": "general", "pct": 1.0, "note": "示範資料：單一方案卡" }
               ]
             }
@@ -40,8 +48,14 @@
               "validFrom": "2026-01-01",
               "validUntil": "2026-12-31",
               "rewards": [
-                { "category": "online", "pct": 2.0, "note": "示範資料" },
-                { "category": "dining", "pct": 3.0, "note": "示範資料" },
+                {
+                  "category": "online",
+                  "pct": 2.0,
+                  "merchants": ["momo購物網", "蝦皮購物", "PChome24h購物"],
+                  "merchantsComplete": false,
+                  "note": "示範資料：官方清單未完整收錄（來源：示範），已收錄 3/約20，用來測試 merchantsComplete=false 的提示"
+                },
+                { "category": "dining", "pct": 3.0, "note": "示範資料：整類通用，無指定通路清單" },
                 { "category": "general", "pct": 0.5 }
               ]
             }
@@ -69,6 +83,7 @@
                   "category": "convenience",
                   "pct": 5.0,
                   "merchants": ["7-ELEVEN", "全家便利商店"],
+                  "merchantsComplete": true,
                   "cap": "每月上限 NT$300",
                   "note": "示範資料：單一方案卡"
                 },

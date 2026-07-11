@@ -43,6 +43,14 @@
     color: var(--muted);
     font-size: 0.9rem;
   }
+  header.site-header p.assumption-note {
+    margin: 8px 0 0;
+    padding: 8px 12px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
   .banner {
     display: none;
     background: #fff7e6;
@@ -190,31 +198,6 @@
     font-size: 0.88rem;
     color: var(--muted);
   }
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 10px;
-  }
-  @media (max-width: 480px) {
-    .category-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  .category-btn {
-    padding: 10px 6px;
-    border: 1px solid var(--border);
-    background: #fff;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    color: var(--text);
-    text-align: center;
-  }
-  .category-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .category-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
   .selected-target {
     margin-top: 12px;
     padding: 10px 12px;
@@ -256,18 +239,19 @@
     font-size: 0.85rem;
     margin-top: 2px;
   }
-  .result-body .result-recommend {
-    color: var(--accent-dark);
-    font-weight: 700;
-    font-size: 0.85rem;
-    margin-top: 4px;
-  }
   .result-body .result-meta {
     margin-top: 6px;
     font-size: 0.8rem;
     color: var(--muted);
   }
   .result-body .result-meta div { margin-bottom: 2px; }
+  .result-body .result-basic-tag {
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+  }
   .result-pct {
     font-size: 1.9rem;
     font-weight: 800;
@@ -275,20 +259,16 @@
     flex-shrink: 0;
     white-space: nowrap;
   }
-  .expired-tag {
-    display: inline-block;
-    background: var(--danger-soft);
-    color: var(--danger);
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 6px;
-  }
   .empty-state {
     text-align: center;
     color: var(--muted);
     padding: 24px 8px;
     font-size: 0.92rem;
+  }
+  .filter-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: -4px 0 12px;
   }
   .btn {
     display: inline-block;
@@ -353,7 +333,6 @@
     }
     input[type="text"].store-input { background: #232531; }
     .suggestions { background: #232531; }
-    .category-btn { background: #232531; }
     .banner { background: #3a3016; border-color: #6b5620; color: #f0c36d; }
   }
 </style>
@@ -362,6 +341,7 @@
   <header class="site-header">
     <h1>台灣信用卡回饋比較</h1>
     <p class="sub">選你有的卡，輸入商店，馬上看哪張卡回饋最高</p>
+    <p class="assumption-note">本站假設你的每張卡都已完成<b>帳單e化＋自動扣繳</b>。</p>
   </header>
 
   <div id="demoBanner" class="banner">目前為示範資料，實際回饋請以各銀行公告為準。</div>
@@ -380,7 +360,7 @@
 
   <!-- Step 2 -->
   <section class="card hidden" id="step2">
-    <h2><span class="step-num">2</span>選擇你的等級／資格</h2>
+    <h2><span class="step-num">2</span>選擇你的資格</h2>
     <div id="planGroups"></div>
     <div class="btn-row">
       <button class="btn primary" id="toStep3Btn">下一步：輸入商店</button>
@@ -389,23 +369,23 @@
 
   <!-- Step 3 -->
   <section class="card hidden" id="step3">
-    <h2><span class="step-num">3</span>輸入商店名稱</h2>
+    <h2><span class="step-num">3</span>輸入商店、支付或地區</h2>
     <div class="held-summary" id="heldSummary"></div>
     <div class="held-summary hidden" id="skipStep2Note"></div>
     <div class="autocomplete-wrap">
-      <input type="text" class="store-input" id="storeInput" placeholder="例如：momo、全家、星巴克…" autocomplete="off" />
+      <input type="text" class="store-input" id="storeInput" placeholder="例如：蝦皮、鼎泰豐、LINE Pay、日本…" autocomplete="off" />
       <div class="suggestions" id="suggestions"></div>
     </div>
     <div class="no-match-hint" id="noMatchHint" style="display:none;">
-      找不到符合的商店，請直接選擇消費類別：
-      <div class="category-grid" id="categoryGrid"></div>
+      找不到符合的商店、行動支付或國家／地區，請確認輸入是否正確，或換個寫法試試（例如商店的中文全名、英文名、常見簡稱）。
     </div>
     <div class="selected-target hidden" id="selectedTarget"></div>
   </section>
 
   <!-- Results -->
   <section class="card hidden" id="resultsSection">
-    <h2>比較結果</h2>
+    <h2>信用卡回饋查詢結果</h2>
+    <p class="filter-note">僅顯示回饋 2% 以上的結果</p>
     <div id="resultsList"></div>
   </section>
 
@@ -420,40 +400,26 @@
 (function () {
   "use strict";
 
-  var CATEGORIES = [
-    { id: "general", label: "一般消費" },
-    { id: "online", label: "網購" },
-    { id: "convenience", label: "超商" },
-    { id: "supermarket", label: "超市／量販" },
-    { id: "department", label: "百貨" },
-    { id: "dining", label: "餐飲" },
-    { id: "delivery", label: "外送平台" },
-    { id: "transport", label: "交通" },
-    { id: "gas", label: "加油" },
-    { id: "travel", label: "旅遊" },
-    { id: "overseas", label: "海外消費" },
-    { id: "streaming", label: "影音串流／數位訂閱" },
-    { id: "mobilepay", label: "行動支付" },
-    { id: "telecom", label: "電信費" },
-    { id: "insurance", label: "保費" },
-    { id: "utilities", label: "稅費／公用事業／學費" },
-    { id: "medical", label: "醫療" },
-    { id: "entertainment", label: "娛樂" }
-  ];
-  var CATEGORY_LABEL = {};
-  CATEGORIES.forEach(function (c) { CATEGORY_LABEL[c.id] = c.label; });
-
-  var STORAGE_KEY = "cardRewardsPrefs.v1";
+  var STORAGE_VERSION = 3;
+  var STORAGE_KEY = "cardRewardsPrefs.v3";
 
   var state = {
     cardsData: null,
     merchantsData: null,
+    mobilepayData: null,
     usingSampleCards: false,
     usingSampleMerchants: false,
-    heldCardIds: [],           // array of card id
-    selectedPlans: {},         // cardId -> planId
-    matchedMerchant: null,     // { name, category } | null
-    matchedCategory: null      // category id chosen directly (when no merchant match)
+    usingSampleMobilepay: false,
+    merchantNormMap: {},      // normalize(name|alias) -> canonical merchant name
+    diningSet: {},            // canonical merchant name -> true if dining=true in merchants.json
+    channelMap: {},           // canonical merchant name -> "online"|"both" (merchants.json channel; absent = 純實體)
+    countryNormMap: {},       // normalize(countryName) -> canonical country name (as written in cards.json)
+    paymentNormMap: {},       // normalize(payment name|alias) -> canonical payment name (mobilepay.json)
+    paymentAccepted: {},      // canonical payment name -> { canonical merchant name: true }
+    autocompleteList: [],     // [{ label, kind: 'merchant'|'country'|'payment'|'online' }]
+    heldCardIds: [],          // array of card id
+    selectedTiers: {},        // cardId -> tierId (only for cards that have `tiers`)
+    currentQuery: null        // { type: 'merchant'|'country'|'payment'|'online', name } | null
   };
 
   // ---------- utils ----------
@@ -488,14 +454,123 @@
     return null;
   }
 
-  function allCards() {
-    var out = [];
-    (state.cardsData.banks || []).forEach(function (bank) {
-      (bank.cards || []).forEach(function (card) {
-        out.push({ bank: bank, card: card });
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  // Build the lookup structures required by SCHEMA.md's 前端行為 section:
+  //  - merchantNormMap: every normalized name/alias in merchants.json, PLUS every
+  //    merchant-type reward target in cards.json not already covered, mapping to
+  //    one canonical display name (merchants.json name wins when both mention a store).
+  //  - diningSet: canonical merchant name -> true, from merchants.json dining flag.
+  //  - countryNormMap: normalized country name -> canonical country name, collected
+  //    from every targetType="country" reward target across cards.json.
+  //  - paymentNormMap / paymentAccepted: from mobilepay.json. acceptedMerchants
+  //    entries are themselves resolved through merchantNormMap so the store query
+  //    comparison happens on canonical names on both sides.
+  //  - autocompleteList: merchant names/aliases ∪ cards.json merchant targets ∪
+  //    country names ∪ mobilepay.json payment names/aliases.
+  function buildLookups() {
+    var merchantNormMap = {};
+    var diningSet = {};
+    var channelMap = {};
+    var countryNormMap = {};
+    var paymentNormMap = {};
+    var paymentAccepted = {};
+    var autoSet = {}; // normalized -> { label, kind } to dedupe
+
+    function addAutocomplete(label, kind) {
+      var n = normalize(label);
+      if (!n || autoSet[n]) return;
+      autoSet[n] = { label: label, kind: kind };
+    }
+
+    (state.merchantsData.merchants || []).forEach(function (m) {
+      var canonical = m.name;
+      var n = normalize(canonical);
+      if (!n) return;
+      merchantNormMap[n] = canonical;
+      if (m.dining === true) diningSet[canonical] = true;
+      if (m.channel === "online" || m.channel === "both") channelMap[canonical] = m.channel;
+      addAutocomplete(canonical, "merchant");
+      (m.aliases || []).forEach(function (a) {
+        var an = normalize(a);
+        if (an && !merchantNormMap[an]) merchantNormMap[an] = canonical;
+        addAutocomplete(a, "merchant");
       });
     });
-    return out;
+
+    (state.cardsData.banks || []).forEach(function (bank) {
+      (bank.cards || []).forEach(function (card) {
+        (card.rewards || []).forEach(function (r) {
+          if (r.targetType === "merchant" && r.target) {
+            var n = normalize(r.target);
+            if (n && !merchantNormMap[n]) {
+              merchantNormMap[n] = r.target; // not in merchants.json: canonical = itself
+              addAutocomplete(r.target, "merchant");
+            }
+          } else if (r.targetType === "country" && r.target) {
+            var cn = normalize(r.target);
+            if (cn && !countryNormMap[cn]) {
+              countryNormMap[cn] = r.target;
+              addAutocomplete(r.target, "country");
+            }
+          }
+        });
+      });
+    });
+
+    ((state.mobilepayData && state.mobilepayData.payments) || []).forEach(function (p) {
+      var canonical = p.name;
+      var n = normalize(canonical);
+      if (!n) return;
+      if (!paymentNormMap[n]) paymentNormMap[n] = canonical;
+      addAutocomplete(canonical, "payment");
+      (p.aliases || []).forEach(function (a) {
+        var an = normalize(a);
+        if (an && !paymentNormMap[an]) paymentNormMap[an] = canonical;
+        addAutocomplete(a, "payment");
+      });
+      var acc = {};
+      (p.acceptedMerchants || []).forEach(function (m) {
+        var canonStore = merchantNormMap[normalize(m)] || m;
+        acc[canonStore] = true;
+      });
+      paymentAccepted[canonical] = acc;
+    });
+
+    // fixed keyword「網路消費」 lists every online-type reward (SCHEMA 前端行為 §3)
+    addAutocomplete("網路消費", "online");
+
+    state.merchantNormMap = merchantNormMap;
+    state.diningSet = diningSet;
+    state.channelMap = channelMap;
+    state.countryNormMap = countryNormMap;
+    state.paymentNormMap = paymentNormMap;
+    state.paymentAccepted = paymentAccepted;
+    state.autocompleteList = Object.keys(autoSet).map(function (k) { return autoSet[k]; });
+  }
+
+  // Resolve free-text input to a canonical query target.
+  // Merchant wins on collision (most specific), then payment, then country.
+  function matchQuery(raw) {
+    var nq = normalize(raw);
+    if (!nq) return null;
+    if (nq === normalize("網路消費")) {
+      return { type: "online", name: "網路消費" };
+    }
+    if (state.merchantNormMap[nq]) {
+      return { type: "merchant", name: state.merchantNormMap[nq] };
+    }
+    if (state.paymentNormMap[nq]) {
+      return { type: "payment", name: state.paymentNormMap[nq] };
+    }
+    if (state.countryNormMap[nq]) {
+      return { type: "country", name: state.countryNormMap[nq] };
+    }
+    return null;
   }
 
   // ---------- data loading ----------
@@ -524,20 +599,23 @@
   function init() {
     Promise.all([
       loadJson("data/cards.json", "data/cards.sample.json"),
-      loadJson("data/merchants.json", "data/merchants.sample.json")
+      loadJson("data/merchants.json", "data/merchants.sample.json"),
+      loadJson("data/mobilepay.json", "data/mobilepay.sample.json")
     ])
       .then(function (results) {
         state.cardsData = results[0].data;
         state.usingSampleCards = results[0].sample;
         state.merchantsData = results[1].data;
         state.usingSampleMerchants = results[1].sample;
+        state.mobilepayData = results[2].data;
+        state.usingSampleMobilepay = results[2].sample;
+        buildLookups();
 
-        if (state.usingSampleCards || state.usingSampleMerchants) {
+        if (state.usingSampleCards || state.usingSampleMerchants || state.usingSampleMobilepay) {
           document.getElementById("demoBanner").classList.add("show");
         }
 
         buildStep1();
-        buildCategoryGrid();
         restorePrefs();
       })
       .catch(function (err) {
@@ -589,25 +667,98 @@
       if (state.heldCardIds.indexOf(id) === -1) state.heldCardIds.push(id);
     } else {
       state.heldCardIds = state.heldCardIds.filter(function (x) { return x !== id; });
-      delete state.selectedPlans[id];
+      delete state.selectedTiers[id];
     }
     savePrefs();
     refreshStep2Visibility();
   }
 
-  // A card needs an explicit plan choice in step 2 only when it has more than
-  // one plan AND it is not "switchable" (switchable = user can freely switch
-  // between plans any time, so we auto-pick whichever is best per query instead
-  // of asking). Multi-plan cards missing planKind are treated as "tier" per
-  // SCHEMA.md (conservative default: ask rather than assume).
-  function isSwitchableMultiPlan(card) {
-    var plans = card.plans || [];
-    return plans.length > 1 && card.planKind === "switchable";
+  // ---------- tier (資格) rules, per SCHEMA.md 前端行為 §2 ----------
+
+  function assumedTier(card) {
+    var tiers = card.tiers || [];
+    for (var i = 0; i < tiers.length; i++) {
+      if (tiers[i].assumedAchieved === true) return tiers[i];
+    }
+    return null;
   }
 
-  function needsPlanSelection(card) {
-    var plans = card.plans || [];
-    return plans.length > 1 && card.planKind !== "switchable";
+  // "回饋最高" check for a tier: dominance across ALL rewards that use pctByTier —
+  // the tier's value must be >= every other tier's value in every such reward.
+  // Chosen over "compare only the general reward's pctByTier" because hiding a
+  // card from step 2 is only safe when no possible query could ever pay more on
+  // a different tier; comparing just the general reward could hide a card whose
+  // merchant/mobilepay reward is better on another tier (e.g. CUBE Level 3).
+  // Missing tier keys are treated as 0.
+  function tierDominates(card, tierId) {
+    var tiers = card.tiers || [];
+    var rewards = card.rewards || [];
+    for (var i = 0; i < rewards.length; i++) {
+      var byTier = rewards[i].pctByTier;
+      if (!byTier) continue;
+      var v = typeof byTier[tierId] === "number" ? byTier[tierId] : 0;
+      for (var j = 0; j < tiers.length; j++) {
+        var other = typeof byTier[tiers[j].id] === "number" ? byTier[tiers[j].id] : 0;
+        if (other > v) return false;
+      }
+    }
+    return true;
+  }
+
+  // Sum of a tier's pctByTier values across all rewards — used only to pick the
+  // "lowest reward" default when a card has no assumedAchieved tier.
+  function tierRewardScore(card, tierId) {
+    var score = 0;
+    (card.rewards || []).forEach(function (r) {
+      if (r.pctByTier && typeof r.pctByTier[tierId] === "number") score += r.pctByTier[tierId];
+    });
+    return score;
+  }
+
+  function defaultTierId(card) {
+    var tiers = card.tiers || [];
+    if (tiers.length === 0) return null;
+    var at = assumedTier(card);
+    if (at) return at.id; // default to the assumed-achieved tier when present
+    var best = tiers[0].id, bestScore = tierRewardScore(card, tiers[0].id);
+    for (var i = 1; i < tiers.length; i++) {
+      var s = tierRewardScore(card, tiers[i].id);
+      if (s < bestScore) { bestScore = s; best = tiers[i].id; }
+    }
+    return best; // no assumedAchieved -> default to the lowest-reward tier
+  }
+
+  // A card appears in step 2 only when it has tiers AND its assumedAchieved tier
+  // (if any) is NOT already its best tier. If the assumed tier dominates, it is
+  // auto-selected and the card is skipped.
+  function cardNeedsTierSelection(card) {
+    var tiers = card.tiers || [];
+    if (tiers.length === 0) return false;
+    var at = assumedTier(card);
+    if (at && tierDominates(card, at.id)) return false;
+    return true;
+  }
+
+  // Make sure every held card with tiers has a valid selection:
+  //  - auto-selected cards (assumed tier dominates) are FORCED to the assumed tier;
+  //  - cards shown in step 2 get the default (assumed tier, else lowest) unless a
+  //    valid stored/selected value already exists.
+  function ensureTierSelections() {
+    state.heldCardIds.forEach(function (cardId) {
+      var found = findBankByCardId(cardId);
+      if (!found) return;
+      var card = found.card;
+      var tiers = card.tiers || [];
+      if (tiers.length === 0) { delete state.selectedTiers[cardId]; return; }
+      var at = assumedTier(card);
+      if (at && tierDominates(card, at.id)) {
+        state.selectedTiers[cardId] = at.id;
+        return;
+      }
+      var current = state.selectedTiers[cardId];
+      var valid = tiers.some(function (t) { return t.id === current; });
+      if (!valid) state.selectedTiers[cardId] = defaultTierId(card);
+    });
   }
 
   function getTierSelectionEntries() {
@@ -615,7 +766,7 @@
     state.heldCardIds.forEach(function (cardId) {
       var found = findBankByCardId(cardId);
       if (!found) return;
-      if (needsPlanSelection(found.card)) out.push({ cardId: cardId, bank: found.bank, card: found.card });
+      if (cardNeedsTierSelection(found.card)) out.push({ cardId: cardId, bank: found.bank, card: found.card });
     });
     return out;
   }
@@ -633,6 +784,7 @@
       return;
     }
 
+    ensureTierSelections();
     var tierEntries = getTierSelectionEntries();
 
     if (tierEntries.length > 0) {
@@ -642,17 +794,17 @@
       skipNote.classList.add("hidden");
       hideResults();
     } else {
-      // nothing needs manual selection (single-plan and/or switchable cards
-      // only) -> skip step 2 entirely and go straight to step 3
+      // no held card needs a qualification choice -> skip step 2 entirely
       step2.classList.add("hidden");
       step3.classList.remove("hidden");
       buildHeldSummary();
-      skipNote.textContent = "你選的卡片都不需要另外選擇方案／等級，已自動判定回饋，可直接輸入商店。";
+      skipNote.textContent = "你選的卡片都不需要另外選擇資格，可直接輸入商店。";
       skipNote.classList.remove("hidden");
+      rerunQueryIfAny();
     }
   }
 
-  // ---------- Step 2: pick plan per held tier-type card ----------
+  // ---------- Step 2: pick tier (資格) per held card that needs it ----------
 
   function buildStep2(tierEntries) {
     var container = document.getElementById("planGroups");
@@ -661,7 +813,7 @@
     tierEntries.forEach(function (entry) {
       var cardId = entry.cardId;
       var card = entry.card;
-      var plans = card.plans || [];
+      var tiers = card.tiers || [];
 
       var block = document.createElement("div");
       block.className = "plan-block";
@@ -671,30 +823,28 @@
       title.textContent = entry.bank.name + "｜" + card.name;
       block.appendChild(title);
 
-      if (!state.selectedPlans[cardId] || !plans.some(function (p) { return p.id === state.selectedPlans[cardId]; })) {
-        state.selectedPlans[cardId] = plans[0].id;
-      }
-      plans.forEach(function (plan) {
+      tiers.forEach(function (tier) {
         var choiceRow = document.createElement("div");
         choiceRow.className = "plan-choice";
 
         var radio = document.createElement("input");
         radio.type = "radio";
-        radio.name = "plan-" + cardId;
-        radio.id = "plan-" + cardId + "-" + plan.id;
-        radio.value = plan.id;
-        radio.checked = state.selectedPlans[cardId] === plan.id;
+        radio.name = "tier-" + cardId;
+        radio.id = "tier-" + cardId + "-" + tier.id;
+        radio.value = tier.id;
+        radio.checked = state.selectedTiers[cardId] === tier.id;
         radio.addEventListener("change", function () {
-          state.selectedPlans[cardId] = plan.id;
+          state.selectedTiers[cardId] = tier.id;
           savePrefs();
+          rerunQueryIfAny();
         });
 
         var labelWrap = document.createElement("label");
         labelWrap.setAttribute("for", radio.id);
         labelWrap.innerHTML =
           '<div class="plan-name"></div><div class="plan-condition"></div>';
-        labelWrap.querySelector(".plan-name").textContent = plan.name;
-        labelWrap.querySelector(".plan-condition").textContent = plan.condition || "無條件";
+        labelWrap.querySelector(".plan-name").textContent = tier.name;
+        labelWrap.querySelector(".plan-condition").textContent = tier.condition || "無條件";
 
         choiceRow.appendChild(radio);
         choiceRow.appendChild(labelWrap);
@@ -725,53 +875,26 @@
       "已選 " + names.length + " 張卡：" + names.join("、");
   }
 
-  // ---------- Step 3: store name / category ----------
+  // ---------- Step 3: store / payment / country input ----------
 
-  function buildCategoryGrid() {
-    var grid = document.getElementById("categoryGrid");
-    grid.innerHTML = "";
-    CATEGORIES.forEach(function (cat) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "category-btn";
-      btn.textContent = cat.label;
-      btn.dataset.cat = cat.id;
-      btn.addEventListener("click", function () {
-        Array.prototype.forEach.call(grid.querySelectorAll(".category-btn"), function (b) {
-          b.classList.remove("active");
-        });
-        btn.classList.add("active");
-        state.matchedMerchant = null;
-        state.matchedCategory = cat.id;
-        showSelectedTarget();
-        computeAndRenderResults();
-      });
-      grid.appendChild(btn);
-    });
-  }
-
-  function matchMerchants(query) {
+  function matchSuggestions(query) {
     var nq = normalize(query);
     if (!nq) return [];
     var exact = [], prefix = [], substr = [];
-    (state.merchantsData.merchants || []).forEach(function (m) {
-      var candidates = [m.name].concat(m.aliases || []);
-      var best = null; // 0 exact, 1 prefix, 2 substr
-      candidates.forEach(function (c) {
-        var nc = normalize(c);
-        if (!nc) return;
-        var rank;
-        if (nc === nq) rank = 0;
-        else if (nc.indexOf(nq) === 0 || nq.indexOf(nc) === 0) rank = 1;
-        else if (nc.indexOf(nq) !== -1 || nq.indexOf(nc) !== -1) rank = 2;
-        else return;
-        if (best === null || rank < best) best = rank;
-      });
-      if (best === 0) exact.push(m);
-      else if (best === 1) prefix.push(m);
-      else if (best === 2) substr.push(m);
+    state.autocompleteList.forEach(function (item) {
+      var nc = normalize(item.label);
+      if (!nc) return;
+      if (nc === nq) exact.push(item);
+      else if (nc.indexOf(nq) === 0 || nq.indexOf(nc) === 0) prefix.push(item);
+      else if (nc.indexOf(nq) !== -1) substr.push(item);
     });
     return exact.concat(prefix).concat(substr);
+  }
+
+  function kindLabel(kind) {
+    if (kind === "country") return "地區";
+    if (kind === "payment") return "行動支付";
+    return "";
   }
 
   function initAutocomplete() {
@@ -782,22 +905,33 @@
 
     input.addEventListener("input", function () {
       var val = input.value;
-      state.matchedMerchant = null;
-      hideSelectedTarget();
-      hideResults();
-      clearCategoryActive();
 
       if (timer) clearTimeout(timer);
       timer = setTimeout(function () {
         if (!val.trim()) {
           box.classList.remove("show");
           noMatchHint.style.display = "none";
+          state.currentQuery = null;
+          hideSelectedTarget();
+          hideResults();
           return;
         }
-        var matches = matchMerchants(val).slice(0, 8);
+
+        var direct = matchQuery(val);
+        if (direct) {
+          state.currentQuery = direct;
+          showSelectedTarget();
+          computeAndRenderResults();
+        } else {
+          state.currentQuery = null;
+          hideSelectedTarget();
+          hideResults();
+        }
+
+        var matches = matchSuggestions(val).slice(0, 8);
         if (matches.length === 0) {
           box.classList.remove("show");
-          noMatchHint.style.display = "block";
+          noMatchHint.style.display = direct ? "none" : "block";
           return;
         }
         noMatchHint.style.display = "none";
@@ -805,14 +939,12 @@
         matches.forEach(function (m) {
           var item = document.createElement("div");
           item.className = "suggestion-item";
-          item.innerHTML =
-            '<span></span><span class="s-cat"></span>';
-          item.querySelector("span").textContent = m.name;
-          item.querySelector(".s-cat").textContent = CATEGORY_LABEL[m.category] || m.category;
+          item.innerHTML = '<span></span><span class="s-cat"></span>';
+          item.querySelector("span").textContent = m.label;
+          item.querySelector(".s-cat").textContent = kindLabel(m.kind);
           item.addEventListener("click", function () {
-            input.value = m.name;
-            state.matchedMerchant = { name: m.name, category: m.category };
-            state.matchedCategory = null;
+            input.value = m.label;
+            state.currentQuery = matchQuery(m.label);
             box.classList.remove("show");
             noMatchHint.style.display = "none";
             showSelectedTarget();
@@ -831,175 +963,241 @@
     });
   }
 
-  function clearCategoryActive() {
-    Array.prototype.forEach.call(
-      document.querySelectorAll(".category-btn"),
-      function (b) { b.classList.remove("active"); }
-    );
-  }
-
   function showSelectedTarget() {
     var el = document.getElementById("selectedTarget");
-    if (state.matchedMerchant) {
-      el.innerHTML =
-        "目前比對商店：<b>" + escapeHtml(state.matchedMerchant.name) + "</b>（" +
-        (CATEGORY_LABEL[state.matchedMerchant.category] || state.matchedMerchant.category) + "）";
-    } else if (state.matchedCategory) {
-      el.innerHTML = "目前比對類別：<b>" + escapeHtml(CATEGORY_LABEL[state.matchedCategory] || state.matchedCategory) + "</b>";
+    var q = state.currentQuery;
+    if (q && q.type === "merchant") {
+      el.innerHTML = "目前比對商店：<b>" + escapeHtml(q.name) + "</b>";
+    } else if (q && q.type === "payment") {
+      el.innerHTML = "目前比對行動支付：<b>" + escapeHtml(q.name) + "</b>";
+    } else if (q && q.type === "country") {
+      el.innerHTML = "目前比對地區：<b>" + escapeHtml(q.name) + "</b>";
+    } else if (q && q.type === "online") {
+      el.innerHTML = "目前比對：<b>網路消費</b>（列出全部網路消費回饋）";
     } else {
       el.innerHTML = "";
     }
-    el.classList.toggle("hidden", !(state.matchedMerchant || state.matchedCategory));
+    el.classList.toggle("hidden", !q);
   }
 
   function hideSelectedTarget() {
-    state.matchedCategory = null;
     document.getElementById("selectedTarget").classList.add("hidden");
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
+  // re-run the current query's results after a tier selection changes or step 2
+  // is skipped, so a switched tier is reflected without retyping.
+  function rerunQueryIfAny() {
+    if (state.currentQuery) computeAndRenderResults();
   }
 
   // ---------- reward computation ----------
 
-  function bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory) {
-    var rewards = plan.rewards || [];
-    if (rewards.length === 0) return null;
-
-    // priority 1: merchant-named rewards
-    if (targetMerchantName) {
-      var nTarget = normalize(targetMerchantName);
-      var merchantHits = rewards.filter(function (r) {
-        return (r.merchants || []).some(function (m) { return normalize(m) === nTarget; });
-      });
-      if (merchantHits.length > 0) {
-        return merchantHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
+  // Resolve a reward's actual pct for the given card, honoring pctByTier with the
+  // user-selected (or auto-selected) tier. Returns null when unresolvable so
+  // callers can skip the row gracefully instead of crashing.
+  function resolvePct(reward, cardId) {
+    if (typeof reward.pct === "number") return reward.pct;
+    if (reward.pctByTier) {
+      var tierId = state.selectedTiers[cardId];
+      if (tierId && typeof reward.pctByTier[tierId] === "number") {
+        return reward.pctByTier[tierId];
+      }
+      // defensive fallback: stale/absent selection -> first available tier value
+      var keys = Object.keys(reward.pctByTier);
+      if (keys.length > 0 && typeof reward.pctByTier[keys[0]] === "number") {
+        return reward.pctByTier[keys[0]];
       }
     }
-
-    // priority 2: category match
-    if (targetCategory) {
-      var catHits = rewards.filter(function (r) { return r.category === targetCategory; });
-      if (catHits.length > 0) {
-        return catHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
-      }
-    }
-
-    // priority 3: fallback to general
-    var generalHits = rewards.filter(function (r) { return r.category === "general"; });
-    if (generalHits.length > 0) {
-      return generalHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
-    }
-
     return null;
   }
 
-  function computeAndRenderResults() {
-    var targetMerchantName = state.matchedMerchant ? state.matchedMerchant.name : null;
-    var targetCategory = state.matchedMerchant
-      ? state.matchedMerchant.category
-      : state.matchedCategory;
+  function canonicalMerchant(name) {
+    return state.merchantNormMap[normalize(name)] || name;
+  }
 
-    if (!targetMerchantName && !targetCategory) {
+  function canonicalPayment(name) {
+    return state.paymentNormMap[normalize(name)] || name;
+  }
+
+  // Matching rules per SCHEMA.md 前端行為 §3 (v3, 2026-07-11):
+  //  merchant query: merchant target match / dining (if store dining=true) /
+  //    online rewards by store channel (channel="online" plain hit;
+  //    channel="both" hit + row marked「限網路消費」; unmarked = 純實體, no hit) /
+  //    mobilepay rewards whose payment acceptedMerchants contains the store
+  //    (label "支付名｜方案名") / plan-less general rewards as「基本」rows.
+  //    Defensive rule (bug fix): a general reward that carries a `plan` is NEVER
+  //    a「基本」row — it must qualify via a legal targetType hit or not show at all
+  //    (a targetType=general reward can't, so it never shows anywhere).
+  //  payment query: mobilepay rewards whose target is this payment, plus merchant
+  //    rewards whose plan name equals the payment name (e.g. CUBE plan「全支付」).
+  //    Per spec's「只列」, no 基本 rows here.
+  //  online query (fixed keyword「網路消費」): every online-type reward of the
+  //    held cards, nothing else (mirrors the payment query's「只列」rule).
+  //    Payment and country queries never list online rewards (SCHEMA §3).
+  //  country query: country target match + plan-less general 基本 rows (base
+  //    reward still applies abroad; the spec's store-query bullet defines 基本
+  //    rows and the country bullet doesn't forbid them — kept from round 1).
+  //
+  //  Duplicate suppression (bug fix 2026-07-11, 新光三越 case) — two layers:
+  //  1. seenRewards (Set of reward object references, shared across the whole
+  //     query): the same reward entity can never emit more than one row.
+  //  2. In computeAndRenderResults, rows whose every user-visible column
+  //     (card, 方案, %, 上限, 期限) is identical are collapsed to one. Needed
+  //     because the scraper legally splits one benefit into several reward
+  //     entries whose different official spellings (「新光三越(含skm pay)」/
+  //     「SKM Park Outlets」) all canonicalize to the same store — distinct
+  //     objects, so layer 1 alone cannot catch them. Any genuinely different
+  //     benefit (different %, cap or validity) still shows as its own row.
+  function rowsForCard(cardId, card, bankName, query, seenRewards) {
+    var rows = [];
+    (card.rewards || []).forEach(function (r) {
+      if (isExpired(r.validUntil)) return;
+      if (seenRewards && seenRewards.has(r)) return; // entity already emitted
+
+      var planLabel = null;
+      var extraMeta = null;
+      var hit = false;
+
+      if (r.targetType === "general") {
+        // general rows appear for merchant/country queries (payment queries
+        // list payment rewards only). A general reward WITH a plan is a
+        // 不限通路方案（如假日刷）— shown under its plan name, per user ruling.
+        if (query.type === "merchant" || query.type === "country") {
+          hit = true;
+          planLabel = r.plan || "基本";
+        }
+      } else if (query.type === "merchant") {
+        if (r.targetType === "merchant" && r.target &&
+            canonicalMerchant(r.target) === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        } else if (r.targetType === "dining" && state.diningSet[query.name]) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        } else if (r.targetType === "online") {
+          // hit only when the store is marked as an online channel; "both"
+          // stores get the row flagged 限網路消費 (SCHEMA 前端行為 §3)
+          var channel = state.channelMap[query.name];
+          if (channel === "online" || channel === "both") {
+            hit = true;
+            planLabel = r.plan || "基本";
+            if (channel === "both") extraMeta = "限網路消費";
+          }
+        } else if (r.targetType === "mobilepay" && r.target) {
+          var pay = canonicalPayment(r.target);
+          var acc = state.paymentAccepted[pay];
+          if (acc && acc[query.name]) {
+            hit = true;
+            planLabel = r.plan ? pay + "｜" + r.plan : pay;
+          }
+        }
+      } else if (query.type === "payment") {
+        if (r.targetType === "mobilepay" && r.target &&
+            canonicalPayment(r.target) === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        } else if (r.targetType === "merchant" && r.plan &&
+                   canonicalPayment(r.plan) === query.name &&
+                   state.paymentNormMap[normalize(r.plan)]) {
+          // merchant reward whose plan name IS this payment (e.g. CUBE「全支付」)
+          hit = true;
+          planLabel = r.plan;
+          extraMeta = "適用商店：" + canonicalMerchant(r.target);
+        }
+      } else if (query.type === "country") {
+        if (r.targetType === "country" && r.target === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        }
+      } else if (query.type === "online") {
+        if (r.targetType === "online") {
+          hit = true;
+          planLabel = r.plan || "基本";
+        }
+      }
+
+      if (!hit) return;
+
+      var pct = resolvePct(r, cardId);
+      if (pct === null) return;
+
+      if (seenRewards) seenRewards.add(r);
+      rows.push({
+        cardId: cardId,
+        bankName: bankName,
+        cardName: card.name,
+        planLabel: planLabel,
+        pct: pct,
+        cap: r.cap || "",
+        validUntil: r.validUntil || "",
+        note: r.note || "",
+        extraMeta: extraMeta
+      });
+    });
+    return rows;
+  }
+
+  function computeAndRenderResults() {
+    var query = state.currentQuery;
+    if (!query) {
       hideResults();
       return;
     }
 
-    var candidates = [];
-    var anyHeldCard = state.heldCardIds.length > 0;
-    var allExpired = true;
-
+    var rows = [];
+    var seenRewards = new Set(); // layer 1: one row max per reward entity
     state.heldCardIds.forEach(function (cardId) {
       var found = findBankByCardId(cardId);
       if (!found) return;
-      var card = found.card;
-      var plans = card.plans || [];
-      if (plans.length === 0) return;
-
-      if (isSwitchableMultiPlan(card)) {
-        // switchable: consider every non-expired plan for THIS query and take
-        // whichever plan gives the highest reward for the merchant/category.
-        var nonExpired = plans.filter(function (p) { return !isExpired(p.validUntil); });
-        if (nonExpired.length === 0) return; // all plans expired
-
-        allExpired = false;
-
-        var bestPlan = null, bestReward = null;
-        nonExpired.forEach(function (plan) {
-          var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-          if (reward && (!bestReward || reward.pct > bestReward.pct)) {
-            bestReward = reward;
-            bestPlan = plan;
-          }
-        });
-        if (!bestReward) return;
-
-        candidates.push({
-          bankName: found.bank.name,
-          cardName: card.name,
-          planName: null,
-          recommendedPlanName: bestPlan.name,
-          pct: bestReward.pct,
-          cap: bestReward.cap || "",
-          note: bestReward.note || "",
-          validUntil: bestPlan.validUntil || ""
-        });
-      } else {
-        var plan = plans.length === 1
-          ? plans[0]
-          : plans.find(function (p) { return p.id === state.selectedPlans[cardId]; });
-        if (!plan) return;
-
-        if (isExpired(plan.validUntil)) {
-          return; // excluded, but tracked via allExpired flag below
-        }
-        allExpired = false;
-
-        var reward = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-        if (!reward) return;
-
-        candidates.push({
-          bankName: found.bank.name,
-          cardName: card.name,
-          planName: plan.name,
-          recommendedPlanName: null,
-          pct: reward.pct,
-          cap: reward.cap || "",
-          note: reward.note || "",
-          validUntil: plan.validUntil || ""
-        });
-      }
+      rows = rows.concat(rowsForCard(cardId, found.card, found.bank.name, query, seenRewards));
     });
+
+    // single strict ordering: % descending, 基本 rows participate in the same
+    // sort (user decision 2026-07-11 — no separate trailing section)
+    rows.sort(function (a, b) { return b.pct - a.pct; });
+
+    // layer 2: collapse rows that are identical in every user-visible column
+    // (see rowsForCard's duplicate-suppression comment). note is deliberately
+    // excluded from the key — rows differing only in note render as duplicates
+    // to the user; the first (kept) row's note is shown.
+    var seenRowKeys = {};
+    rows = rows.filter(function (row) {
+      var key = row.cardId + "|" + row.planLabel + "|" + row.pct + "|" +
+                row.cap + "|" + row.validUntil + "|" + (row.extraMeta || "");
+      if (seenRowKeys[key]) return false;
+      seenRowKeys[key] = true;
+      return true;
+    });
+
+    // display-layer threshold (user decision 2026-07-11): only show rewards
+    // >= 2%. data is untouched — rows below the threshold are hidden, and the
+    // results section carries a permanent notice (.filter-note in the HTML).
+    var MIN_DISPLAY_PCT = 2;
+    var hadRowsBelowThreshold = rows.length > 0;
+    rows = rows.filter(function (row) { return row.pct >= MIN_DISPLAY_PCT; });
+    hadRowsBelowThreshold = hadRowsBelowThreshold && rows.length === 0;
 
     var resultsSection = document.getElementById("resultsSection");
     var list = document.getElementById("resultsList");
     list.innerHTML = "";
 
-    if (anyHeldCard && allExpired) {
+    if (state.heldCardIds.length === 0) {
+      hideResults();
+      return;
+    }
+
+    if (rows.length === 0) {
       var empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.textContent = "方案已到期，待資料更新";
+      empty.textContent = hadRowsBelowThreshold
+        ? "此查詢對象有回饋，但均低於 2%，依顯示規則不列出。"
+        : "目前持有的卡片沒有適用於這個查詢對象的回饋資料。";
       list.appendChild(empty);
       resultsSection.classList.remove("hidden");
       return;
     }
 
-    if (candidates.length === 0) {
-      var empty2 = document.createElement("div");
-      empty2.className = "empty-state";
-      empty2.textContent = "目前持有的卡片沒有適用於這個商店／類別的回饋資料。";
-      list.appendChild(empty2);
-      resultsSection.classList.remove("hidden");
-      return;
-    }
-
-    candidates.sort(function (a, b) { return b.pct - a.pct; });
-    var top3 = candidates.slice(0, 3);
-
-    top3.forEach(function (c, idx) {
+    rows.forEach(function (c, idx) {
       var row = document.createElement("div");
       row.className = "result-card";
 
@@ -1011,6 +1209,7 @@
       body.className = "result-body";
 
       var metaLines = [];
+      if (c.extraMeta) metaLines.push(c.extraMeta);
       if (c.cap) metaLines.push("上限：" + c.cap);
       if (c.note) metaLines.push("備註：" + c.note);
       if (c.validUntil) metaLines.push("活動期限：" + c.validUntil);
@@ -1018,15 +1217,11 @@
       body.innerHTML =
         '<div class="result-cardname"></div>' +
         '<div class="result-bank"></div>' +
-        (c.recommendedPlanName ? '<div class="result-recommend"></div>' : '<div class="result-plan"></div>') +
+        '<div class="result-plan"></div>' +
         '<div class="result-meta"></div>';
       body.querySelector(".result-cardname").textContent = c.cardName;
       body.querySelector(".result-bank").textContent = c.bankName;
-      if (c.recommendedPlanName) {
-        body.querySelector(".result-recommend").textContent = "建議方案：" + c.recommendedPlanName;
-      } else {
-        body.querySelector(".result-plan").textContent = "方案：" + c.planName;
-      }
+      body.querySelector(".result-plan").textContent = "方案：" + c.planLabel;
       var metaEl = body.querySelector(".result-meta");
       metaLines.forEach(function (line) {
         var d = document.createElement("div");
@@ -1060,8 +1255,9 @@
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
+          version: STORAGE_VERSION,
           heldCardIds: state.heldCardIds,
-          selectedPlans: state.selectedPlans
+          selectedTiers: state.selectedTiers
         })
       );
     } catch (e) {
@@ -1069,6 +1265,10 @@
     }
   }
 
+  // Restores prefs saved by this same v3 build. Older formats (v2's key, or
+  // malformed/version-mismatched data) are NOT migrated — reset to defaults per
+  // SCHEMA.md. ensureTierSelections() then re-applies the assumedAchieved /
+  // default-tier rules on top of whatever selections were restored.
   function restorePrefs() {
     var raw;
     try {
@@ -1077,20 +1277,30 @@
       raw = null;
     }
     if (!raw) return;
+
     var parsed;
     try {
       parsed = JSON.parse(raw);
     } catch (e) {
-      return;
+      return; // corrupt JSON -> stay on defaults, no throw
     }
-    if (!parsed || !Array.isArray(parsed.heldCardIds) || parsed.heldCardIds.length === 0) return;
 
-    // only keep ids that still exist in current data
+    var looksValid =
+      parsed &&
+      parsed.version === STORAGE_VERSION &&
+      Array.isArray(parsed.heldCardIds) &&
+      parsed.selectedTiers &&
+      typeof parsed.selectedTiers === "object" &&
+      !Array.isArray(parsed.selectedTiers);
+    if (!looksValid) return; // unrecognized/old format -> defaults, no hard conversion
+
+    if (parsed.heldCardIds.length === 0) return;
+
     var validIds = parsed.heldCardIds.filter(function (id) { return findBankByCardId(id); });
     if (validIds.length === 0) return;
 
     state.heldCardIds = validIds;
-    state.selectedPlans = parsed.selectedPlans || {};
+    state.selectedTiers = parsed.selectedTiers || {};
 
     validIds.forEach(function (id) {
       var cb = document.getElementById("card-" + id);
@@ -1107,9 +1317,8 @@
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
     state.heldCardIds = [];
-    state.selectedPlans = {};
-    state.matchedMerchant = null;
-    state.matchedCategory = null;
+    state.selectedTiers = {};
+    state.currentQuery = null;
 
     document.getElementById("restoredBar").classList.add("hidden");
     document.getElementById("restoredBar").classList.remove("show");
@@ -1121,9 +1330,9 @@
     var storeInput = document.getElementById("storeInput");
     if (storeInput) storeInput.value = "";
     document.getElementById("noMatchHint").style.display = "none";
+    hideSelectedTarget();
 
     buildStep1();
-    buildCategoryGrid();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 

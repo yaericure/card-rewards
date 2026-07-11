@@ -1,175 +1,1964 @@
 {
   "merchants": [
-    { "name": "momo購物網", "aliases": ["momo", "momoshop", "富邦momo"], "category": "online" },
-    { "name": "蝦皮購物", "aliases": ["shopee", "蝦皮"], "category": "online" },
-    { "name": "PChome 24h購物", "aliases": ["pchome", "PChome24h"], "category": "online" },
-    { "name": "PChome商店街", "aliases": ["pchome商店街", "pcstore"], "category": "online" },
-    { "name": "Yahoo奇摩購物中心", "aliases": ["yahoo購物中心", "yahoo shopping", "yahoo奇摩"], "category": "online" },
-    { "name": "Yahoo奇摩超級商城", "aliases": ["yahoo超級商城", "yahoo mall"], "category": "online" },
-    { "name": "Coupang", "aliases": ["酷澎", "coupang台灣"], "category": "online" },
-    { "name": "淘寶", "aliases": ["taobao", "淘寶網"], "category": "online" },
-    { "name": "Amazon", "aliases": ["亞馬遜", "amazon.com"], "category": "online" },
-    { "name": "博客來", "aliases": ["books.com.tw", "books"], "category": "online" },
-    { "name": "東森購物", "aliases": ["etmall", "東森"], "category": "online" },
-    { "name": "樂天市場", "aliases": ["rakuten", "樂天"], "category": "online" },
-    { "name": "生活市集", "aliases": ["buy123"], "category": "online" },
-    { "name": "friDay購物", "aliases": ["friday購物", "friday shopping"], "category": "online" },
-    { "name": "udn買東西", "aliases": ["udn shopping", "udn購物網"], "category": "online" },
-    { "name": "森森購物網", "aliases": ["senshop", "森森購物"], "category": "online" },
-
-    { "name": "7-ELEVEN", "aliases": ["711", "7-11", "seven", "小七", "統一超商"], "category": "convenience" },
-    { "name": "全家便利商店", "aliases": ["familymart", "全家", "fami"], "category": "convenience" },
-    { "name": "萊爾富", "aliases": ["hilife", "萊爾富便利商店"], "category": "convenience" },
-    { "name": "OK超商", "aliases": ["okmart", "OK mart", "ok便利商店"], "category": "convenience" },
-
-    { "name": "全聯福利中心", "aliases": ["pxmart", "全聯"], "category": "supermarket" },
-    { "name": "家樂福", "aliases": ["carrefour"], "category": "supermarket" },
-    { "name": "大潤發", "aliases": ["rt-mart", "大潤發量販店"], "category": "supermarket" },
-    { "name": "愛買", "aliases": ["a.mart", "愛買量販"], "category": "supermarket" },
-    { "name": "Costco好市多", "aliases": ["costco", "好市多"], "category": "supermarket" },
-    { "name": "美廉社", "aliases": ["simple mart", "台灣美廉社"], "category": "supermarket" },
-    { "name": "楓康超市", "aliases": ["楓康"], "category": "supermarket" },
-    { "name": "里仁", "aliases": ["leezen", "里仁有機"], "category": "supermarket" },
-
-    { "name": "新光三越", "aliases": ["skm", "shin kong mitsukoshi", "新光三越百貨"], "category": "department" },
-    { "name": "SOGO百貨", "aliases": ["sogo", "太平洋崇光百貨"], "category": "department" },
-    { "name": "遠東百貨", "aliases": ["far eastern department store", "遠百"], "category": "department" },
-    { "name": "微風廣場", "aliases": ["breeze center", "微風"], "category": "department" },
-    { "name": "台北101", "aliases": ["taipei 101", "101購物中心"], "category": "department" },
-    { "name": "三井OUTLET", "aliases": ["mitsui outlet park", "三井outlet park"], "category": "department" },
-    { "name": "環球購物中心", "aliases": ["global mall"], "category": "department" },
-    { "name": "大葉高島屋", "aliases": ["takashimaya", "高島屋"], "category": "department" },
-    { "name": "誠品生活", "aliases": ["eslite spectrum", "誠品"], "category": "department" },
-    { "name": "遠東巨城購物中心", "aliases": ["big city", "巨城購物中心", "巨城"], "category": "department" },
-
-    { "name": "麥當勞", "aliases": ["mcdonald's", "mcdonalds", "mcd"], "category": "dining" },
-    { "name": "肯德基", "aliases": ["kfc"], "category": "dining" },
-    { "name": "摩斯漢堡", "aliases": ["mos burger", "mosburger", "mos"], "category": "dining" },
-    { "name": "漢堡王", "aliases": ["burger king", "bk"], "category": "dining" },
-    { "name": "星巴克", "aliases": ["starbucks"], "category": "dining" },
-    { "name": "路易莎咖啡", "aliases": ["louisa coffee", "louisa"], "category": "dining" },
-    { "name": "鼎泰豐", "aliases": ["din tai fung", "dtf"], "category": "dining" },
-    { "name": "王品牛排", "aliases": ["wang steak", "王品"], "category": "dining" },
-    { "name": "西堤牛排", "aliases": ["tasty steak", "西堤"], "category": "dining" },
-    { "name": "陶板屋", "aliases": ["tao pao wu"], "category": "dining" },
-    { "name": "原燒", "aliases": ["original yakiniku", "原燒炭火燒肉"], "category": "dining" },
-    { "name": "品田牧場", "aliases": ["buta farm"], "category": "dining" },
-    { "name": "石二鍋", "aliases": ["shi er guo"], "category": "dining" },
-    { "name": "聚北海道昆布鍋", "aliases": ["ju hot pot", "聚"], "category": "dining" },
-    { "name": "瓦城泰統", "aliases": ["wowprime thai", "瓦城"], "category": "dining" },
-    { "name": "藏壽司", "aliases": ["kura sushi"], "category": "dining" },
-    { "name": "壽司郎", "aliases": ["sushiro"], "category": "dining" },
-    { "name": "爭鮮", "aliases": ["sushi express"], "category": "dining" },
-    { "name": "必勝客", "aliases": ["pizza hut"], "category": "dining" },
-    { "name": "達美樂", "aliases": ["domino's pizza", "dominos"], "category": "dining" },
-    { "name": "八方雲集", "aliases": ["bafang yunji"], "category": "dining" },
-    { "name": "鬍鬚張魯肉飯", "aliases": ["hu's", "鬍鬚張"], "category": "dining" },
-    { "name": "三商巧福", "aliases": ["san shang chiao fu"], "category": "dining" },
-    { "name": "春水堂", "aliases": ["chun shui tang"], "category": "dining" },
-    { "name": "50嵐", "aliases": ["fifty lan", "五十嵐"], "category": "dining" },
-    { "name": "老虎堂", "aliases": ["tiger sugar"], "category": "dining" },
-    { "name": "CoCo都可", "aliases": ["coco tea", "coco"], "category": "dining" },
-    { "name": "迷客夏", "aliases": ["milksha"], "category": "dining" },
-    { "name": "貢茶", "aliases": ["gong cha"], "category": "dining" },
-    { "name": "茶湯會", "aliases": ["tp tea"], "category": "dining" },
-    { "name": "大苑子", "aliases": ["da yuan zi"], "category": "dining" },
-    { "name": "清心福全", "aliases": ["ching shin", "chingshin"], "category": "dining" },
-    { "name": "丹丹漢堡", "aliases": ["dandan hamburger", "丹丹"], "category": "dining" },
-
-    { "name": "foodpanda", "aliases": ["熊貓外送", "panda"], "category": "delivery" },
-    { "name": "Uber Eats", "aliases": ["ubereats", "優食"], "category": "delivery" },
-
-    { "name": "台灣高鐵", "aliases": ["thsr", "high speed rail", "高鐵"], "category": "transport" },
-    { "name": "台鐵", "aliases": ["tra", "台灣鐵路", "台灣鐵路管理局"], "category": "transport" },
-    { "name": "悠遊卡", "aliases": ["easycard", "悠遊卡加值"], "category": "transport" },
-    { "name": "一卡通", "aliases": ["ipass", "一卡通加值"], "category": "transport" },
-    { "name": "Uber", "aliases": ["uber叫車"], "category": "transport" },
-    { "name": "台灣大車隊", "aliases": ["taiwan taxi", "55688"], "category": "transport" },
-    { "name": "iRent", "aliases": ["irent租車", "irent共享車"], "category": "transport" },
-    { "name": "和運租車", "aliases": ["hotai leasing", "easyrent"], "category": "transport" },
-    { "name": "格上租車", "aliases": ["car plus", "格上"], "category": "transport" },
-    { "name": "停車大聲公", "aliases": ["parkingbar"], "category": "transport" },
-    { "name": "YouBike", "aliases": ["微笑單車"], "category": "transport" },
-
-    { "name": "台灣中油", "aliases": ["cpc", "中油", "中國石油"], "category": "gas" },
-    { "name": "台亞石油", "aliases": ["formosa petrochemical", "台亞"], "category": "gas" },
-    { "name": "全國加油站", "aliases": ["全國", "全國加油"], "category": "gas" },
-
-    { "name": "Agoda", "aliases": ["agoda訂房"], "category": "travel" },
-    { "name": "Booking.com", "aliases": ["booking", "booking訂房"], "category": "travel" },
-    { "name": "Trip.com", "aliases": ["攜程", "trip"], "category": "travel" },
-    { "name": "KKday", "aliases": ["kkday旅遊"], "category": "travel" },
-    { "name": "Klook", "aliases": ["客路", "klook旅遊"], "category": "travel" },
-    { "name": "易遊網", "aliases": ["eztravel"], "category": "travel" },
-    { "name": "雄獅旅遊", "aliases": ["lion travel", "雄獅"], "category": "travel" },
-    { "name": "長榮航空", "aliases": ["eva air", "長榮"], "category": "travel" },
-    { "name": "中華航空", "aliases": ["china airlines", "華航"], "category": "travel" },
-    { "name": "台灣虎航", "aliases": ["tigerair taiwan", "虎航"], "category": "travel" },
-    { "name": "星宇航空", "aliases": ["starlux airlines", "星宇"], "category": "travel" },
-    { "name": "燦星旅遊", "aliases": ["settour"], "category": "travel" },
-    { "name": "Expedia", "aliases": ["expedia訂房"], "category": "travel" },
-    { "name": "Airbnb", "aliases": ["愛彼迎"], "category": "travel" },
-
-    { "name": "Netflix", "aliases": ["網飛"], "category": "streaming" },
-    { "name": "Disney+", "aliases": ["disney plus", "迪士尼plus"], "category": "streaming" },
-    { "name": "Spotify", "aliases": ["spotify音樂"], "category": "streaming" },
-    { "name": "YouTube Premium", "aliases": ["youtube premium訂閱"], "category": "streaming" },
-    { "name": "KKBOX", "aliases": ["kkbox音樂"], "category": "streaming" },
-    { "name": "CATCHPLAY+", "aliases": ["catchplay", "catchplay plus"], "category": "streaming" },
-    { "name": "myVideo", "aliases": ["台灣大myvideo"], "category": "streaming" },
-    { "name": "friDay影音", "aliases": ["friday影音", "friday video"], "category": "streaming" },
-    { "name": "Apple Music", "aliases": ["apple music訂閱"], "category": "streaming" },
-    { "name": "Hami Video", "aliases": ["中華電信hami video"], "category": "streaming" },
-
-    { "name": "LINE Pay", "aliases": ["linepay", "line支付"], "category": "mobilepay" },
-    { "name": "街口支付", "aliases": ["jkopay", "街口"], "category": "mobilepay" },
-    { "name": "全支付", "aliases": ["quanzhifu", "全家全支付"], "category": "mobilepay" },
-    { "name": "全盈+PAY", "aliases": ["全盈支付", "全盈pay"], "category": "mobilepay" },
-    { "name": "Pi拍錢包", "aliases": ["pi wallet", "pi錢包"], "category": "mobilepay" },
-    { "name": "悠遊付", "aliases": ["easywallet"], "category": "mobilepay" },
-    { "name": "icash Pay", "aliases": ["icashpay", "愛金卡支付"], "category": "mobilepay" },
-    { "name": "Apple Pay", "aliases": ["applepay"], "category": "mobilepay" },
-    { "name": "Google Pay", "aliases": ["googlepay", "gpay"], "category": "mobilepay" },
-
-    { "name": "威秀影城", "aliases": ["vieshow cinemas", "威秀"], "category": "entertainment" },
-    { "name": "國賓影城", "aliases": ["ambassador theatres", "國賓"], "category": "entertainment" },
-    { "name": "秀泰影城", "aliases": ["showtime cinemas", "秀泰"], "category": "entertainment" },
-    { "name": "Steam", "aliases": ["steam商店"], "category": "entertainment" },
-    { "name": "PlayStation Store", "aliases": ["ps store", "psn商店"], "category": "entertainment" },
-    { "name": "Nintendo eShop", "aliases": ["nintendo商店", "switch eshop"], "category": "entertainment" },
-    { "name": "Xbox", "aliases": ["xbox商店", "microsoft store"], "category": "entertainment" },
-    { "name": "錢櫃KTV", "aliases": ["cashbox ktv", "錢櫃"], "category": "entertainment" },
-    { "name": "好樂迪KTV", "aliases": ["holiday ktv", "好樂迪"], "category": "entertainment" },
-    { "name": "大魯閣練功房", "aliases": ["taroko park"], "category": "entertainment" },
-
-    { "name": "中華電信", "aliases": ["cht", "chunghwa telecom"], "category": "telecom" },
-    { "name": "台灣大哥大", "aliases": ["taiwan mobile"], "category": "telecom" },
-    { "name": "遠傳電信", "aliases": ["fetnet", "遠傳"], "category": "telecom" },
-
-    { "name": "國泰人壽", "aliases": ["cathay life"], "category": "insurance" },
-    { "name": "富邦人壽", "aliases": ["fubon life"], "category": "insurance" },
-    { "name": "南山人壽", "aliases": ["nan shan life"], "category": "insurance" },
-    { "name": "新光人壽", "aliases": ["shin kong life"], "category": "insurance" },
-    { "name": "台灣人壽", "aliases": ["taiwan life"], "category": "insurance" },
-    { "name": "中國人壽", "aliases": ["china life"], "category": "insurance" },
-
-    { "name": "台灣電力公司", "aliases": ["taipower", "台電", "台電電費"], "category": "utilities" },
-    { "name": "台灣自來水公司", "aliases": ["taiwan water corporation", "台水", "台水水費"], "category": "utilities" },
-    { "name": "全民健保費", "aliases": ["健保費", "national health insurance premium"], "category": "utilities" },
-    { "name": "地價稅", "aliases": ["land value tax"], "category": "utilities" },
-    { "name": "房屋稅", "aliases": ["house tax"], "category": "utilities" },
-    { "name": "使用牌照稅", "aliases": ["牌照稅", "vehicle license tax"], "category": "utilities" },
-    { "name": "綜合所得稅", "aliases": ["所得稅", "individual income tax"], "category": "utilities" },
-    { "name": "大台北瓦斯", "aliases": ["taipeh gas", "大台北瓦斯費"], "category": "utilities" },
-    { "name": "學雜費", "aliases": ["學費", "tuition fee"], "category": "utilities" },
-
-    { "name": "台大醫院", "aliases": ["ntuh", "國立台灣大學醫學院附設醫院"], "category": "medical" },
-    { "name": "台北榮總", "aliases": ["taipei veterans general hospital", "榮總"], "category": "medical" },
-    { "name": "長庚醫院", "aliases": ["chang gung memorial hospital", "長庚"], "category": "medical" },
-    { "name": "馬偕紀念醫院", "aliases": ["mackay memorial hospital", "馬偕"], "category": "medical" },
-    { "name": "亞東醫院", "aliases": ["far eastern memorial hospital", "亞東紀念醫院"], "category": "medical" },
-    { "name": "新光醫院", "aliases": ["shin kong wu ho-su memorial hospital"], "category": "medical" },
-    { "name": "國泰綜合醫院", "aliases": ["cathay general hospital", "國泰醫院"], "category": "medical" },
-    { "name": "三軍總醫院", "aliases": ["tri-service general hospital", "三總"], "category": "medical" }
+    {
+      "name": "7-ELEVEN",
+      "aliases": [
+        "7-11",
+        "7-ELEVEN (7-11) 實體門市",
+        "711",
+        "小七",
+        "統一超商"
+      ]
+    },
+    {
+      "name": "Apple 直營(含官網)",
+      "aliases": [
+        "Apple直營店"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "車麻吉",
+      "aliases": [
+        "Autopass(車麻吉)",
+        "車麻吉(不含加油、充電)"
+      ]
+    },
+    {
+      "name": "遠東巨城購物中心",
+      "aliases": [
+        "Big City遠東巨城購物中心",
+        "遠東巨城",
+        "巨城",
+        "Big City"
+      ],
+      "dining": false
+    },
+    {
+      "name": "Coupang酷澎",
+      "aliases": [
+        "Coupang 酷澎(台灣)",
+        "酷澎",
+        "酷澎(Coupang)"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "Agoda",
+      "aliases": [
+        "agoda"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "易遊網",
+      "aliases": [
+        "ezTravel易遊網"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "Foodpanda",
+      "aliases": [
+        "foodpanda"
+      ],
+      "dining": true,
+      "channel": "online"
+    },
+    {
+      "name": "Sing Go",
+      "aliases": [
+        "sing!go"
+      ]
+    },
+    {
+      "name": "Trip.com",
+      "aliases": [
+        "trip.com"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "Yoxi",
+      "aliases": [
+        "yoxi"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "momo購物網",
+      "aliases": [
+        "momo"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "MITSUI OUTLET PARK",
+      "aliases": [
+        "MITSUI OUTLET PARK (林口/台中港/台南)",
+        "MITSUI OUTLET PARK(林口、台中港、台南)",
+        "三井(MITSUI OUTLET PARK)",
+        "三井OUTLET"
+      ]
+    },
+    {
+      "name": "LaLaport",
+      "aliases": [
+        "Mitsui Shopping Park LaLaport(南港/台中)",
+        "Mitsui Shopping Park LaLaport(南港、台中)",
+        "Mitsui Shopping Park LaLaport",
+        "Mitsui Shopping Park LaLaport(南港/台中)"
+      ]
+    },
+    {
+      "name": "EVALUE",
+      "aliases": [
+        "華城電能EVALUE"
+      ]
+    },
+    {
+      "name": "EVOASIS",
+      "aliases": [
+        "源點EVOASIS"
+      ]
+    },
+    {
+      "name": "全家便利商店",
+      "aliases": [
+        "全家",
+        "全家便利商店 實體門市",
+        "familymart",
+        "family"
+      ]
+    },
+    {
+      "name": "全聯福利中心",
+      "aliases": [
+        "全聯福利中心 實體門市(不含大全聯)",
+        "全聯",
+        "pxmart"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "台塑石油加油站",
+      "aliases": [
+        "台塑石油PAY"
+      ]
+    },
+    {
+      "name": "台灣中油",
+      "aliases": [
+        "中油直營",
+        "台灣中油-直營站",
+        "台灣中油(直營店)"
+      ]
+    },
+    {
+      "name": "新光三越",
+      "aliases": [
+        "新光三越(含skm pay)",
+        "新光三越百貨"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "IKEA宜家家居",
+      "aliases": [
+        "IKEA"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "LOPIA台灣",
+      "aliases": [
+        "LOPIA"
+      ]
+    },
+    {
+      "name": "PChome",
+      "aliases": [
+        "PChome 24h購物(不含儲值及電子票券)",
+        "PChome 24h購物",
+        "PChome 24h購物(不含儲值及電子票券)"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "玉山Wallet愛心捐款",
+      "aliases": [
+        "玉山Wallet愛心捐款-單筆捐款",
+        "玉山Wallet愛心捐款-定期定額"
+      ]
+    },
+    {
+      "name": "誠品生活",
+      "aliases": [
+        "誠品生活(含線上)",
+        "誠品生活(含誠品書店與誠品線上)"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "台灣高鐵",
+      "aliases": [
+        "高鐵"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "台鐵",
+      "aliases": [
+        "臺鐵"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "東南旅遊",
+      "aliases": [
+        "東南旅行社"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "雄獅旅遊",
+      "aliases": [
+        "雄獅旅行社"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "鳳凰旅遊",
+      "aliases": [
+        "鳳凰國際旅行社",
+        "鳳凰旅行社"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "杏一藥局",
+      "aliases": [
+        "杏一醫療"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "ONCOR響艷都市會所",
+      "aliases": [
+        "ONCOR"
+      ]
+    },
+    {
+      "name": "錢櫃KTV",
+      "aliases": [
+        "錢櫃"
+      ]
+    },
+    {
+      "name": "淘寶",
+      "aliases": [
+        "淘寶網"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "Global Mall環球購物中心",
+      "aliases": [
+        "環球購物中心"
+      ]
+    },
+    {
+      "name": "微風",
+      "aliases": [
+        "微風廣場",
+        "微風百貨"
+      ]
+    },
+    {
+      "name": "漢神百貨",
+      "aliases": [
+        "漢神百貨(不含漢神巨蛋)"
+      ]
+    },
+    {
+      "name": "台中漢神洲際購物廣場",
+      "aliases": [
+        "漢神洲際"
+      ]
+    },
+    {
+      "name": "遠東SOGO百貨",
+      "aliases": [
+        "遠東SOGO"
+      ]
+    },
+    {
+      "name": "台灣大車隊",
+      "aliases": [
+        "55688(台灣大車隊、機場接送)"
+      ]
+    },
+    {
+      "name": "蝦皮購物",
+      "aliases": [
+        "蝦皮",
+        "shopee",
+        "蝦皮商城"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "%Arabica",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "17FIT",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "50嵐",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "85度C",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "ABV系列",
+      "aliases": []
+    },
+    {
+      "name": "AIRSIM",
+      "aliases": []
+    },
+    {
+      "name": "ANA全日空",
+      "aliases": []
+    },
+    {
+      "name": "ATT 4 FUN",
+      "aliases": []
+    },
+    {
+      "name": "Adidas",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Airbnb",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Amazing Talker",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Amazon",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Animate",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Anytime Fitness",
+      "aliases": []
+    },
+    {
+      "name": "Apple 媒體服務",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Apple錢包指定交通卡",
+      "aliases": [
+        "Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)"
+      ]
+    },
+    {
+      "name": "BELLAVITA",
+      "aliases": []
+    },
+    {
+      "name": "BOOK WALKER",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "BRUN 不然",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "Bar Home",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "Bar TCRC",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "Booking.com",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "CAFE ACME",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "CAFE!N",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "CITYLINK",
+      "aliases": []
+    },
+    {
+      "name": "COMPOSE COFFEE",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "Canva",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "ChatGPT",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Claude",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Cursor",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "DJB",
+      "aliases": []
+    },
+    {
+      "name": "DJI",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Disney+",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Draft Land",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "Duolingo",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "EZTABLE",
+      "aliases": [],
+      "dining": true,
+      "channel": "online"
+    },
+    {
+      "name": "Expedia",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Ezfly易飛網",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "FANME",
+      "aliases": []
+    },
+    {
+      "name": "Fake Sober",
+      "aliases": []
+    },
+    {
+      "name": "Farfetch",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Foodomo",
+      "aliases": [],
+      "dining": true,
+      "channel": "online"
+    },
+    {
+      "name": "FunNow",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "GU",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Gamma",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Gemini",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "GoPro",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Google Play",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Grab",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "HOKA",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "HOLA",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Hahow",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Hotels.com",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "ICOCA",
+      "aliases": []
+    },
+    {
+      "name": "Insta360",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "K-MONSTAR",
+      "aliases": []
+    },
+    {
+      "name": "KKTIX",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "KKday",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "KX PILATES",
+      "aliases": []
+    },
+    {
+      "name": "Klook",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "LINEGO",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "MOONROCK",
+      "aliases": []
+    },
+    {
+      "name": "MYPROTEIN",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Max",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "MyCard",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "NAGOMI",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "NET",
+      "aliases": []
+    },
+    {
+      "name": "NOKE忠泰樂生活",
+      "aliases": []
+    },
+    {
+      "name": "NOL",
+      "aliases": []
+    },
+    {
+      "name": "Netflix",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "New Balance",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Nike",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Nintendo",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Notion",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "OPENTIX兩廳院文化生活",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Olive Young",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Onitsuka Tiger",
+      "aliases": []
+    },
+    {
+      "name": "PASMO",
+      "aliases": []
+    },
+    {
+      "name": "PUMA",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "PayEasy",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Perplexity",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Phowa",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "PlayStation",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "PressPlay",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Readmoo讀墨",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Richart Mart",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "SHEIN",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "SUICA",
+      "aliases": []
+    },
+    {
+      "name": "Salomon",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "Speak",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Spotify",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Steam",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Studio A",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "TAIL",
+      "aliases": []
+    },
+    {
+      "name": "The Antipodean",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "Tutor ABC",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "U-POWER",
+      "aliases": []
+    },
+    {
+      "name": "UG TEA",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "UNIQLO",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "USPACE",
+      "aliases": []
+    },
+    {
+      "name": "Uber",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "Uber Eats",
+      "aliases": [],
+      "dining": true,
+      "channel": "online"
+    },
+    {
+      "name": "UrMart優馬選品",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "VITABOX",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "W HOTEL",
+      "aliases": []
+    },
+    {
+      "name": "WEVERSE",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "WOWPASS",
+      "aliases": []
+    },
+    {
+      "name": "World Gym",
+      "aliases": []
+    },
+    {
+      "name": "YouTube Premium",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "ZARA",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "gonna共樂遊",
+      "aliases": []
+    },
+    {
+      "name": "hoi好好生活",
+      "aliases": []
+    },
+    {
+      "name": "iCharging",
+      "aliases": []
+    },
+    {
+      "name": "iHerb",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "iRent",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "lululemon",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "uTagGo",
+      "aliases": [
+        "uTagGo(不含月租停車)"
+      ]
+    },
+    {
+      "name": "丁丁藥局",
+      "aliases": []
+    },
+    {
+      "name": "三創生活",
+      "aliases": []
+    },
+    {
+      "name": "三商餐飲",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "三賀旅行社",
+      "aliases": []
+    },
+    {
+      "name": "中友百貨",
+      "aliases": []
+    },
+    {
+      "name": "中華航空",
+      "aliases": []
+    },
+    {
+      "name": "五大唱片",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "五桐號",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "五福旅遊",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "亞洲航空",
+      "aliases": []
+    },
+    {
+      "name": "享溫馨",
+      "aliases": []
+    },
+    {
+      "name": "京站",
+      "aliases": []
+    },
+    {
+      "name": "仙女樹",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "佑全保健藥妝",
+      "aliases": []
+    },
+    {
+      "name": "俥亭停車",
+      "aliases": []
+    },
+    {
+      "name": "健康人生藥局",
+      "aliases": []
+    },
+    {
+      "name": "健身工廠",
+      "aliases": []
+    },
+    {
+      "name": "兆品酒店",
+      "aliases": []
+    },
+    {
+      "name": "全國加油",
+      "aliases": []
+    },
+    {
+      "name": "全國特急電",
+      "aliases": []
+    },
+    {
+      "name": "全國電子",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "全球迪士尼飯店",
+      "aliases": []
+    },
+    {
+      "name": "八曜和茶",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "八里福朋喜來登酒店",
+      "aliases": []
+    },
+    {
+      "name": "凱悅KTV",
+      "aliases": []
+    },
+    {
+      "name": "加利利旅行社",
+      "aliases": []
+    },
+    {
+      "name": "北投晶泉丰旅",
+      "aliases": []
+    },
+    {
+      "name": "北投老爺酒店",
+      "aliases": []
+    },
+    {
+      "name": "南港老爺行旅",
+      "aliases": []
+    },
+    {
+      "name": "南紡購物中心",
+      "aliases": []
+    },
+    {
+      "name": "博客來",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "卡多摩",
+      "aliases": []
+    },
+    {
+      "name": "卡達航空",
+      "aliases": []
+    },
+    {
+      "name": "叫車吧",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "叮哥茶飲",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "可樂旅遊",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "台中大毅老爺行旅",
+      "aliases": []
+    },
+    {
+      "name": "台中李方艾美酒店",
+      "aliases": []
+    },
+    {
+      "name": "台中福華大飯店",
+      "aliases": []
+    },
+    {
+      "name": "台中萬楓酒店",
+      "aliases": []
+    },
+    {
+      "name": "台中豐邑MOXY酒店",
+      "aliases": []
+    },
+    {
+      "name": "台亞加油站",
+      "aliases": []
+    },
+    {
+      "name": "台北101",
+      "aliases": []
+    },
+    {
+      "name": "台北中山雅樂軒酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北六福萬怡酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北北投雅樂軒酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北君悅酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北喜來登大飯店",
+      "aliases": []
+    },
+    {
+      "name": "台北國泰萬怡酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北士林萬麗酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北宿之酒店．臻品之選",
+      "aliases": []
+    },
+    {
+      "name": "台北寒舍艾美酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北晶華酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北漢來大飯店",
+      "aliases": []
+    },
+    {
+      "name": "台北福華大飯店",
+      "aliases": []
+    },
+    {
+      "name": "台北老爺酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北萬豪酒店",
+      "aliases": []
+    },
+    {
+      "name": "台北賦樂旅居",
+      "aliases": []
+    },
+    {
+      "name": "台南安平雅樂軒酒店",
+      "aliases": []
+    },
+    {
+      "name": "台南晶英酒店",
+      "aliases": []
+    },
+    {
+      "name": "台南老爺行旅",
+      "aliases": []
+    },
+    {
+      "name": "台塑生醫",
+      "aliases": [
+        "台塑生醫實體門市"
+      ]
+    },
+    {
+      "name": "台塑蔬菜",
+      "aliases": [
+        "台塑蔬菜實體門市"
+      ]
+    },
+    {
+      "name": "台塑購物網",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "台東桂田喜來登酒店",
+      "aliases": []
+    },
+    {
+      "name": "台灣Bolt",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "台灣快綫",
+      "aliases": []
+    },
+    {
+      "name": "台灣虎航",
+      "aliases": []
+    },
+    {
+      "name": "台茂購物中心",
+      "aliases": []
+    },
+    {
+      "name": "君品酒店",
+      "aliases": []
+    },
+    {
+      "name": "和運租車",
+      "aliases": []
+    },
+    {
+      "name": "品文旅",
+      "aliases": []
+    },
+    {
+      "name": "唐吉訶德",
+      "aliases": []
+    },
+    {
+      "name": "喜樂時代影城",
+      "aliases": []
+    },
+    {
+      "name": "喜鴻假期",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "國內飯店住宿",
+      "aliases": []
+    },
+    {
+      "name": "國泰航空",
+      "aliases": []
+    },
+    {
+      "name": "國賓影城",
+      "aliases": []
+    },
+    {
+      "name": "土耳其航空",
+      "aliases": []
+    },
+    {
+      "name": "墾丁福華渡假飯店",
+      "aliases": []
+    },
+    {
+      "name": "夢時代",
+      "aliases": []
+    },
+    {
+      "name": "大全聯",
+      "aliases": []
+    },
+    {
+      "name": "大樹藥局",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "大江國際購物中心",
+      "aliases": []
+    },
+    {
+      "name": "大葉高島屋",
+      "aliases": []
+    },
+    {
+      "name": "大買家",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "大阪環球影城(USJ)",
+      "aliases": []
+    },
+    {
+      "name": "大韓航空",
+      "aliases": []
+    },
+    {
+      "name": "太平洋百貨",
+      "aliases": []
+    },
+    {
+      "name": "太魯閣晶英酒店",
+      "aliases": []
+    },
+    {
+      "name": "好在乎",
+      "aliases": []
+    },
+    {
+      "name": "好好生醫",
+      "aliases": []
+    },
+    {
+      "name": "好市多 Costco",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "好樂迪",
+      "aliases": []
+    },
+    {
+      "name": "威秀影城",
+      "aliases": []
+    },
+    {
+      "name": "宏匯廣場",
+      "aliases": []
+    },
+    {
+      "name": "宜得利",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "宜蘭力麗威斯汀度假酒店",
+      "aliases": []
+    },
+    {
+      "name": "宜蘭礁溪福朋喜來登酒店",
+      "aliases": []
+    },
+    {
+      "name": "家樂福",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "寬宏售票",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "寶雅",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "小樹購",
+      "aliases": [
+        "小樹購(不含電子票券)"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "小米台灣",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "屈臣氏",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "屋馬燒肉",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "山富旅遊",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "巴哈姆特",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "年代售票",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "康是美",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "廣三SOGO",
+      "aliases": []
+    },
+    {
+      "name": "得正",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "微樂客",
+      "aliases": []
+    },
+    {
+      "name": "悠遊卡自動加值",
+      "aliases": []
+    },
+    {
+      "name": "愛爾達",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "找到了旅行社",
+      "aliases": []
+    },
+    {
+      "name": "拓元售票",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "捷星航空",
+      "aliases": []
+    },
+    {
+      "name": "捷絲旅",
+      "aliases": []
+    },
+    {
+      "name": "新光影城",
+      "aliases": []
+    },
+    {
+      "name": "新加坡航空",
+      "aliases": []
+    },
+    {
+      "name": "新月廣場",
+      "aliases": []
+    },
+    {
+      "name": "新村站著吃",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "新竹福華大飯店",
+      "aliases": []
+    },
+    {
+      "name": "新竹老爺酒店",
+      "aliases": []
+    },
+    {
+      "name": "新竹豐邑喜來登大飯店",
+      "aliases": []
+    },
+    {
+      "name": "日本PayPay",
+      "aliases": []
+    },
+    {
+      "name": "日本航空",
+      "aliases": []
+    },
+    {
+      "name": "昇恆昌",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "易飛旅遊",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "星宇航空",
+      "aliases": []
+    },
+    {
+      "name": "星聚點",
+      "aliases": []
+    },
+    {
+      "name": "星野集團",
+      "aliases": []
+    },
+    {
+      "name": "智生活",
+      "aliases": [
+        "智生活(7/8起新增)"
+      ]
+    },
+    {
+      "name": "東京華納兄弟哈利波特影城",
+      "aliases": []
+    },
+    {
+      "name": "東京迪士尼樂園",
+      "aliases": []
+    },
+    {
+      "name": "東森",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "東橫INN",
+      "aliases": []
+    },
+    {
+      "name": "林口亞昕福朋喜來登酒店",
+      "aliases": []
+    },
+    {
+      "name": "格上租車",
+      "aliases": []
+    },
+    {
+      "name": "桃園喜來登酒店",
+      "aliases": []
+    },
+    {
+      "name": "桃園大溪笠復威斯汀度假酒店",
+      "aliases": []
+    },
+    {
+      "name": "樂天KOBO",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "樂子 the Diner",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "樂家康",
+      "aliases": []
+    },
+    {
+      "name": "樂桃航空",
+      "aliases": []
+    },
+    {
+      "name": "永利旅行社",
+      "aliases": []
+    },
+    {
+      "name": "法國航空",
+      "aliases": []
+    },
+    {
+      "name": "海底撈",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "清心福全",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "溪頭福華渡假飯店",
+      "aliases": []
+    },
+    {
+      "name": "漢來日月行館",
+      "aliases": []
+    },
+    {
+      "name": "漢神巨蛋",
+      "aliases": []
+    },
+    {
+      "name": "澎湖福朋喜來登酒店",
+      "aliases": []
+    },
+    {
+      "name": "然一酒店",
+      "aliases": []
+    },
+    {
+      "name": "煙波台南館",
+      "aliases": []
+    },
+    {
+      "name": "煙波宜蘭館",
+      "aliases": []
+    },
+    {
+      "name": "煙波新竹湖濱館",
+      "aliases": []
+    },
+    {
+      "name": "煙波新竹都會館",
+      "aliases": []
+    },
+    {
+      "name": "煙波花時間 宜蘭傳藝",
+      "aliases": []
+    },
+    {
+      "name": "煙波花時間 花蓮",
+      "aliases": []
+    },
+    {
+      "name": "煙波花蓮太魯閣",
+      "aliases": []
+    },
+    {
+      "name": "煙波花蓮館",
+      "aliases": []
+    },
+    {
+      "name": "煙波蘇澳四季雙泉館",
+      "aliases": []
+    },
+    {
+      "name": "燒肉政宗",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "營養師輕食",
+      "aliases": [],
+      "dining": true,
+      "channel": "online"
+    },
+    {
+      "name": "燦坤",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "燦星旅遊",
+      "aliases": []
+    },
+    {
+      "name": "特力屋",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "特斯拉",
+      "aliases": [
+        "Tesla",
+        "tesla"
+      ]
+    },
+    {
+      "name": "王品瘋Pay",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "理想旅遊",
+      "aliases": []
+    },
+    {
+      "name": "瑪黑家居",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "知本老爺酒店",
+      "aliases": []
+    },
+    {
+      "name": "知識衛星",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "石門水庫福華渡假飯店",
+      "aliases": []
+    },
+    {
+      "name": "碳佐麻里",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "礁溪寒沐酒店",
+      "aliases": []
+    },
+    {
+      "name": "礁溪晶泉丰旅",
+      "aliases": []
+    },
+    {
+      "name": "礁溪老爺酒店",
+      "aliases": []
+    },
+    {
+      "name": "福懋加油站",
+      "aliases": []
+    },
+    {
+      "name": "秀泰影城",
+      "aliases": []
+    },
+    {
+      "name": "秀泰生活",
+      "aliases": []
+    },
+    {
+      "name": "立榮航空",
+      "aliases": []
+    },
+    {
+      "name": "統一速邁樂(限本島)加油站",
+      "aliases": []
+    },
+    {
+      "name": "美廉社",
+      "aliases": []
+    },
+    {
+      "name": "美麗華",
+      "aliases": []
+    },
+    {
+      "name": "翰品酒店",
+      "aliases": []
+    },
+    {
+      "name": "老爺會館台北南西",
+      "aliases": []
+    },
+    {
+      "name": "老爺會館台北林森",
+      "aliases": []
+    },
+    {
+      "name": "耐斯廣場",
+      "aliases": []
+    },
+    {
+      "name": "聖德科斯",
+      "aliases": [],
+      "channel": "both"
+    },
+    {
+      "name": "聯合航空",
+      "aliases": []
+    },
+    {
+      "name": "聯通",
+      "aliases": []
+    },
+    {
+      "name": "臺中勤美洲際酒店",
+      "aliases": []
+    },
+    {
+      "name": "臺虎精釀(含啜飲室)",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "花蓮潔西艾美酒店",
+      "aliases": []
+    },
+    {
+      "name": "茶之魔手",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "茶六燒肉堂",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "華信航空",
+      "aliases": []
+    },
+    {
+      "name": "華泰名品城",
+      "aliases": []
+    },
+    {
+      "name": "萊爾富",
+      "aliases": [
+        "萊爾富實體門市"
+      ]
+    },
+    {
+      "name": "萬客什鍋",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "萬家福",
+      "aliases": []
+    },
+    {
+      "name": "蘭城晶英酒店",
+      "aliases": []
+    },
+    {
+      "name": "虎鐵健身 X 器械皮拉提斯",
+      "aliases": []
+    },
+    {
+      "name": "行健旅遊",
+      "aliases": []
+    },
+    {
+      "name": "詹記麻辣火鍋",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "貳樓",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "超核心 Hypercore",
+      "aliases": []
+    },
+    {
+      "name": "越捷航空",
+      "aliases": []
+    },
+    {
+      "name": "遊戲橘子",
+      "aliases": [],
+      "channel": "online"
+    },
+    {
+      "name": "達美航空",
+      "aliases": []
+    },
+    {
+      "name": "遠東Garden City",
+      "aliases": []
+    },
+    {
+      "name": "遠東Garden City(大巨蛋)",
+      "aliases": []
+    },
+    {
+      "name": "遠東百貨",
+      "aliases": []
+    },
+    {
+      "name": "酷航",
+      "aliases": []
+    },
+    {
+      "name": "酷遊卡",
+      "aliases": []
+    },
+    {
+      "name": "采盟",
+      "aliases": []
+    },
+    {
+      "name": "長庚生技",
+      "aliases": [
+        "長庚生技實體門市"
+      ]
+    },
+    {
+      "name": "長榮航空",
+      "aliases": []
+    },
+    {
+      "name": "長汎假期",
+      "aliases": []
+    },
+    {
+      "name": "阿聯酋航空",
+      "aliases": []
+    },
+    {
+      "name": "雞湯大叔",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "雲品溫泉酒店",
+      "aliases": []
+    },
+    {
+      "name": "雲林華安大飯店",
+      "aliases": []
+    },
+    {
+      "name": "饗饗 INPARADISE",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "高雄洲際酒店",
+      "aliases": []
+    },
+    {
+      "name": "高雄漢來大飯店",
+      "aliases": []
+    },
+    {
+      "name": "高雄福華大飯店",
+      "aliases": []
+    },
+    {
+      "name": "高雄萬豪酒店",
+      "aliases": []
+    },
+    {
+      "name": "龜記",
+      "aliases": [],
+      "dining": true
+    },
+    {
+      "name": "神腦",
+      "aliases": [
+        "神腦國際",
+        "senao"
+      ],
+      "channel": "both"
+    },
+    {
+      "name": "麥當勞",
+      "aliases": [
+        "mcdonalds",
+        "mcdonald's"
+      ],
+      "dining": true
+    },
+    {
+      "name": "馬光中醫診所",
+      "aliases": [
+        "馬光中醫"
+      ]
+    },
+    {
+      "name": "日本LAWSON",
+      "aliases": [
+        "lawson",
+        "羅森"
+      ]
+    },
+    {
+      "name": "BicCamera",
+      "aliases": [
+        "bic camera",
+        "必客"
+      ]
+    },
+    {
+      "name": "韓國GS25",
+      "aliases": [
+        "gs25"
+      ]
+    },
+    {
+      "name": "DAISO",
+      "aliases": [
+        "大創",
+        "daiso japan"
+      ]
+    },
+    {
+      "name": "統一時代百貨台北店",
+      "aliases": [
+        "統一時代",
+        "統一時代百貨",
+        "統一時代台北店",
+        "uni-president department store"
+      ]
+    },
+    {
+      "name": "DREAM PLAZA",
+      "aliases": [
+        "dreamplaza",
+        "統一時代高雄店"
+      ]
+    },
+    {
+      "name": "SKM Park Outlets高雄草衙",
+      "aliases": [
+        "skm park",
+        "skm park outlets",
+        "高雄草衙"
+      ]
+    },
+    {
+      "name": "天貓",
+      "aliases": [
+        "tmall",
+        "天貓淘寶海外"
+      ],
+      "channel": "online"
+    },
+    {
+      "name": "統一速邁樂加油站",
+      "aliases": [
+        "統一速邁樂",
+        "速邁樂",
+        "統一精工"
+      ]
+    }
   ]
 }

@@ -1,0 +1,35 @@
+{
+  "payments": [
+    {
+      "name": "台新Pay",
+      "aliases": ["taishin pay", "taishinpay"],
+      "acceptedMerchants": ["IKEA"],
+      "source": "（示範資料，非實際來源）",
+      "note": "示範資料：官方場域清單僅節錄，acceptedMerchants 含 IKEA、刻意不含全聯福利中心"
+    },
+    {
+      "name": "LINE Pay",
+      "aliases": ["linepay", "line pay"],
+      "acceptedMerchants": [],
+      "note": "示範資料：查無完整官方場域清單，僅能直接查支付名"
+    },
+    {
+      "name": "全支付",
+      "aliases": ["pxpay plus", "pxpayplus"],
+      "acceptedMerchants": ["全聯"],
+      "note": "示範資料：acceptedMerchants 刻意用 alias「全聯」寫法，測試經 merchants.json 對照表解析"
+    },
+    {
+      "name": "街口支付",
+      "aliases": ["jkopay", "街口"],
+      "acceptedMerchants": [],
+      "note": "示範資料"
+    },
+    {
+      "name": "悠遊付",
+      "aliases": ["easy wallet", "easywallet"],
+      "acceptedMerchants": [],
+      "note": "示範資料"
+    }
+  ]
+}

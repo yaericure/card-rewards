@@ -1,24 +1,107 @@
 {
-  "updatedAt": "2026-07-10T00:00:00.000Z",
+  "updatedAt": "2026-07-11T00:00:00.000Z",
   "banks": [
     {
       "id": "taishin",
       "name": "台新銀行",
       "cards": [
         {
-          "id": "taishin-gogo",
-          "name": "台新 @GoGo 卡",
+          "id": "taishin-richart",
+          "name": "台新Richart卡",
           "url": "https://www.taishinbank.com.tw/（示範資料，非實際來源）",
-          "plans": [
+          "tiers": [
+            { "id": "autopay", "name": "已設定帳戶扣繳", "condition": "以台新帳戶自動扣繳卡費", "assumedAchieved": true },
+            { "id": "none", "name": "未設定", "condition": "" }
+          ],
+          "rewards": [
             {
-              "id": "default",
-              "name": "一般",
-              "condition": "無條件",
-              "validFrom": "2026-01-01",
+              "plan": "Chill刷",
+              "target": "蝦皮購物",
+              "targetType": "merchant",
+              "pct": 3.3,
+              "cap": "每期上限 NT$300",
               "validUntil": "2026-12-31",
-              "rewards": [
-                { "category": "general", "pct": 1.0, "note": "示範資料：單一方案卡" }
-              ]
+              "note": "示範資料：標語為最高10%，蝦皮實際適用 3.3%（基礎0.3%+加碼3%）"
+            },
+            {
+              "plan": "數趣刷",
+              "target": "蝦皮購物",
+              "targetType": "merchant",
+              "pct": 2.5,
+              "cap": "每期上限 NT$500",
+              "validUntil": "2026-12-31",
+              "note": "示範資料：同卡同商店的第二個方案，用來測試同卡多方案分列多行"
+            },
+            {
+              "plan": "Chill刷",
+              "target": "Big City遠東巨城購物中心",
+              "targetType": "merchant",
+              "pct": 4,
+              "cap": "每期上限 NT$300",
+              "validUntil": "2026-12-31",
+              "note": "示範資料：官方頁原文寫法與 merchants.json 的 name 不同字面，用來測試跨寫法透過 alias 統一比對"
+            },
+            {
+              "plan": "好饗刷",
+              "targetType": "dining",
+              "pct": 5,
+              "cap": "每月上限 NT$500",
+              "validUntil": "2026-12-31",
+              "note": "示範資料：餐飲整類回饋"
+            },
+            {
+              "plan": "玩旅刷",
+              "target": "日本",
+              "targetType": "country",
+              "pct": 3,
+              "validUntil": "2026-12-31",
+              "note": "示範資料：國別回饋"
+            },
+            {
+              "plan": "玩旅刷",
+              "targetType": "general",
+              "pct": 1.5,
+              "validUntil": "2026-12-31",
+              "note": "示範資料：復現 bug 的資料形態——有 plan 的 general 型回饋不得出現在任何查詢結果（不得成為「基本」行）"
+            },
+            {
+              "plan": "Pay著刷",
+              "target": "台新Pay",
+              "targetType": "mobilepay",
+              "pct": 3.8,
+              "cap": "每期上限 NT$200",
+              "validUntil": "2026-12-31",
+              "note": "示範資料：台新Pay 場域含 IKEA（見 mobilepay.sample.json），查 IKEA 應列出、查全聯不得列出"
+            },
+            {
+              "plan": "Pay著刷",
+              "target": "LINE Pay",
+              "targetType": "mobilepay",
+              "pct": 2.3,
+              "cap": "每期上限 NT$200",
+              "validUntil": "2026-12-31",
+              "note": "示範資料：LINE Pay 無官方場域清單，僅能直接查支付名"
+            },
+            {
+              "plan": "Pay著刷",
+              "target": "街口支付",
+              "targetType": "mobilepay",
+              "pct": 2.3,
+              "validUntil": "2026-12-31",
+              "note": "示範資料"
+            },
+            {
+              "plan": "Pay著刷",
+              "target": "悠遊付",
+              "targetType": "mobilepay",
+              "pct": 2.3,
+              "validUntil": "2026-12-31",
+              "note": "示範資料"
+            },
+            {
+              "targetType": "general",
+              "pctByTier": { "autopay": 0.8, "none": 0.3 },
+              "note": "示範資料：一般消費基本回饋；autopay 為 assumedAchieved 且回饋最高 → 此卡不出現在步驟二"
             }
           ]
         }
@@ -29,51 +112,73 @@
       "name": "玉山銀行",
       "cards": [
         {
-          "id": "esun-egold",
-          "name": "玉山 Only 卡",
-          "url": "https://www.esunbank.com.tw/（示範資料，非實際來源）",
-          "plans": [
+          "id": "esun-unicard",
+          "name": "玉山Unicard",
+          "url": "https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+          "tiers": [
+            { "id": "easy", "name": "簡單選", "condition": "選擇簡單選組合" },
+            { "id": "any", "name": "任意選", "condition": "選擇任意選組合" },
+            { "id": "up", "name": "UP選", "condition": "選擇UP選組合" }
+          ],
+          "rewards": [
             {
-              "id": "default",
-              "name": "一般",
-              "condition": "無條件",
-              "validFrom": "2026-01-01",
+              "target": "LINE Pay",
+              "targetType": "mobilepay",
+              "pctByTier": { "easy": 1, "any": 3, "up": 1 },
               "validUntil": "2026-12-31",
-              "rewards": [
-                { "category": "online", "pct": 2.0, "note": "示範資料" },
-                { "category": "dining", "pct": 3.0, "note": "示範資料" },
-                { "category": "general", "pct": 0.5 }
-              ]
+              "note": "示範資料：任意選的 LINE Pay 回饋 3%（含基礎1%），其餘選組僅基礎1%；無 assumedAchieved → 步驟二預設最低回饋選組"
+            },
+            {
+              "targetType": "general",
+              "pct": 1,
+              "note": "示範資料：一般消費基礎 1%"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "fubon",
-      "name": "台北富邦銀行",
-      "cards": [
+        },
         {
-          "id": "fubon-j",
-          "name": "台北富邦 J 卡",
-          "url": "https://www.fubon.com/（示範資料，非實際來源）",
-          "plans": [
+          "id": "esun-ubear",
+          "name": "玉山U Bear信用卡",
+          "url": "https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear",
+          "rewards": [
             {
-              "id": "default",
-              "name": "一般",
-              "condition": "無條件",
-              "validFrom": "2026-01-01",
+              "targetType": "online",
+              "pct": 3,
+              "cap": "每月上限 NT$300",
               "validUntil": "2026-12-31",
-              "rewards": [
-                {
-                  "category": "convenience",
-                  "pct": 5.0,
-                  "merchants": ["7-ELEVEN", "全家便利商店"],
-                  "cap": "每月上限 NT$300",
-                  "note": "示範資料：單一方案卡"
-                },
-                { "category": "general", "pct": 0.3 }
-              ]
+              "note": "示範資料：網路消費整類回饋（使用者案例）。查 channel=online 商店（蝦皮）應直接命中；channel=both 商店（IKEA）命中且標「限網路消費」；未標 channel 的純實體商店（全聯）不得命中；查「網路消費」關鍵字應列出"
+            },
+            {
+              "targetType": "general",
+              "pct": 1,
+              "note": "示範資料：一般消費基礎 1%（低於 2% 顯示門檻，不應出現在結果）"
+            }
+          ]
+        },
+        {
+          "id": "esun-pi",
+          "name": "玉山Pi拍錢包信用卡",
+          "url": "https://www.esunbank.com/zh-tw/personal/credit-card/intro/co-branded-card/pi-card",
+          "rewards": [
+            {
+              "target": "全聯福利中心",
+              "targetType": "merchant",
+              "pct": 2,
+              "validUntil": "2026-12-31",
+              "note": "示範資料：無 plan 欄位的指定通路回饋，結果應顯示「基本」"
+            },
+            {
+              "plan": "早鳥回饋加碼",
+              "target": "全家便利商店",
+              "targetType": "merchant",
+              "pct": 10,
+              "cap": "限量 5,000 名",
+              "validUntil": "2025-06-30",
+              "note": "示範資料：活動已於 2025 年結束，用來測試到期回饋不列入結果"
+            },
+            {
+              "targetType": "general",
+              "pct": 0.5,
+              "note": "示範資料：無 tiers 概念的卡，一般消費用 pct 而非 pctByTier"
             }
           ]
         }
@@ -85,77 +190,40 @@
       "cards": [
         {
           "id": "cathay-cube",
-          "name": "國泰 CUBE 卡",
-          "url": "https://www.cathaybk.com.tw/（示範資料，非實際來源）",
-          "planKind": "switchable",
-          "plans": [
+          "name": "CUBE信用卡",
+          "url": "https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube",
+          "tiers": [
+            { "id": "level2", "name": "Level 2", "condition": "帳單e化＋自動扣繳", "assumedAchieved": true },
+            { "id": "level3", "name": "Level 3 財管貴賓", "condition": "國泰世華財富管理貴賓戶" }
+          ],
+          "rewards": [
             {
-              "id": "digital",
-              "name": "數位方案",
-              "condition": "需以數位帳戶自動扣繳",
-              "validFrom": "2026-01-01",
+              "plan": "全支付",
+              "target": "全聯福利中心",
+              "targetType": "merchant",
+              "pctByTier": { "level2": 2, "level3": 3 },
               "validUntil": "2026-12-31",
-              "rewards": [
-                { "category": "online", "pct": 3.0, "note": "示範資料" },
-                { "category": "general", "pct": 0.3 }
-              ]
+              "note": "示範資料：Level 3 回饋高於 assumedAchieved 的 Level 2 → 此卡仍出現在步驟二、預設 Level 2；plan 名恰為支付名，查「全支付」也要列出此筆"
             },
             {
-              "id": "travel",
-              "name": "旅遊方案",
-              "condition": "需於官網勾選旅遊權益",
-              "validFrom": "2025-01-01",
-              "validUntil": "2025-12-31",
-              "rewards": [
-                { "category": "travel", "pct": 5.0, "note": "示範資料：此方案已過期，僅供測試過期排除邏輯" },
-                { "category": "general", "pct": 0.3 }
-              ]
+              "plan": "數位方案",
+              "target": "蝦皮購物",
+              "targetType": "merchant",
+              "pct": 1.5,
+              "validUntil": "2026-12-31",
+              "note": "示範資料：與台新Richart卡同商店跨銀行比較用"
             },
             {
-              "id": "general",
-              "name": "一般方案",
-              "condition": "無條件",
-              "validFrom": "",
-              "validUntil": "",
-              "rewards": [
-                { "category": "general", "pct": 1.0, "note": "示範資料" }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "sinopac",
-      "name": "永豐銀行",
-      "cards": [
-        {
-          "id": "sinopac-dawho",
-          "name": "永豐 DAWHO 卡",
-          "url": "https://bank.sinopac.com/（示範資料，非實際來源）",
-          "planKind": "tier",
-          "plans": [
-            {
-              "id": "tier1",
-              "name": "存款月平均 10 萬以下",
-              "condition": "存款月平均餘額未達 10 萬元",
-              "validFrom": "2026-01-01",
-              "validUntil": "2026-12-31",
-              "rewards": [
-                { "category": "online", "pct": 1.0, "note": "示範資料" },
-                { "category": "general", "pct": 0.3 }
-              ]
+              "plan": "旅遊方案",
+              "target": "韓國",
+              "targetType": "country",
+              "pct": 2,
+              "validUntil": "2026-12-31"
             },
             {
-              "id": "tier3",
-              "name": "存款月平均 100 萬以上",
-              "condition": "存款月平均餘額達 100 萬元以上",
-              "validFrom": "2026-01-01",
-              "validUntil": "2026-12-31",
-              "rewards": [
-                { "category": "online", "pct": 3.0, "note": "示範資料" },
-                { "category": "general", "pct": 1.0 }
-              ]
+              "targetType": "general",
+              "pct": 0.3,
+              "note": "示範資料：一般消費基本回饋"
             }
           ]
         }

@@ -1,205 +1,93 @@
-// 玉山銀行（esun）信用卡回饋爬蟲
+// 玉山銀行（esun）信用卡回饋爬蟲 — v3 改版（扁平 rewards：見 ../../data/SCHEMA.md）
 //
-// 來源 URL（2026-07-10 人工核對過結構，之後若改版需重新核對）：
-//   - 玉山數位e卡：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card
-//   - 玉山Unicard： https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard
-//   - 玉山鈦金卡：  https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/titanium-card
-//   - 玉山Pi拍錢包信用卡：https://www.esunbank.com/zh-tw/personal/credit-card/intro/co-branded-card/pi-card
-//   - 玉山U Bear信用卡： https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear
+// v3 只收 SCHEMA 指定的 3 張卡（v2 的數位e卡／鈦金卡一律移除，不再出現在輸出中）：
+//   esun-unicard／esun-pi／esun-ubear，皆使用 SCHEMA 指定的入口 URL。
 //
-// 解析假設：
-//   - 這五頁都是「靜態伺服器渲染」頁面（fetch 拿到的 HTML 已含完整行銷文案），不需要 playwright。
-//   - 玉山把回饋率直接寫在文案句子裡（例：「國內外一般消費享0.5%玉山e point回饋」），
-//     所以用「固定中文短語 + 緊接的百分比」的 regex 去抓，比硬 parse DOM 結構穩定
-//     （這幾頁的 class name 明顯是行銷團隊手刻、經常換）。
-//   - 玉山e point / Pi拍錢包P幣 / U Bear現金回饋皆為官網文案已講清楚等值百分比的點數/現金制，
-//     不需要額外換算，只在 note 註明點數型態（1點=1元）。
-//   - Unicard 頁面清楚列出「僅帳單e化」vs「帳單e化＋自動扣繳」兩種一般消費回饋率（0.3% vs 1%），
-//     這是 SCHEMA 要求的「方案／等級差異」範例；另有百大指定消費三方案（簡單選/任意選/UP選），
-//     這裡只取加碼最高的 UP選 併入「帳單e化＋自動扣繳」方案的 rewards，並在 note 說明。
-//     Unicard 的兩個方案是「持卡人可自行申辦切換」的門檻差異（非資格分級），card.planKind 標 switchable。
-//   - Pi拍錢包信用卡／U Bear信用卡皆只有單一常態方案（回饋率隨帳單e化/自動扣繳/消費滿額而變動，
-//     屬同一方案內的條件差異，非可切換的多方案／多等級），故不需 card.planKind，比照鈦金卡模式
-//     用單一 plan、把條件寫進 note。頁面上另有「新戶限定」加碼活動（僅新戶、時限申辦期間），
-//     不確定所有使用者都適用，故不納入 rewards，只在模組註解記錄、不寫入資料。
-//   - 若改版後抓不到某張卡的任何 reward，該卡會被跳過（不寫入空卡），並把原因印到 stderr，
-//     由 run.js 的 schema 驗證負責在完全抓不到時讓這個模組失敗。
+// v3 改版重點（相對 v2 的差異）：
+//   v2 用 category 大類 + merchants[] 陣列。v3 規則：一筆 reward 只對應一家商店，
+//   官方清單列 N 家就拆成 N 筆；等級（tiers，用戶帳戶/消費狀態）與方案（plan，用戶自選
+//   商店組合）分離。類別廢除只留 dining；國外消費併入 country（地名）。
+//
+// 解析假設（2026-07-11 實測，若改版需重新核對）：
+//   - 三頁皆為靜態伺服器渲染頁面，fetch + cheerio 即可，不需 playwright。
+//   - Unicard（使用者拍板改資格）：
+//     * 簡單選/任意選/UP選是 tiers（資格，id：simple/any/up）不是 plan。每個百大項目
+//       一筆 reward、pctByTier 三選組，%為含一般消費基礎 1% 的實際總%（細則對照表
+//       「最高回饋 3% 3.5% 4.5%」列有明示總%，優先取用；備援＝基礎+加碼）。
+//     * 帳單e化＋自動扣繳依 SCHEMA 核心原則 8 假設已完成 → 不建 ebill tier；
+//       一般消費記 1%（僅帳單e化的 0.3% 寫進 note）。
+//     * 百大列表類別對應：「行動支付」（9 個 canonical 支付）→ mobilepay；
+//       「國外實體」（國家清單）→ country；其餘 8 類 → merchant。
+//   - Pi拍錢包信用卡：帳單e化假設已申請（0.3% 寫 note），無 tiers——月消費級距加碼
+//     需事先登錄（核心原則 9）不收。保費 1.2% 與全家便利商店 5% 各自 pct 固定。
+//   - U Bear信用卡：基本回饋 tiers＝「帳單e化或自動扣繳擇一」0.5%／「兩者皆辦」1%
+//     （後者標 assumedAchieved；一般消費實體+網路皆適用 → general）。網路消費 3%
+//     （含基本最高1%＋加碼2%）官方範圍是「網路消費」整個通路且不列商店清單 →
+//     targetType=online（2026-07-11 使用者指正案例：不得記 general，否則查實體店誤中）。
+//     指定數位訂閱平台（Netflix/ChatGPT/Gemini/Steam/Nintendo/PlayStation）有明確商店
+//     清單 → 仍逐一拆成 merchant reward（SCHEMA：有清單不得偷懶記 online）。
+//   - 發卡組織檢查（核心原則 10，2026-07-11）：三卡指定頁面均無「不同發卡組織不同%」的
+//     常態回饋（Unicard 的 Visa 境外現金回饋活動需報名、屬登錄型，本就不收）→ 皆不建組織 tier。
+//
+// 依 SCHEMA 核心原則 9 排除的「新卡/新戶/需登錄/限量」型活動（2026-07-11 掃描，不收錄）：
+//   - Unicard：限時辦卡新戶加碼最高15.5%/舊戶5.5%（新戶/限期辦卡型）、開戶代碼CARD500
+//     一般消費加碼10%（新開戶＋活動代碼）、Visa境外實體現金回饋（需報名綁定）。
+//   - Pi拍錢包：月消費級距加碼（滿1萬+0.8%/滿3萬+2%，需登錄1次）、滿額贈500P/1,500P
+//     （滿額贈）、新戶核卡3個月加碼5%＋AirPods滿額贈（新戶）、Pi拍錢包通路單筆滿399
+//     登錄最高5%（需登錄）。
+//   - U Bear：新戶指定五大通路加碼10%（新戶＋限期申辦）。
+//   - 點數換算（皆為頁面原文所載）：玉山e point / Pi拍錢包P幣 皆為「1點=1元」；
+//     U Bear為現金回饋直接折抵帳單。均在 note 註明點數型態。
 
 const cheerio = require('cheerio');
 const { fetchHtml } = require('../lib/util');
 
 const URLS = {
-  ecard: 'https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/e-card',
-  unicard: 'https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard',
-  titanium: 'https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/titanium-card',
+  unicard: 'https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3',
   picard: 'https://www.esunbank.com/zh-tw/personal/credit-card/intro/co-branded-card/pi-card',
   ubear: 'https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear',
 };
 
-function textOf(html) {
+const EPOINT_NOTE = '玉山e point點數回饋（1點=1元）';
+const PPOINT_NOTE = 'Pi拍錢包P幣回饋（1 P幣=1元）';
+const CASH_NOTE = '現金回饋，於當期帳單直接折抵';
+
+function rawTextOf(html) {
   const $ = cheerio.load(html);
   $('script,style').remove();
-  return $('body').text().replace(/\s+/g, ' ').trim();
+  return $('body')
+    .text()
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n\s*\n+/g, '\n')
+    .trim();
 }
-
-async function scrapeECard() {
-  const text = textOf(await fetchHtml(URLS.ecard));
-  const rewards = [];
-
-  const general = text.match(/國內外一般消費享(\d+(?:\.\d+)?)%玉山e ?point回饋/);
-  if (general) {
-    rewards.push({
-      category: 'general',
-      pct: parseFloat(general[1]),
-      note: '玉山e point點數回饋（1點=1元）；需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費',
-    });
-  }
-
-  const dept = text.match(/指定百貨\/美妝通路消費最高(?:享)?(\d+(?:\.\d+)?)%玉山e ?point回饋/);
-  if (dept) {
-    rewards.push({
-      category: 'department',
-      pct: parseFloat(dept[1]),
-      cap: '加碼部分歸戶每期回饋上限250點（玉山e point）',
-      note: '玉山e point點數回饋；已含基本回饋0.5%＋指定百貨/美妝加碼；需同時申請帳單e化及自動扣繳卡費',
-    });
-  }
-
-  const coffee = text.match(/指定咖啡\/支付通路消費最高(?:享)?(\d+(?:\.\d+)?)%玉山e ?point回饋/);
-  if (coffee) {
-    rewards.push({
-      category: 'dining',
-      pct: parseFloat(coffee[1]),
-      cap: '加碼部分歸戶每期回饋上限250點（玉山e point）',
-      note: '玉山e point點數回饋；指定咖啡／行動支付通路，已含基本回饋0.5%＋加碼2.5%；需同時申請帳單e化及自動扣繳卡費',
-    });
-  }
-
-  const eco = text.match(/指定類別消費(?:登錄)?最高(?:享)?(\d+(?:\.\d+)?)%玉山e ?point回饋/);
-  if (eco) {
-    rewards.push({
-      category: 'supermarket',
-      pct: parseFloat(eco[1]),
-      cap: '加碼部分歸戶每期回饋上限250點（玉山e point）',
-      merchants: ['里仁', '棉花田', '聖德科斯', '主婦聯盟'],
-      note: '玉山e point點數回饋；指定類別（含里仁/棉花田/聖德科斯/主婦聯盟等及部分電動車能源通路），已含基本回饋0.5%＋加碼4.5%；需同時申請帳單e化及自動扣繳卡費',
-    });
-  }
-
-  if (!rewards.length) {
-    console.error('esun: e-card 頁面抓不到任何回饋數字，跳過此卡');
-    return null;
-  }
-
-  return {
-    id: 'esun-ecard',
-    name: '玉山數位e卡',
-    url: URLS.ecard,
-    plans: [
-      {
-        id: 'digital-autopay',
-        name: '帳單e化＋自動扣繳方案',
-        condition: '需同時申請帳單e化及玉山銀行臺幣帳戶自動扣繳卡費',
-        rewards,
-      },
-    ],
-  };
+function textOf(html) {
+  return rawTextOf(html).replace(/\s+/g, ' ');
 }
-
-async function scrapeUnicard() {
-  const text = textOf(await fetchHtml(URLS.unicard));
-
-  const ebillOnly = text.match(/一般消費享(\d+(?:\.\d+)?)%\s*玉山e ?point回饋，需申辦帳單e化/);
-  const ebillAutopay = text.match(
-    /一般消費享(\d+(?:\.\d+)?)%\s*玉山e ?point回饋，需同時申辦帳單e化及申辦玉山銀行臺幣帳戶自動扣繳/
-  );
-  const period = text.match(/活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})/);
-  const validUntil = period
-    ? `${period[4]}-${String(period[5]).padStart(2, '0')}-${String(period[6]).padStart(2, '0')}`
-    : null;
-
-  const upMatches = [...text.matchAll(/百大指定消費\s*\+(\d+(?:\.\d+)?)%\s*\(歸戶月上限([\d,]+)點\)/g)];
-  const upSelect = upMatches.length ? upMatches[upMatches.length - 1] : null;
-
-  const plans = [];
-
-  if (ebillOnly) {
-    plans.push({
-      id: 'ebill-only',
-      name: '僅申辦帳單e化',
-      condition: '僅申辦帳單e化（Email電子帳單或簡訊帳單）',
-      rewards: [
-        { category: 'general', pct: parseFloat(ebillOnly[1]), note: '玉山e point點數回饋（1點=1元）' },
-      ],
-    });
-  }
-
-  if (ebillAutopay) {
-    const rewards = [
-      { category: 'general', pct: parseFloat(ebillAutopay[1]), note: '玉山e point點數回饋（1點=1元），回饋無上限' },
-    ];
-    if (upSelect) {
-      const reward = {
-        category: 'online',
-        pct: parseFloat(upSelect[1]),
-        cap: `每月（歸戶）回饋上限${upSelect[2]}點（玉山e point）`,
-        note: '百大指定消費「UP選」方案加碼（行動支付、加油交通、生活採買、國內百貨等通路可自選）；需另於玉山Wallet完成任務或以點數訂閱',
-      };
-      if (validUntil) reward.validUntil = validUntil;
-      rewards.push(reward);
+function toLines(text) {
+  return text.split('\n').map((s) => s.trim());
+}
+function isoSlash(y, m, d) {
+  return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+function splitMerchantList(str, delimiter = '、') {
+  if (!str) return [];
+  const out = [];
+  let depth = 0;
+  let cur = '';
+  for (const ch of str) {
+    if (ch === '(' || ch === '（') depth++;
+    if (ch === ')' || ch === '）') depth = Math.max(0, depth - 1);
+    if (ch === delimiter && depth === 0) {
+      out.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
     }
-    plans.push({
-      id: 'ebill-autopay',
-      name: '帳單e化＋臺幣帳戶自動扣繳',
-      condition: '需同時申辦帳單e化及玉山銀行臺幣帳戶自動扣繳卡費',
-      rewards,
-    });
   }
-
-  if (!plans.length) {
-    console.error('esun: unicard 頁面抓不到任何回饋數字，跳過此卡');
-    return null;
-  }
-
-  return { id: 'esun-unicard', name: '玉山Unicard', url: URLS.unicard, planKind: 'switchable', plans };
+  if (cur.trim()) out.push(cur.trim());
+  return out.filter(Boolean);
 }
-
-async function scrapeTitanium() {
-  const text = textOf(await fetchHtml(URLS.titanium));
-  // 注意：頁面 <script type="application/ld+json"> 的 meta 描述殘留舊版「0.6%」文案，
-  // 已透過移除 script/style 節點避開；實際內文（含活動期間）目前是 0.4%，以內文為準。
-  const period = text.match(/活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})\s*每筆一般消費最高可享/);
-  const general = text.match(/每筆一般消費最高可享\s*(\d+(?:\.\d+)?)%\s*現金回饋，回饋無上限/);
-  const tier = text.match(/([\d,]+)元\s*\(含\)\s*以下\s*(\d+(?:\.\d+)?)%現金回饋\s*([\d,]+)元\s*\(含\)\s*以上\s*(\d+(?:\.\d+)?)[%％]現金回饋/);
-  if (!general) {
-    console.error('esun: titanium-card 頁面抓不到任何回饋數字，跳過此卡');
-    return null;
-  }
-  const reward = { category: 'general', pct: parseFloat(general[1]), note: '現金直接折抵次期帳單消費，回饋無上限' };
-  if (tier) {
-    reward.note += `；單筆消費${tier[1]}元(含)以下回饋${tier[2]}%，${tier[3]}元(含)以上回饋${tier[4]}%`;
-  }
-  if (period) {
-    reward.validUntil = `${period[4]}-${String(period[5]).padStart(2, '0')}-${String(period[6]).padStart(2, '0')}`;
-  }
-  return {
-    id: 'esun-titanium',
-    name: '玉山幸運鈦金卡',
-    url: URLS.titanium,
-    plans: [
-      {
-        id: 'default',
-        name: '一般',
-        condition: '無條件',
-        rewards: [reward],
-      },
-    ],
-  };
-}
-
-// ---------- Pi拍錢包信用卡 ----------
-// 官網把「基本回饋」「保費」「全家便利商店加碼」分成三個獨立區塊各自標活動期間，
-// 用 near() 局部搜尋（從各標題往後取一段文字）避免抓到其他區塊/新戶限定活動的相似句型。
 function near(text, markerIndex, pattern, span = 400) {
   if (markerIndex < 0) return null;
   const window = text.slice(markerIndex, markerIndex + span);
@@ -207,39 +95,190 @@ function near(text, markerIndex, pattern, span = 400) {
   return m || null;
 }
 
-function isoSlash(y, m, d) {
-  return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+// ---------- 玉山Unicard ----------
+// 使用者拍板：簡單選/任意選/UP選是「資格」（tiers）不是方案——同一商店在不同選組下
+// %不同，前端要求用戶選定自己的選組。tiers id：simple/any/up。
+// 帳單e化＋自動扣繳屬 assumedAchieved 類條件（SCHEMA 核心原則 8：網站假設已完成），
+// 不另建 ebill tier——一般消費直接記假設達成後的 1%，未達成的 0.3% 寫進 note。
+const UNI_TIER_SIMPLE = 'simple';
+const UNI_TIER_ANY = 'any';
+const UNI_TIER_UP = 'up';
+
+// 百大指定消費列表的 10 個類別（「行動支付」→ mobilepay、「國外實體」→ country、其餘 → merchant）
+const UNI_CATEGORY_LABELS = ['行動支付', '電商平台', '國內百貨', '生活採買', '餐飲美食', '加油交通', '航空旅遊', '國外實體', '精選商家', 'ESG消費'];
+
+async function scrapeUnicard() {
+  const html = await fetchHtml(URLS.unicard);
+  const raw = rawTextOf(html);
+  const flat = raw.replace(/\s+/g, ' ');
+  const L = toLines(raw);
+  const rewards = [];
+
+  // 一般消費：0.3%（僅帳單e化）／1%（帳單e化＋自動扣繳）。依 assumedAchieved 規則
+  // 假設已完成帳單e化＋自動扣繳 → 記 1%，0.3% 寫進 note。
+  const ebillOnly = flat.match(/一般消費享(\d+(?:\.\d+)?)%\s*玉山e ?point回饋，需申辦帳單e化/);
+  const ebillAutopay = flat.match(
+    /一般消費享(\d+(?:\.\d+)?)%\s*玉山e ?point回饋，需同時申辦帳單e化及申辦玉山銀行臺幣帳戶自動扣繳/
+  );
+  const generalPeriod = flat.match(/一般消費最高享1%\s*活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+  const basePct = ebillAutopay ? parseFloat(ebillAutopay[1]) : null;
+  if (basePct !== null) {
+    const r = {
+      targetType: 'general',
+      pct: basePct,
+      note: `${EPOINT_NOTE}；一般消費回饋無上限，需同時申辦帳單e化及臺幣帳戶自動扣繳且成功扣繳（本站假設已完成${
+        ebillOnly ? `；僅帳單e化為${ebillOnly[1]}%` : ''
+      }）；不含百大指定消費特店分期及歐盟實體交易、繳稅費及四大超商、全聯交易等；來源：${URLS.unicard}`,
+    };
+    if (generalPeriod) {
+      r.validFrom = isoSlash(generalPeriod[1], generalPeriod[2], generalPeriod[3]);
+      r.validUntil = isoSlash(generalPeriod[4], generalPeriod[5], generalPeriod[6]);
+    }
+    rewards.push(r);
+  } else {
+    console.error('esun: unicard 頁面抓不到一般消費回饋數字');
+  }
+
+  // 百大指定消費加碼（簡單選/任意選/UP選 三選組的加碼%）
+  const listPeriod = flat.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})適用百大指定消費列表如下/);
+  const validFrom = listPeriod ? isoSlash(listPeriod[1], listPeriod[2], listPeriod[3]) : undefined;
+  const validUntil = listPeriod ? isoSlash(listPeriod[4], listPeriod[5], listPeriod[6]) : undefined;
+  // 「百大指定消費 +X% (歸戶月上限Y點)」在選組對照表中依序出現兩次：
+  // 第一次對應【簡單選】、第二次對應【UP選】；【任意選】則是獨立的「任選8家指定消費 +X%」句型。
+  const planPctMatches = [...flat.matchAll(/百大指定消費\s*\+(\d+(?:\.\d+)?)%\s*\(歸戶月上限([\d,]+)點\)/g)];
+  const simplePct = planPctMatches[0];
+  const upPct = planPctMatches[1];
+  const anyPct = flat.match(/任選8家指定消費\s*\+(\d+(?:\.\d+)?)%\s*\(歸戶月上限([\d,]+)點\)/);
+  // 對照表「最高回饋」列直接給出含基礎 1% 的實際總%（細則原文「最高回饋 3% 3.5% 4.5%」），
+  // 優先採用此明示總%；抓不到再以「基礎+加碼」計算備援。
+  const totalsRow = flat.match(/最高回饋\s*(\d+(?:\.\d+)?)%\s*(\d+(?:\.\d+)?)%\s*(\d+(?:\.\d+)?)%/);
+  const totalOf = (bonusMatch, idx) => {
+    if (totalsRow) return parseFloat(totalsRow[idx]);
+    if (bonusMatch && basePct !== null) return basePct + parseFloat(bonusMatch[1]);
+    return null;
+  };
+  const simpleTotal = totalOf(simplePct, 1);
+  const anyTotal = totalOf(anyPct, 2);
+  const upTotal = totalOf(upPct, 3);
+
+  // 百大指定消費列表：類別 label + 緊接一行「、」分隔清單，連續 10 組（含國外實體）
+  const listStart = L.indexOf('類別', L.indexOf('百大指定消費列表'));
+  const listEnd = L.findIndex((l, i) => i > listStart && l.includes('百大指定消費列表注意事項'));
+  const groups = [];
+  if (listStart >= 0) {
+    let i = listStart + 2; // 跳過「類別」「指定百大指定消費」表頭
+    while (i < (listEnd > 0 ? listEnd : L.length) - 1) {
+      const label = L[i];
+      if (!label || !UNI_CATEGORY_LABELS.includes(label)) break;
+      let content = L[i + 1] || '';
+      // ESG消費該行後方緊接※註解，需切掉才拆分店名
+      content = content.replace(/※.*$/, '');
+      // 「A/B」多店合寫拆成獨立商店（如「萬家福/樂家康」＝原家樂福量販/超市，2026/7/1
+      // 分別更名為兩家店；台新官網即分列兩項）。只拆「頂層斜線且兩側皆為純中日韓文字」
+      // 的情況——含拉丁字母/數字/點號的品牌名（7-ELEVEN、Trip.com、Booking.com）不拆；
+      // 括號內斜線（統一時代百貨(台北店/DREAM PLAZA)）已由 splitMerchantList 保護不會到頂層。
+      const items = splitMerchantList(content).flatMap((item) => {
+        const parts = splitMerchantList(item, '/');
+        if (parts.length > 1 && parts.every((p) => /^[一-鿿぀-ヿ]+$/.test(p))) return parts;
+        return [item];
+      });
+      groups.push({ label, items });
+      i += 2;
+    }
+  }
+
+  // 範圍限定詞處理（SCHEMA「範圍限定詞的處理」，2026-07-11）：多店合寫拆筆、
+  // 「不含X」/交易類型限定移入 note。精確比對官方原文、比對不到保留原樣（避免通用規則誤拆）。
+  // 依規則保留原文者：純別名/位置註記（遠東Garden City(大巨蛋)、55688(台灣大車隊、機場接送)）；
+  // 「A(含B)」B 為同品牌通路（誠品生活(含誠品書店與誠品線上)——書店/線上為誠品自家通路，
+  // 不確定是否應獨立拆筆，保留原樣）。
+  const UNI_TARGET_RULES = {
+    '統一時代百貨(台北店/DREAM PLAZA)': [
+      { target: '統一時代百貨台北店', extraNote: '官方原文「統一時代百貨(台北店/DREAM PLAZA)」，兩店拆列' },
+      { target: 'DREAM PLAZA', extraNote: '官方原文「統一時代百貨(台北店/DREAM PLAZA)」，兩店拆列' },
+    ],
+    '漢神百貨(不含漢神巨蛋)': [{ target: '漢神百貨', extraNote: '不含漢神巨蛋' }],
+    '台灣中油(直營店)': [{ target: '台灣中油', extraNote: '限直營店' }],
+    '新光三越百貨(含SKM Park Outlets高雄草衙)': [
+      { target: '新光三越百貨', extraNote: '官方原文「新光三越百貨(含SKM Park Outlets高雄草衙)」，兩店拆列' },
+      { target: 'SKM Park Outlets高雄草衙', extraNote: '官方原文「新光三越百貨(含SKM Park Outlets高雄草衙)」，兩店拆列' },
+    ],
+  };
+
+  // 每個百大項目一筆 reward，% 用 pctByTier（simple/any/up 三選組、含基礎 1% 的實際總%）。
+  // 加碼上限依選組不同（簡單選/任意選 1,000 點、UP選 5,000 點），寫進同一 cap 字串。
+  if (simpleTotal !== null && anyTotal !== null && upTotal !== null && groups.length) {
+    const capParts = [];
+    if (simplePct) capParts.push(`簡單選/任意選每月歸戶上限${simplePct[2]}點`);
+    if (upPct) capParts.push(`UP選每月歸戶上限${upPct[2]}點`);
+    const cap = capParts.length ? `百大指定消費加碼部分：${capParts.join('、')}（玉山e point）；基礎1%無上限` : undefined;
+    for (const g of groups) {
+      const targetType = g.label === '行動支付' ? 'mobilepay' : g.label === '國外實體' ? 'country' : 'merchant';
+      for (const item of g.items) {
+        if (!item) continue;
+        for (const spec of UNI_TARGET_RULES[item] || [{ target: item }]) {
+          const extra = spec.extraNote ? `；${spec.extraNote}` : '';
+          const r = {
+            target: spec.target,
+            targetType,
+            pctByTier: { [UNI_TIER_SIMPLE]: simpleTotal, [UNI_TIER_ANY]: anyTotal, [UNI_TIER_UP]: upTotal },
+            note: `${EPOINT_NOTE}；百大指定消費【${g.label}】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+${
+              simplePct ? simplePct[1] : '?'
+            }%／任意選+${anyPct ? anyPct[1] : '?'}%／UP選+${upPct ? upPct[1] : '?'}%）；任意選需自行圈選最多8家始生效${extra}；來源：${URLS.unicard}`,
+          };
+          if (cap) r.cap = cap;
+          if (validFrom) r.validFrom = validFrom;
+          if (validUntil) r.validUntil = validUntil;
+          rewards.push(r);
+        }
+      }
+    }
+  } else {
+    console.error('esun: unicard 頁面抓不到百大指定消費三選組的%或清單，略過百大 rewards');
+  }
+
+  if (rewards.length < 5) {
+    console.error('esun: unicard 頁面抓到的 reward 數量過少，跳過此卡');
+    return null;
+  }
+  return {
+    id: 'esun-unicard',
+    name: '玉山Unicard',
+    url: URLS.unicard,
+    tiers: [
+      { id: UNI_TIER_SIMPLE, name: '簡單選', condition: '核卡後預設選組，百大指定消費全部涵蓋，可於玉山Wallet切換' },
+      { id: UNI_TIER_ANY, name: '任意選', condition: '於玉山Wallet自百大指定消費中任選最多8家生效（每月可切換，僅圈選的商店享加碼）' },
+      { id: UNI_TIER_UP, name: 'UP選', condition: '訂閱制：同時符合上月刷卡滿3萬元及上月玉山平均資產滿30萬元可免費訂閱，或以149點玉山e point訂閱；百大指定消費全部涵蓋' },
+    ],
+    rewards,
+  };
 }
 
+// ---------- 玉山Pi拍錢包信用卡 ----------
+// 帳單e化屬 assumedAchieved 類條件（本站假設已申請），0.3% 寫進 note。
+// 「月消費級距加碼」（滿1萬加碼0.8%、滿3萬加碼2%）官方細則明載「活動期間僅需登錄1次
+// 即可參加每月刷卡活動，自登錄當月始計算…不溯及既往」＝需事先登錄的活動型回饋 →
+// 依 SCHEMA 核心原則 9 不收，故本卡無 tiers、一般消費只記常態基本回饋 1%。
 async function scrapePiCard() {
-  const text = textOf(await fetchHtml(URLS.picard));
+  const html = await fetchHtml(URLS.picard);
+  const text = textOf(html);
   const rewards = [];
 
   const baseIdx = text.indexOf('基本回饋 1%P幣無上限');
-  const base = near(text, baseIdx, /基本回饋 ?(\d+(?:\.\d+)?)%P幣無上限 ?\(需申請帳單e化，未申辦帳單e化者享(\d+(?:\.\d+)?)% P幣回饋無上限/);
-  const basePeriod = near(
-    text,
-    text.indexOf('消費最高享'),
-    /消費最高享 ?[\d.]+% P幣 活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/
-  );
-  const tier1 = near(
-    text,
-    text.indexOf('每月國內外一般消費累積滿10'),
-    /每月國內外一般消費累積滿[\d,]+~[\d,]+元 ?加碼(\d+(?:\.\d+)?)%P幣，? ?最高(\d+(?:\.\d+)?)% P幣/
-  );
-  const tier2 = near(
-    text,
-    text.indexOf('每月國內外一般消費累積滿30'),
-    /每月國內外一般消費累積滿[\d,]+元\(含\)以上 ?加碼(\d+(?:\.\d+)?)%P幣，? ?最高(\d+(?:\.\d+)?)% P幣 ?\(每月每歸戶上限([\d,]+) ?P幣\)/
-  );
+  const base = near(text, baseIdx, /基本回饋 ?(\d+(?:\.\d+)?)%P幣無上限 ?\(需申請帳單e化，未申辦帳單e化者享(\d+(?:\.\d+)?)% ?P幣回饋無上限/);
+  const periodAnchorIdx = text.indexOf('消費最高享');
+  const basePeriod = near(text, periodAnchorIdx, /消費最高享 ?[\d.]+% P幣 活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/, 200);
 
   if (base && basePeriod) {
+    const validFrom = isoSlash(basePeriod[1], basePeriod[2], basePeriod[3]);
     const validUntil = isoSlash(basePeriod[4], basePeriod[5], basePeriod[6]);
-    let note = `玉山Pi拍錢包P幣回饋（1 P幣=1元）；需申請帳單e化，未申辦帳單e化者僅${base[2]}%`;
-    if (tier1 && tier2) {
-      note += `；每月國內外一般消費累積滿NT$10,000~29,999加碼至最高${tier1[2]}%，滿NT$30,000(含)以上加碼至最高${tier2[2]}%（每月每歸戶上限${tier2[3]}P幣，需登錄活動）`;
-    }
-    rewards.push({ category: 'general', pct: parseFloat(base[1]), validUntil, note });
+    rewards.push({
+      targetType: 'general',
+      pct: parseFloat(base[1]),
+      validFrom,
+      validUntil,
+      note: `${PPOINT_NOTE}；一般消費基本回饋${base[1]}%無上限，需申請帳單e化（本站假設已申請；未申辦帳單e化者僅${base[2]}%）；官方另有月消費級距加碼（最高3%）與滿額贈，均需事先登錄，不收錄；來源：${URLS.picard}`,
+    });
   } else {
     console.error('esun: pi-card 頁面抓不到基本回饋數字，略過一般消費 reward');
   }
@@ -252,10 +291,11 @@ async function scrapePiCard() {
   );
   if (insurance) {
     rewards.push({
-      category: 'insurance',
+      targetType: 'general',
       pct: parseFloat(insurance[1]),
+      validFrom: isoSlash(insurance[2], insurance[3], insurance[4]),
       validUntil: isoSlash(insurance[5], insurance[6], insurance[7]),
-      note: '玉山Pi拍錢包P幣回饋（1 P幣=1元）；保費一次付清享回饋無上限；或單筆滿NT$6,000登錄6期0利率、滿NT$15,000登錄12期0利率（不含躉繳保費）',
+      note: `${PPOINT_NOTE}；保費一次付清享回饋無上限，免登錄；不含國外保險/躉繳保費等（來源：${URLS.picard}）`,
     });
   } else {
     console.error('esun: pi-card 頁面抓不到保費回饋數字，略過保費 reward');
@@ -270,12 +310,13 @@ async function scrapePiCard() {
   const famCap = near(text, famIdx, /每月每卡上限(\d+) ?P幣/, 600);
   if (family) {
     rewards.push({
-      category: 'convenience',
+      target: '全家便利商店',
+      targetType: 'merchant',
       pct: parseFloat(family[1]),
-      merchants: ['全家'],
       cap: famCap ? `每月每卡上限${famCap[1]} P幣` : undefined,
+      validFrom: isoSlash(family[2], family[3], family[4]),
       validUntil: isoSlash(family[5], family[6], family[7]),
-      note: '玉山Pi拍錢包P幣回饋（1 P幣=1元）；限綁定Pi拍錢包APP於全家便利商店消費',
+      note: `${PPOINT_NOTE}；限綁定Pi拍錢包APP於全家便利商店消費（來源：${URLS.picard}）`,
     });
   } else {
     console.error('esun: pi-card 頁面抓不到全家便利商店回饋數字，略過此 reward');
@@ -289,25 +330,34 @@ async function scrapePiCard() {
     id: 'esun-pi',
     name: '玉山Pi拍錢包信用卡',
     url: URLS.picard,
-    plans: [{ id: 'default', name: '一般', condition: '需註冊並綁定Pi拍錢包APP，申請玉山信用卡帳單e化始享P幣回饋', rewards }],
+    rewards,
   };
 }
 
 // ---------- U Bear信用卡 ----------
+const UBEAR_TIER_EITHER = 'either';
+const UBEAR_TIER_BOTH = 'both';
+
 async function scrapeUBear() {
-  const text = textOf(await fetchHtml(URLS.ubear));
+  const html = await fetchHtml(URLS.ubear);
+  const text = textOf(html);
   const rewards = [];
 
   const baseIdx = text.indexOf('熊任務 基本回饋');
-  const basePct = near(text, baseIdx, /國內外一般消費最高享 ?(\d+(?:\.\d+)?)%現金回饋/);
-  const baseCond = near(text, baseIdx, /需\s*綁定帳單e化\s*或\s*申辦玉山銀行臺幣帳戶自動扣繳\s*享(\d+(?:\.\d+)?)%現金回饋，申辦上述兩者享(\d+(?:\.\d+)?)%現金回饋/);
   const basePeriod = near(text, baseIdx, /活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/);
-  if (basePct && baseCond && basePeriod) {
+  const baseCond = near(
+    text,
+    baseIdx,
+    /需綁定帳單e化或申辦玉山銀行臺幣帳戶自動扣繳享(\d+(?:\.\d+)?)%現金回饋，申辦上述兩者享(\d+(?:\.\d+)?)%現金回饋/,
+    500
+  );
+  if (baseCond && basePeriod) {
     rewards.push({
-      category: 'general',
-      pct: parseFloat(basePct[1]),
+      targetType: 'general',
+      pctByTier: { [UBEAR_TIER_EITHER]: parseFloat(baseCond[1]), [UBEAR_TIER_BOTH]: parseFloat(baseCond[2]) },
+      validFrom: isoSlash(basePeriod[1], basePeriod[2], basePeriod[3]),
       validUntil: isoSlash(basePeriod[4], basePeriod[5], basePeriod[6]),
-      note: `現金回饋，回饋無上限，於當期帳單直接折抵；需綁定帳單e化或申辦玉山銀行臺幣帳戶自動扣繳享${baseCond[1]}%，兩者皆辦享${baseCond[2]}%`,
+      note: `${CASH_NOTE}；國內外一般消費基本回饋，回饋無上限（不含指定數位訂閱平台消費）；來源：${URLS.ubear}`,
     });
   } else {
     console.error('esun: u-bear 頁面抓不到基本回饋數字，略過一般消費 reward');
@@ -317,13 +367,18 @@ async function scrapeUBear() {
   const onlinePct = near(text, onlineIdx, /網路消費最高享 ?(\d+(?:\.\d+)?)%現金回饋/);
   const onlineCap = near(text, onlineIdx, /每期回饋上限(\d+)元，於當期帳單直接折抵/, 600);
   const onlinePeriod = near(text, onlineIdx, /活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/);
+  // 熊好刷官方原文「網路消費最高享3%現金回饋 包含基本回饋1%…及網路消費加碼2%」——
+  // 回饋範圍是「網路消費」整個通路（含行動支付、國內外線上消費、App綁卡付款；僅舉例
+  // 不列商店清單）→ targetType=online（2026-07-11 使用者案例即本筆；實體消費不適用，
+  // 不得記 general）。加碼2%需綁定帳單e化（本站假設已完成，含於 3%）。
   if (onlinePct && onlinePeriod) {
     rewards.push({
-      category: 'online',
+      targetType: 'online',
       pct: parseFloat(onlinePct[1]),
-      cap: onlineCap ? `每期回饋上限NT$${onlineCap[1]}` : undefined,
+      cap: onlineCap ? `網路消費加碼(2%)部分每期回饋上限NT$${onlineCap[1]}（正附卡合併），達上限後僅享基本回饋最高1%` : undefined,
+      validFrom: isoSlash(onlinePeriod[1], onlinePeriod[2], onlinePeriod[3]),
       validUntil: isoSlash(onlinePeriod[4], onlinePeriod[5], onlinePeriod[6]),
-      note: '現金回饋；已含基本回饋1%＋網路消費加碼2%（加碼2%需綁定帳單e化），於當期帳單直接折抵',
+      note: `${CASH_NOTE}；限網路消費（含行動支付/國內外線上消費/App綁卡付款，實體門市不適用；Apple Pay等於實體門市感應視為實體交易）；最高回饋＝基本回饋最高1%（需綁定帳單e化及自動扣繳皆辦）＋網路消費加碼2%（需綁定帳單e化）；不含保費/超商/小額支付平台/指定數位訂閱平台；來源：${URLS.ubear}`,
     });
   } else {
     console.error('esun: u-bear 頁面抓不到網路消費回饋數字，略過此 reward');
@@ -331,17 +386,28 @@ async function scrapeUBear() {
 
   const streamIdx = text.indexOf('熊潮流');
   const streamPct = near(text, streamIdx, /指定數位訂閱平台消費最高享 ?(\d+(?:\.\d+)?)%現金回饋/);
-  const streamCap = near(text, streamIdx, /每期回饋上限(\d+)元，於當期帳單直接折抵/, 400);
+  const streamList = near(text, streamIdx, /指定數位訂閱平台包含([^，。※]+?)(?:，需限於|。|※)/, 800);
+  const streamCap = near(text, streamIdx, /每期回饋金額上限(\d+)元/, 400);
   const streamPeriod = near(text, streamIdx, /活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/);
-  if (streamPct && streamPeriod) {
-    rewards.push({
-      category: 'streaming',
-      pct: parseFloat(streamPct[1]),
-      merchants: ['Netflix', 'ChatGPT', 'Gemini', 'Steam', 'Nintendo', 'PlayStation'],
-      cap: streamCap ? `每期回饋上限NT$${streamCap[1]}（正附卡合併計算）` : undefined,
-      validUntil: isoSlash(streamPeriod[4], streamPeriod[5], streamPeriod[6]),
-      note: '現金回饋；指定數位訂閱平台，於當期帳單直接折抵',
-    });
+  if (streamPct && streamPeriod && streamList) {
+    const merchants = splitMerchantList(streamList[1]);
+    const validFrom = isoSlash(streamPeriod[1], streamPeriod[2], streamPeriod[3]);
+    const validUntil = isoSlash(streamPeriod[4], streamPeriod[5], streamPeriod[6]);
+    const cap = streamCap
+      ? `每期回饋金額上限NT$${streamCap[1]}（正附卡合併），不與一般消費/網路消費回饋累計，達上限後不再享任何回饋`
+      : undefined;
+    for (const m of merchants) {
+      if (!m) continue;
+      rewards.push({
+        target: m,
+        targetType: 'merchant',
+        pct: parseFloat(streamPct[1]),
+        cap,
+        validFrom,
+        validUntil,
+        note: `${CASH_NOTE}；指定數位訂閱平台消費（來源：${URLS.ubear}）；Gemini需直接綁卡於Google消費且請款名稱顯示Google One/Google Services`,
+      });
+    }
   } else {
     console.error('esun: u-bear 頁面抓不到指定數位訂閱平台回饋數字，略過此 reward');
   }
@@ -354,12 +420,16 @@ async function scrapeUBear() {
     id: 'esun-ubear',
     name: '玉山U Bear信用卡',
     url: URLS.ubear,
-    plans: [{ id: 'default', name: '一般', condition: '無條件（部分回饋需綁定帳單e化或申辦自動扣繳始達最高比率）', rewards }],
+    tiers: [
+      { id: UBEAR_TIER_EITHER, name: '僅綁定帳單e化或僅申辦自動扣繳其中一項', condition: '僅綁定帳單e化(Email電子帳單或簡訊帳單)，或僅申辦玉山銀行臺幣帳戶自動扣繳卡費（擇一）' },
+      { id: UBEAR_TIER_BOTH, name: '帳單e化＋自動扣繳皆申辦', condition: '同時綁定帳單e化及申辦玉山銀行臺幣帳戶自動扣繳卡費，且成功扣繳卡費', assumedAchieved: true },
+    ],
+    rewards,
   };
 }
 
 async function scrape() {
-  const results = await Promise.all([scrapeECard(), scrapeUnicard(), scrapeTitanium(), scrapePiCard(), scrapeUBear()]);
+  const results = await Promise.all([scrapeUnicard(), scrapePiCard(), scrapeUBear()]);
   const cards = results.filter(Boolean);
   return { id: 'esun', name: '玉山銀行', cards };
 }

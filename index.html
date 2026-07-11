@@ -412,13 +412,14 @@
     usingSampleMobilepay: false,
     merchantNormMap: {},      // normalize(name|alias) -> canonical merchant name
     diningSet: {},            // canonical merchant name -> true if dining=true in merchants.json
+    channelMap: {},           // canonical merchant name -> "online"|"both" (merchants.json channel; absent = 純實體)
     countryNormMap: {},       // normalize(countryName) -> canonical country name (as written in cards.json)
     paymentNormMap: {},       // normalize(payment name|alias) -> canonical payment name (mobilepay.json)
     paymentAccepted: {},      // canonical payment name -> { canonical merchant name: true }
-    autocompleteList: [],     // [{ label, kind: 'merchant'|'country'|'payment' }]
+    autocompleteList: [],     // [{ label, kind: 'merchant'|'country'|'payment'|'online' }]
     heldCardIds: [],          // array of card id
     selectedTiers: {},        // cardId -> tierId (only for cards that have `tiers`)
-    currentQuery: null        // { type: 'merchant'|'country'|'payment', name: canonical } | null
+    currentQuery: null        // { type: 'merchant'|'country'|'payment'|'online', name } | null
   };
 
   // ---------- utils ----------
@@ -474,6 +475,7 @@
   function buildLookups() {
     var merchantNormMap = {};
     var diningSet = {};
+    var channelMap = {};
     var countryNormMap = {};
     var paymentNormMap = {};
     var paymentAccepted = {};
@@ -491,6 +493,7 @@
       if (!n) return;
       merchantNormMap[n] = canonical;
       if (m.dining === true) diningSet[canonical] = true;
+      if (m.channel === "online" || m.channel === "both") channelMap[canonical] = m.channel;
       addAutocomplete(canonical, "merchant");
       (m.aliases || []).forEach(function (a) {
         var an = normalize(a);
@@ -538,8 +541,12 @@
       paymentAccepted[canonical] = acc;
     });
 
+    // fixed keyword「網路消費」 lists every online-type reward (SCHEMA 前端行為 §3)
+    addAutocomplete("網路消費", "online");
+
     state.merchantNormMap = merchantNormMap;
     state.diningSet = diningSet;
+    state.channelMap = channelMap;
     state.countryNormMap = countryNormMap;
     state.paymentNormMap = paymentNormMap;
     state.paymentAccepted = paymentAccepted;
@@ -551,6 +558,9 @@
   function matchQuery(raw) {
     var nq = normalize(raw);
     if (!nq) return null;
+    if (nq === normalize("網路消費")) {
+      return { type: "online", name: "網路消費" };
+    }
     if (state.merchantNormMap[nq]) {
       return { type: "merchant", name: state.merchantNormMap[nq] };
     }
@@ -962,6 +972,8 @@
       el.innerHTML = "目前比對行動支付：<b>" + escapeHtml(q.name) + "</b>";
     } else if (q && q.type === "country") {
       el.innerHTML = "目前比對地區：<b>" + escapeHtml(q.name) + "</b>";
+    } else if (q && q.type === "online") {
+      el.innerHTML = "目前比對：<b>網路消費</b>（列出全部網路消費回饋）";
     } else {
       el.innerHTML = "";
     }
@@ -1009,6 +1021,8 @@
 
   // Matching rules per SCHEMA.md 前端行為 §3 (v3, 2026-07-11):
   //  merchant query: merchant target match / dining (if store dining=true) /
+  //    online rewards by store channel (channel="online" plain hit;
+  //    channel="both" hit + row marked「限網路消費」; unmarked = 純實體, no hit) /
   //    mobilepay rewards whose payment acceptedMerchants contains the store
   //    (label "支付名｜方案名") / plan-less general rewards as「基本」rows.
   //    Defensive rule (bug fix): a general reward that carries a `plan` is NEVER
@@ -1017,6 +1031,9 @@
   //  payment query: mobilepay rewards whose target is this payment, plus merchant
   //    rewards whose plan name equals the payment name (e.g. CUBE plan「全支付」).
   //    Per spec's「只列」, no 基本 rows here.
+  //  online query (fixed keyword「網路消費」): every online-type reward of the
+  //    held cards, nothing else (mirrors the payment query's「只列」rule).
+  //    Payment and country queries never list online rewards (SCHEMA §3).
   //  country query: country target match + plan-less general 基本 rows (base
   //    reward still applies abroad; the spec's store-query bullet defines 基本
   //    rows and the country bullet doesn't forbid them — kept from round 1).
@@ -1057,6 +1074,15 @@
         } else if (r.targetType === "dining" && state.diningSet[query.name]) {
           hit = true;
           planLabel = r.plan || "基本";
+        } else if (r.targetType === "online") {
+          // hit only when the store is marked as an online channel; "both"
+          // stores get the row flagged 限網路消費 (SCHEMA 前端行為 §3)
+          var channel = state.channelMap[query.name];
+          if (channel === "online" || channel === "both") {
+            hit = true;
+            planLabel = r.plan || "基本";
+            if (channel === "both") extraMeta = "限網路消費";
+          }
         } else if (r.targetType === "mobilepay" && r.target) {
           var pay = canonicalPayment(r.target);
           var acc = state.paymentAccepted[pay];
@@ -1080,6 +1106,11 @@
         }
       } else if (query.type === "country") {
         if (r.targetType === "country" && r.target === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        }
+      } else if (query.type === "online") {
+        if (r.targetType === "online") {
           hit = true;
           planLabel = r.plan || "基本";
         }

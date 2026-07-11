@@ -136,6 +136,25 @@
           ]
         },
         {
+          "id": "esun-ubear",
+          "name": "玉山U Bear信用卡",
+          "url": "https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear",
+          "rewards": [
+            {
+              "targetType": "online",
+              "pct": 3,
+              "cap": "每月上限 NT$300",
+              "validUntil": "2026-12-31",
+              "note": "示範資料：網路消費整類回饋（使用者案例）。查 channel=online 商店（蝦皮）應直接命中；channel=both 商店（IKEA）命中且標「限網路消費」；未標 channel 的純實體商店（全聯）不得命中；查「網路消費」關鍵字應列出"
+            },
+            {
+              "targetType": "general",
+              "pct": 1,
+              "note": "示範資料：一般消費基礎 1%（低於 2% 顯示門檻，不應出現在結果）"
+            }
+          ]
+        },
+        {
           "id": "esun-pi",
           "name": "玉山Pi拍錢包信用卡",
           "url": "https://www.esunbank.com/zh-tw/personal/credit-card/intro/co-branded-card/pi-card",

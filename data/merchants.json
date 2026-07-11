@@ -14,7 +14,8 @@
       "name": "Apple 直營(含官網)",
       "aliases": [
         "Apple直營店"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "車麻吉",
@@ -39,26 +40,30 @@
         "Coupang 酷澎(台灣)",
         "酷澎",
         "酷澎(Coupang)"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "Agoda",
       "aliases": [
         "agoda"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "易遊網",
       "aliases": [
         "ezTravel易遊網"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "Foodpanda",
       "aliases": [
         "foodpanda"
       ],
-      "dining": true
+      "dining": true,
+      "channel": "online"
     },
     {
       "name": "Sing Go",
@@ -70,19 +75,22 @@
       "name": "Trip.com",
       "aliases": [
         "trip.com"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "Yoxi",
       "aliases": [
         "yoxi"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "momo購物網",
       "aliases": [
         "momo"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "MITSUI OUTLET PARK",
@@ -129,7 +137,8 @@
         "全聯福利中心 實體門市(不含大全聯)",
         "全聯",
         "pxmart"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "台塑石油加油站",
@@ -150,13 +159,15 @@
       "aliases": [
         "新光三越(含skm pay)",
         "新光三越百貨"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "IKEA宜家家居",
       "aliases": [
         "IKEA"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "LOPIA台灣",
@@ -170,7 +181,8 @@
         "PChome 24h購物(不含儲值及電子票券)",
         "PChome 24h購物",
         "PChome 24h購物(不含儲值及電子票券)"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "玉山Wallet愛心捐款",
@@ -184,44 +196,51 @@
       "aliases": [
         "誠品生活(含線上)",
         "誠品生活(含誠品書店與誠品線上)"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "台灣高鐵",
       "aliases": [
         "高鐵"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "台鐵",
       "aliases": [
         "臺鐵"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "東南旅遊",
       "aliases": [
         "東南旅行社"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "雄獅旅遊",
       "aliases": [
         "雄獅旅行社"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "鳳凰旅遊",
       "aliases": [
         "鳳凰國際旅行社",
         "鳳凰旅行社"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "杏一藥局",
       "aliases": [
         "杏一醫療"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "ONCOR響艷都市會所",
@@ -239,7 +258,8 @@
       "name": "淘寶",
       "aliases": [
         "淘寶網"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "Global Mall環球購物中心",
@@ -284,7 +304,8 @@
         "蝦皮",
         "shopee",
         "蝦皮商城"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "%Arabica",
@@ -293,7 +314,8 @@
     },
     {
       "name": "17FIT",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "50嵐",
@@ -323,23 +345,28 @@
     },
     {
       "name": "Adidas",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Airbnb",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Amazing Talker",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Amazon",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Animate",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Anytime Fitness",
@@ -347,7 +374,8 @@
     },
     {
       "name": "Apple 媒體服務",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Apple錢包指定交通卡",
@@ -361,7 +389,8 @@
     },
     {
       "name": "BOOK WALKER",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "BRUN 不然",
@@ -380,7 +409,8 @@
     },
     {
       "name": "Booking.com",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "CAFE ACME",
@@ -403,19 +433,23 @@
     },
     {
       "name": "Canva",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "ChatGPT",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Claude",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Cursor",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "DJB",
@@ -423,11 +457,13 @@
     },
     {
       "name": "DJI",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Disney+",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Draft Land",
@@ -436,20 +472,24 @@
     },
     {
       "name": "Duolingo",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "EZTABLE",
       "aliases": [],
-      "dining": true
+      "dining": true,
+      "channel": "online"
     },
     {
       "name": "Expedia",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Ezfly易飛網",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "FANME",
@@ -461,56 +501,69 @@
     },
     {
       "name": "Farfetch",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Foodomo",
       "aliases": [],
-      "dining": true
+      "dining": true,
+      "channel": "online"
     },
     {
       "name": "FunNow",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "GU",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Gamma",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Gemini",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "GoPro",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Google Play",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Grab",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "HOKA",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "HOLA",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Hahow",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Hotels.com",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "ICOCA",
@@ -518,7 +571,8 @@
     },
     {
       "name": "Insta360",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "K-MONSTAR",
@@ -526,11 +580,13 @@
     },
     {
       "name": "KKTIX",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "KKday",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "KX PILATES",
@@ -538,11 +594,13 @@
     },
     {
       "name": "Klook",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "LINEGO",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "MOONROCK",
@@ -550,15 +608,18 @@
     },
     {
       "name": "MYPROTEIN",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Max",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "MyCard",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "NAGOMI",
@@ -579,31 +640,38 @@
     },
     {
       "name": "Netflix",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "New Balance",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Nike",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Nintendo",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Notion",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "OPENTIX兩廳院文化生活",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Olive Young",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Onitsuka Tiger",
@@ -615,15 +683,18 @@
     },
     {
       "name": "PUMA",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "PayEasy",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Perplexity",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Phowa",
@@ -632,23 +703,28 @@
     },
     {
       "name": "PlayStation",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "PressPlay",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Readmoo讀墨",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Richart Mart",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "SHEIN",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "SUICA",
@@ -656,23 +732,28 @@
     },
     {
       "name": "Salomon",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "Speak",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Spotify",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Steam",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Studio A",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "TAIL",
@@ -685,7 +766,8 @@
     },
     {
       "name": "Tutor ABC",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "U-POWER",
@@ -698,7 +780,8 @@
     },
     {
       "name": "UNIQLO",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "USPACE",
@@ -706,20 +789,24 @@
     },
     {
       "name": "Uber",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "Uber Eats",
       "aliases": [],
-      "dining": true
+      "dining": true,
+      "channel": "online"
     },
     {
       "name": "UrMart優馬選品",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "VITABOX",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "W HOTEL",
@@ -727,7 +814,8 @@
     },
     {
       "name": "WEVERSE",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "WOWPASS",
@@ -739,11 +827,13 @@
     },
     {
       "name": "YouTube Premium",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "ZARA",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "gonna共樂遊",
@@ -759,15 +849,18 @@
     },
     {
       "name": "iHerb",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "iRent",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "lululemon",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "uTagGo",
@@ -802,7 +895,8 @@
     },
     {
       "name": "五大唱片",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "五桐號",
@@ -811,7 +905,8 @@
     },
     {
       "name": "五福旅遊",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "亞洲航空",
@@ -860,7 +955,8 @@
     },
     {
       "name": "全國電子",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "全球迪士尼飯店",
@@ -901,7 +997,8 @@
     },
     {
       "name": "博客來",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "卡多摩",
@@ -913,7 +1010,8 @@
     },
     {
       "name": "叫車吧",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "叮哥茶飲",
@@ -922,7 +1020,8 @@
     },
     {
       "name": "可樂旅遊",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "台中大毅老爺行旅",
@@ -1038,7 +1137,8 @@
     },
     {
       "name": "台塑購物網",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "台東桂田喜來登酒店",
@@ -1046,7 +1146,8 @@
     },
     {
       "name": "台灣Bolt",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "台灣快綫",
@@ -1082,7 +1183,8 @@
     },
     {
       "name": "喜鴻假期",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "國內飯店住宿",
@@ -1114,7 +1216,8 @@
     },
     {
       "name": "大樹藥局",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "大江國際購物中心",
@@ -1126,7 +1229,8 @@
     },
     {
       "name": "大買家",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "大阪環球影城(USJ)",
@@ -1154,7 +1258,8 @@
     },
     {
       "name": "好市多 Costco",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "好樂迪",
@@ -1170,7 +1275,8 @@
     },
     {
       "name": "宜得利",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "宜蘭力麗威斯汀度假酒店",
@@ -1182,29 +1288,35 @@
     },
     {
       "name": "家樂福",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "寬宏售票",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "寶雅",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "小樹購",
       "aliases": [
         "小樹購(不含電子票券)"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "小米台灣",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "屈臣氏",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "屋馬燒肉",
@@ -1213,19 +1325,23 @@
     },
     {
       "name": "山富旅遊",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "巴哈姆特",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "年代售票",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "康是美",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "廣三SOGO",
@@ -1246,7 +1362,8 @@
     },
     {
       "name": "愛爾達",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "找到了旅行社",
@@ -1254,7 +1371,8 @@
     },
     {
       "name": "拓元售票",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "捷星航空",
@@ -1303,11 +1421,13 @@
     },
     {
       "name": "昇恆昌",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "易飛旅遊",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "星宇航空",
@@ -1337,7 +1457,8 @@
     },
     {
       "name": "東森",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "東橫INN",
@@ -1361,7 +1482,8 @@
     },
     {
       "name": "樂天KOBO",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "樂子 the Diner",
@@ -1458,11 +1580,13 @@
     {
       "name": "營養師輕食",
       "aliases": [],
-      "dining": true
+      "dining": true,
+      "channel": "online"
     },
     {
       "name": "燦坤",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "燦星旅遊",
@@ -1470,7 +1594,8 @@
     },
     {
       "name": "特力屋",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "特斯拉",
@@ -1490,7 +1615,8 @@
     },
     {
       "name": "瑪黑家居",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "知本老爺酒店",
@@ -1498,7 +1624,8 @@
     },
     {
       "name": "知識衛星",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "石門水庫福華渡假飯店",
@@ -1567,7 +1694,8 @@
     },
     {
       "name": "聖德科斯",
-      "aliases": []
+      "aliases": [],
+      "channel": "both"
     },
     {
       "name": "聯合航空",
@@ -1655,7 +1783,8 @@
     },
     {
       "name": "遊戲橘子",
-      "aliases": []
+      "aliases": [],
+      "channel": "online"
     },
     {
       "name": "達美航空",
@@ -1747,7 +1876,8 @@
       "aliases": [
         "神腦國際",
         "senao"
-      ]
+      ],
+      "channel": "both"
     },
     {
       "name": "麥當勞",
@@ -1819,7 +1949,8 @@
       "aliases": [
         "tmall",
         "天貓淘寶海外"
-      ]
+      ],
+      "channel": "online"
     },
     {
       "name": "統一速邁樂加油站",

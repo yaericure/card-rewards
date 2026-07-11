@@ -105,9 +105,12 @@
     通路 2%）：前端在商店/地名查詢中照方案名顯示（不是「基本」），note 必須寫明時間/
     切換條件。方案若實際上有通路範圍（如玩旅刷限旅遊），不得用此組合——要拆成明確
     target 的 reward。
-  - `targetType`（必填）：`"merchant"`（指定商店）｜`"dining"`（餐飲，唯一保留的類別）｜
-    `"country"`（國外地區）｜`"mobilepay"`（行動支付，target=canonical 支付名）｜
-    `"general"`（一般消費）。
+  - `targetType`（必填）：`"merchant"`（指定商店）｜`"dining"`（餐飲）｜`"online"`
+    （網路消費：官方回饋範圍是「網路／線上消費」整個通路、不列舉商店時用此型，
+    2026-07-11 使用者案例：U Bear 網路消費 3%）｜`"country"`（國外地區）｜
+    `"mobilepay"`（行動支付，target=canonical 支付名）｜`"general"`（一般消費）。
+    注意：官方有列舉商店清單的網購回饋（如數趣刷、玩數位）仍用 merchant 型逐店拆，
+    不得偷懶記成 online。
   - `target`：targetType=merchant 時必填＝商店名（照官方頁原文寫法）；country 時必填＝
     地名（日本/韓國/美國/歐洲…；官方只寫「國外/海外消費」不分國家時用 `"海外"`）；
     dining/general 省略。
@@ -139,7 +142,10 @@
 ```
 
 - 作用：(1) 跨銀行同店異名統一（同一家店的各種官方寫法都放進同一筆的 name/aliases）；
-  (2) `dining: true` 標記餐飲商店，讓用戶查該店時能命中 dining 型回饋。
+  (2) `dining: true` 標記餐飲商店，讓用戶查該店時能命中 dining 型回饋；
+  (3) `channel` 標記通路性質："online"＝純網路（momo、蝦皮、Netflix…）、"both"＝
+  實體＋網路兼營（家樂福、IKEA…）；**未標＝純實體**。online 型回饋的命中依據
+  （見前端行為）。
 - 對照表以「實際出現在 cards.json 的商店名」為基礎建立，再補常見俗稱。
 
 ## data/mobilepay.json（行動支付定義檔）
@@ -172,8 +178,10 @@
    - 沒有任何卡需要選就跳過此步驟。
 3. 查詢：輸入 → 正規化（小寫、去空白與連字號）後經 merchants.json 統一為 canonical：
    - **輸入是商店** → 命中：merchant 型 target（同樣統一後）相符；dining=true 商店同時命中
-     dining 型；各卡 general 為「基本」行；**加上**：mobilepay 型回饋中，該支付的
-     acceptedMerchants（經對照表統一後）含此商店者（顯示為「支付名＋方案名」）。
+     dining 型；online 型回饋依商店 `channel`：channel="online" 直接命中、channel="both"
+     命中但結果行標「限網路消費」、未標（純實體）不命中；各卡 general 為「基本」行；
+     **加上**：mobilepay 型回饋中，該支付的 acceptedMerchants（經對照表統一後）含此
+     商店者（顯示為「支付名＋方案名」）。另可直接輸入「網路消費」列出全部 online 型回饋。
    - **輸入是支付名**（對上 mobilepay.json 的 name/aliases）→ 只列該支付的 mobilepay 型回饋。
    - **輸入是地名** → country 型回饋。
    - mobilepay 型回饋**不得**出現在與該支付無關的商店查詢結果中。

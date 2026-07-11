@@ -1,11 +1,11 @@
 {
   "merchants": [
-    { "name": "蝦皮購物", "aliases": ["蝦皮", "shopee", "蝦皮商城"] },
+    { "name": "蝦皮購物", "aliases": ["蝦皮", "shopee", "蝦皮商城"], "channel": "online" },
     { "name": "遠東巨城購物中心", "aliases": ["Big City遠東巨城購物中心", "遠東巨城", "巨城", "Big City"], "dining": false },
     { "name": "鼎泰豐", "aliases": ["dintaifung", "din tai fung"], "dining": true },
     { "name": "星巴克", "aliases": ["starbucks"], "dining": true },
     { "name": "全聯福利中心", "aliases": ["全聯", "pxmart"] },
-    { "name": "IKEA", "aliases": ["宜家", "宜家家居"] },
+    { "name": "IKEA", "aliases": ["宜家", "宜家家居"], "channel": "both" },
     { "name": "全家便利商店", "aliases": ["全家", "familymart", "family"] },
     { "name": "7-ELEVEN", "aliases": ["711", "7-11", "小七", "統一超商"] }
   ]

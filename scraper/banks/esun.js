@@ -21,9 +21,11 @@
 //   - Pi拍錢包信用卡：帳單e化假設已申請（0.3% 寫 note），無 tiers——月消費級距加碼
 //     需事先登錄（核心原則 9）不收。保費 1.2% 與全家便利商店 5% 各自 pct 固定。
 //   - U Bear信用卡：基本回饋 tiers＝「帳單e化或自動扣繳擇一」0.5%／「兩者皆辦」1%
-//     （後者標 assumedAchieved）。網路消費加碼以固定 pct=3%（含基本最高1%＋加碼2%）
-//     為 general reward、note 詳列條件與上限。指定數位訂閱平台
-//     （Netflix/ChatGPT/Gemini/Steam/Nintendo/PlayStation）加碼 10%，逐一拆成 merchant reward。
+//     （後者標 assumedAchieved；一般消費實體+網路皆適用 → general）。網路消費 3%
+//     （含基本最高1%＋加碼2%）官方範圍是「網路消費」整個通路且不列商店清單 →
+//     targetType=online（2026-07-11 使用者指正案例：不得記 general，否則查實體店誤中）。
+//     指定數位訂閱平台（Netflix/ChatGPT/Gemini/Steam/Nintendo/PlayStation）有明確商店
+//     清單 → 仍逐一拆成 merchant reward（SCHEMA：有清單不得偷懶記 online）。
 //   - 發卡組織檢查（核心原則 10，2026-07-11）：三卡指定頁面均無「不同發卡組織不同%」的
 //     常態回饋（Unicard 的 Visa 境外現金回饋活動需報名、屬登錄型，本就不收）→ 皆不建組織 tier。
 //
@@ -365,14 +367,18 @@ async function scrapeUBear() {
   const onlinePct = near(text, onlineIdx, /網路消費最高享 ?(\d+(?:\.\d+)?)%現金回饋/);
   const onlineCap = near(text, onlineIdx, /每期回饋上限(\d+)元，於當期帳單直接折抵/, 600);
   const onlinePeriod = near(text, onlineIdx, /活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/);
+  // 熊好刷官方原文「網路消費最高享3%現金回饋 包含基本回饋1%…及網路消費加碼2%」——
+  // 回饋範圍是「網路消費」整個通路（含行動支付、國內外線上消費、App綁卡付款；僅舉例
+  // 不列商店清單）→ targetType=online（2026-07-11 使用者案例即本筆；實體消費不適用，
+  // 不得記 general）。加碼2%需綁定帳單e化（本站假設已完成，含於 3%）。
   if (onlinePct && onlinePeriod) {
     rewards.push({
-      targetType: 'general',
+      targetType: 'online',
       pct: parseFloat(onlinePct[1]),
       cap: onlineCap ? `網路消費加碼(2%)部分每期回饋上限NT$${onlineCap[1]}（正附卡合併），達上限後僅享基本回饋最高1%` : undefined,
       validFrom: isoSlash(onlinePeriod[1], onlinePeriod[2], onlinePeriod[3]),
       validUntil: isoSlash(onlinePeriod[4], onlinePeriod[5], onlinePeriod[6]),
-      note: `${CASH_NOTE}；網路消費最高回饋＝基本回饋最高1%（需綁定帳單e化及自動扣繳皆辦）＋網路消費加碼2%（需綁定帳單e化）；網路消費含行動支付/國內外線上消費/App綁卡付款，不含保費/超商/小額支付平台/指定數位訂閱平台；來源：${URLS.ubear}`,
+      note: `${CASH_NOTE}；限網路消費（含行動支付/國內外線上消費/App綁卡付款，實體門市不適用；Apple Pay等於實體門市感應視為實體交易）；最高回饋＝基本回饋最高1%（需綁定帳單e化及自動扣繳皆辦）＋網路消費加碼2%（需綁定帳單e化）；不含保費/超商/小額支付平台/指定數位訂閱平台；來源：${URLS.ubear}`,
     });
   } else {
     console.error('esun: u-bear 頁面抓不到網路消費回饋數字，略過此 reward');

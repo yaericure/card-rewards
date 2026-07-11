@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-11T08:40:53.220Z",
+  "updatedAt": "2026-07-11T08:59:13.149Z",
   "banks": [
     {
       "id": "taishin",
@@ -5191,12 +5191,12 @@
               "note": "現金回饋，於當期帳單直接折抵；國內外一般消費基本回饋，回饋無上限（不含指定數位訂閱平台消費）；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear"
             },
             {
-              "targetType": "general",
+              "targetType": "online",
               "pct": 3,
               "cap": "網路消費加碼(2%)部分每期回饋上限NT$150（正附卡合併），達上限後僅享基本回饋最高1%",
               "validFrom": "2026-03-01",
               "validUntil": "2026-08-31",
-              "note": "現金回饋，於當期帳單直接折抵；網路消費最高回饋＝基本回饋最高1%（需綁定帳單e化及自動扣繳皆辦）＋網路消費加碼2%（需綁定帳單e化）；網路消費含行動支付/國內外線上消費/App綁卡付款，不含保費/超商/小額支付平台/指定數位訂閱平台；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear"
+              "note": "現金回饋，於當期帳單直接折抵；限網路消費（含行動支付/國內外線上消費/App綁卡付款，實體門市不適用；Apple Pay等於實體門市感應視為實體交易）；最高回饋＝基本回饋最高1%（需綁定帳單e化及自動扣繳皆辦）＋網路消費加碼2%（需綁定帳單e化）；不含保費/超商/小額支付平台/指定數位訂閱平台；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/u-bear"
             },
             {
               "target": "Netflix",

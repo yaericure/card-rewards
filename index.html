@@ -1042,11 +1042,12 @@
       var hit = false;
 
       if (r.targetType === "general") {
-        // only plan-less generals may become 基本 rows, and only for
-        // merchant/country queries (payment queries list payment rewards only)
-        if (!r.plan && (query.type === "merchant" || query.type === "country")) {
+        // general rows appear for merchant/country queries (payment queries
+        // list payment rewards only). A general reward WITH a plan is a
+        // 不限通路方案（如假日刷）— shown under its plan name, per user ruling.
+        if (query.type === "merchant" || query.type === "country") {
           hit = true;
-          planLabel = "基本";
+          planLabel = r.plan || "基本";
         }
       } else if (query.type === "merchant") {
         if (r.targetType === "merchant" && r.target &&

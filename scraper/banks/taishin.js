@@ -29,8 +29,8 @@
 //     台新Pay/台新Pay+ 各 3.8%、LINE Pay/全盈+PAY 各 2.3%（LEVEL2；LEVEL1 一律 1.3%）。
 //     台新Pay 可用商店（場域）清單放 data/mobilepay.json，不在 cards.json 建商店型 reward。
 //   - 玩旅刷【海外消費】＝國外消費不分國家 → targetType=country、target=「海外」。
-//   - 假日刷為「節假日不限通路」的一般消費型，依「plan+general 禁用」規則不填 plan、
-//     方案條件寫進 note。
+//   - 假日刷為「節假日不限通路」的方案：plan=假日刷＋targetType=general（SCHEMA「不限
+//     通路的方案」組合），前端照方案名顯示、note 標明限節假日。
 //   - 大全聯信用卡／街口聯名卡的活動頁是靜態伺服器渲染 → fetch 即可。
 //   - 大全聯：tiers＝發卡組織（jcb/other，見 scrapePxmart 前註解）；台新帳戶扣繳維度
 //     依 assumedAchieved 折入數值。全支付店外 1.5% 不受扣繳/組織影響。
@@ -329,14 +329,15 @@ async function scrapeRichart(page, cardName) {
     }
   }
 
-  // 假日刷：細則為「節假日不限通路消費享2%」＝一般消費型。依規則 plan+general 組合禁用，
-  // 故不填 plan 欄位，方案名寫進 note（前端會顯示為「基本」行、note 說明需切換假日刷）。
+  // 假日刷：細則為「節假日不限通路消費享2%」＝不限通路的方案型一般回饋。
+  // 使用者拍板（2026-07-11）：plan+general 表「不限通路方案」，前端照方案名顯示並標明限節假日。
   const holiday = readPct3Lines('假日刷');
   if (holiday) {
     rewards.push({
+      plan: '假日刷',
       targetType: 'general',
       pctByTier: { [RICHART_TIER_AUTOPAY]: holiday.pct, [RICHART_TIER_NONE]: LEVEL1_PCT },
-      note: `${POINT_NOTE_RICHART}；「假日刷」方案：需切換至假日刷且限國內節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）`,
+      note: `${POINT_NOTE_RICHART}；限國內節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）`,
     });
   }
 

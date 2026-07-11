@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-11T07:53:01.653Z",
+  "updatedAt": "2026-07-11T08:20:58.198Z",
   "banks": [
     {
       "id": "taishin",
@@ -3275,12 +3275,13 @@
               "note": "台新Point(信用卡)點數回饋；玩旅刷【旅行社】（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
             },
             {
+              "plan": "假日刷",
               "targetType": "general",
               "pctByTier": {
                 "autopay": 2,
                 "none": 1.3
               },
-              "note": "台新Point(信用卡)點數回饋；「假日刷」方案：需切換至假日刷且限國內節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）"
+              "note": "台新Point(信用卡)點數回饋；限國內節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）"
             },
             {
               "targetType": "general",

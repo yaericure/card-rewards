@@ -11,18 +11,33 @@ const OUT_DIR = path.join(__dirname, 'output');
 const DATA_FILE = path.join(__dirname, '..', 'data', 'cards.json');
 const BANK_IDS = ['taishin', 'esun', 'fubon', 'cathay', 'sinopac'];
 
+const TARGET_TYPES = ['merchant', 'dining', 'country', 'general'];
+
 function validateBank(bank, id) {
   const errs = [];
   if (bank.id !== id) errs.push(`id 應為 ${id}，實際 ${bank.id}`);
   if (!bank.name) errs.push('缺 name');
   if (!Array.isArray(bank.cards) || bank.cards.length === 0) errs.push('cards 為空');
   for (const card of bank.cards || []) {
-    if (!card.id || !card.name) errs.push(`卡片缺 id/name: ${JSON.stringify(card).slice(0, 80)}`);
-    if (!Array.isArray(card.plans) || card.plans.length === 0) errs.push(`${card.name} 無 plans`);
-    for (const plan of card.plans || []) {
-      for (const r of plan.rewards || []) {
-        if (typeof r.pct !== 'number') errs.push(`${card.name}/${plan.name} 有 reward 的 pct 不是數字`);
+    if (!card.id || !card.name || !card.url) errs.push(`卡片缺 id/name/url: ${JSON.stringify(card).slice(0, 80)}`);
+    const tierIds = new Set((card.tiers || []).map((t) => t.id));
+    if (card.tiers && card.tiers.length < 2) errs.push(`${card.name} tiers 存在但少於 2 個（無等級概念就省略欄位）`);
+    if (!Array.isArray(card.rewards) || card.rewards.length === 0) errs.push(`${card.name} 無 rewards`);
+    for (const r of card.rewards || []) {
+      const tag = `${card.name}/${r.plan || '基本'}/${r.target || r.targetType}`;
+      if (!TARGET_TYPES.includes(r.targetType)) errs.push(`${tag} targetType 非法：${r.targetType}`);
+      if ((r.targetType === 'merchant' || r.targetType === 'country') && !r.target)
+        errs.push(`${tag} targetType=${r.targetType} 但缺 target`);
+      const hasPct = typeof r.pct === 'number';
+      const hasByTier = r.pctByTier && typeof r.pctByTier === 'object';
+      if (hasPct === hasByTier) errs.push(`${tag} pct 與 pctByTier 必須二選一`);
+      if (hasByTier) {
+        for (const k of Object.keys(r.pctByTier)) {
+          if (!tierIds.has(k)) errs.push(`${tag} pctByTier key「${k}」不在 tiers 內`);
+          if (typeof r.pctByTier[k] !== 'number') errs.push(`${tag} pctByTier.${k} 不是數字`);
+        }
       }
+      if (r.validUntil && !/^\d{4}-\d{2}-\d{2}$/.test(r.validUntil)) errs.push(`${tag} validUntil 格式錯誤`);
     }
   }
   return errs;
@@ -82,9 +97,14 @@ function merge() {
       }
       banks.push(fresh);
     } else if (old) {
-      console.warn(`warn: ${id} 本次無新資料，整家沿用上一版`);
-      banks.push({ ...old, staleSince: old.staleSince || prevStamp });
-      stale++;
+      // 舊資料須通過現行 schema 驗證才可沿用（避免規格改版後，舊格式資料經備援混回新檔）
+      if (validateBank(old, id).length === 0) {
+        console.warn(`warn: ${id} 本次無新資料，整家沿用上一版`);
+        banks.push({ ...old, staleSince: old.staleSince || prevStamp });
+        stale++;
+      } else {
+        console.warn(`warn: ${id} 本次無新資料，且上一版不符現行 schema，捨棄`);
+      }
     }
   }
   const data = { updatedAt: new Date().toISOString(), banks };

@@ -1,24 +1,11 @@
 {
   "merchants": [
-    { "name": "momo購物網", "aliases": ["momo", "momoshop", "富邦momo"], "category": "online" },
-    { "name": "蝦皮購物", "aliases": ["shopee", "蝦皮"], "category": "online" },
-    { "name": "PChome24h購物", "aliases": ["pchome", "pchome24h"], "category": "online" },
-    { "name": "7-ELEVEN", "aliases": ["711", "7-11", "seven", "小七", "統一超商"], "category": "convenience" },
-    { "name": "全家便利商店", "aliases": ["familymart", "family", "全家"], "category": "convenience" },
-    { "name": "家樂福", "aliases": ["carrefour"], "category": "supermarket" },
-    { "name": "全聯福利中心", "aliases": ["pxmart", "全聯"], "category": "supermarket" },
-    { "name": "SOGO百貨", "aliases": ["sogo"], "category": "department" },
-    { "name": "新光三越", "aliases": ["skm", "shinkong"], "category": "department" },
-    { "name": "王品牛排", "aliases": ["wowprime", "王品"], "category": "dining" },
-    { "name": "星巴克", "aliases": ["starbucks"], "category": "dining" },
-    { "name": "foodpanda", "aliases": ["panda", "熊貓外送"], "category": "delivery" },
-    { "name": "Uber Eats", "aliases": ["ubereats", "uber eats"], "category": "delivery" },
-    { "name": "台北捷運", "aliases": ["mrt", "taipeimetro", "捷運"], "category": "transport" },
-    { "name": "台灣高鐵", "aliases": ["thsr", "高鐵"], "category": "transport" },
-    { "name": "中油加油站", "aliases": ["cpc", "中油"], "category": "gas" },
-    { "name": "Booking.com", "aliases": ["booking"], "category": "travel" },
-    { "name": "Klook客路", "aliases": ["klook"], "category": "travel" },
-    { "name": "Netflix", "aliases": ["netflix"], "category": "streaming" },
-    { "name": "LINE Pay", "aliases": ["linepay", "line pay"], "category": "mobilepay" }
+    { "name": "蝦皮購物", "aliases": ["蝦皮", "shopee", "蝦皮商城"] },
+    { "name": "遠東巨城購物中心", "aliases": ["Big City遠東巨城購物中心", "遠東巨城", "巨城", "Big City"], "dining": false },
+    { "name": "鼎泰豐", "aliases": ["dintaifung", "din tai fung"], "dining": true },
+    { "name": "星巴克", "aliases": ["starbucks"], "dining": true },
+    { "name": "全聯福利中心", "aliases": ["全聯", "pxmart"] },
+    { "name": "全家便利商店", "aliases": ["全家", "familymart", "family"] },
+    { "name": "7-ELEVEN", "aliases": ["711", "7-11", "小七", "統一超商"] }
   ]
 }

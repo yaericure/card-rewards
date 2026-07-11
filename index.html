@@ -190,31 +190,6 @@
     font-size: 0.88rem;
     color: var(--muted);
   }
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 10px;
-  }
-  @media (max-width: 480px) {
-    .category-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  .category-btn {
-    padding: 10px 6px;
-    border: 1px solid var(--border);
-    background: #fff;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    color: var(--text);
-    text-align: center;
-  }
-  .category-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .category-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
   .selected-target {
     margin-top: 12px;
     padding: 10px 12px;
@@ -256,28 +231,18 @@
     font-size: 0.85rem;
     margin-top: 2px;
   }
-  .result-body .result-recommend {
-    color: var(--accent-dark);
-    font-weight: 700;
-    font-size: 0.85rem;
-    margin-top: 4px;
-  }
   .result-body .result-meta {
     margin-top: 6px;
     font-size: 0.8rem;
     color: var(--muted);
   }
   .result-body .result-meta div { margin-bottom: 2px; }
-  .result-body .result-reason {
-    margin-top: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--accent-dark);
-  }
-  .result-body .result-incomplete {
+  .result-body .result-basic-tag {
+    display: inline-block;
     margin-top: 2px;
     font-size: 0.75rem;
     color: var(--muted);
+    font-style: italic;
   }
   .result-pct {
     font-size: 1.9rem;
@@ -285,15 +250,6 @@
     color: var(--accent-dark);
     flex-shrink: 0;
     white-space: nowrap;
-  }
-  .expired-tag {
-    display: inline-block;
-    background: var(--danger-soft);
-    color: var(--danger);
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 6px;
   }
   .empty-state {
     text-align: center;
@@ -364,7 +320,6 @@
     }
     input[type="text"].store-input { background: #232531; }
     .suggestions { background: #232531; }
-    .category-btn { background: #232531; }
     .banner { background: #3a3016; border-color: #6b5620; color: #f0c36d; }
   }
 </style>
@@ -408,8 +363,7 @@
       <div class="suggestions" id="suggestions"></div>
     </div>
     <div class="no-match-hint" id="noMatchHint" style="display:none;">
-      找不到符合的商店，請直接選擇消費類別：
-      <div class="category-grid" id="categoryGrid"></div>
+      找不到符合的商店或國家／地區，請確認輸入是否正確，或換個寫法試試（例如商店的中文全名、英文名、常見簡稱）。
     </div>
     <div class="selected-target hidden" id="selectedTarget"></div>
   </section>
@@ -431,42 +385,21 @@
 (function () {
   "use strict";
 
-  var CATEGORIES = [
-    { id: "general", label: "一般消費" },
-    { id: "online", label: "網購" },
-    { id: "convenience", label: "超商" },
-    { id: "supermarket", label: "超市／量販" },
-    { id: "department", label: "百貨" },
-    { id: "dining", label: "餐飲" },
-    { id: "delivery", label: "外送平台" },
-    { id: "transport", label: "交通" },
-    { id: "gas", label: "加油" },
-    { id: "travel", label: "旅遊" },
-    { id: "overseas", label: "海外消費" },
-    { id: "streaming", label: "影音串流／數位訂閱" },
-    { id: "mobilepay", label: "行動支付" },
-    { id: "telecom", label: "電信費" },
-    { id: "insurance", label: "保費" },
-    { id: "utilities", label: "稅費／公用事業／學費" },
-    { id: "medical", label: "醫療" },
-    { id: "entertainment", label: "娛樂" }
-  ];
-  var CATEGORY_LABEL = {};
-  CATEGORIES.forEach(function (c) { CATEGORY_LABEL[c.id] = c.label; });
-
-  var STORAGE_KEY = "cardRewardsPrefs.v1";
+  var STORAGE_VERSION = 3;
+  var STORAGE_KEY = "cardRewardsPrefs.v3";
 
   var state = {
     cardsData: null,
     merchantsData: null,
     usingSampleCards: false,
     usingSampleMerchants: false,
-    merchantIndex: [],         // combined dictionary: cards.json rewards[].merchants ∪ merchants.json
-    heldCardIds: [],           // array of card id
-    selectedPlans: {},         // cardId -> planId
-    matchedMerchant: null,     // { name, category } | null ; category may be null when the
-                                // merchant is only known from cards.json (not in merchants.json)
-    matchedCategory: null      // category id chosen directly (when no merchant match)
+    merchantNormMap: {},      // normalize(name|alias) -> canonical merchant name
+    diningSet: {},            // canonical merchant name -> true if dining=true in merchants.json
+    countryNormMap: {},       // normalize(countryName) -> canonical country name (as written in cards.json)
+    autocompleteList: [],     // [{ label, kind: 'merchant'|'country' }] for suggestions
+    heldCardIds: [],          // array of card id
+    selectedTiers: {},        // cardId -> tierId (only for cards that have `tiers`)
+    currentQuery: null        // { type: 'merchant'|'country', name: canonical name } | null
   };
 
   // ---------- utils ----------
@@ -501,57 +434,88 @@
     return null;
   }
 
-  function allCards() {
-    var out = [];
-    (state.cardsData.banks || []).forEach(function (bank) {
-      (bank.cards || []).forEach(function (card) {
-        out.push({ bank: bank, card: card });
-      });
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
-    return out;
   }
 
-  // Build the combined search dictionary required by SCHEMA.md's v2 "前端比對優先序":
-  // (a) every rewards[].merchants entry across all of cards.json (primary — this is
-  //     what lets a specific store like IKEA resolve even when merchants.json has no
-  //     entry for it at all), unioned with (b) merchants.json name/aliases (used for
-  //     category resolution + autocomplete). merchants.json is indexed first so its
-  //     official name/category/aliases win as the canonical entry when both sources
-  //     mention the same store.
-  function buildMerchantIndex() {
-    var byNorm = {};
-    var idx = [];
+  // Build the lookup structures required by SCHEMA.md's 前端行為 section:
+  //  - merchantNormMap: every normalized name/alias in merchants.json, PLUS every
+  //    merchant-type reward target in cards.json that isn't already covered, maps
+  //    to one canonical display name. merchants.json is indexed first so its name
+  //    wins as canonical when a card's reward target is one of its aliases.
+  //  - diningSet: canonical merchant name -> true, from merchants.json dining flag.
+  //  - countryNormMap: normalized country name -> canonical country name, collected
+  //    from every targetType="country" reward target across cards.json.
+  //  - autocompleteList: union of merchant canonical names ∪ merchants.json aliases
+  //    ∪ country names (SCHEMA.md 前端行為 §6).
+  function buildLookups() {
+    var merchantNormMap = {};
+    var diningSet = {};
+    var countryNormMap = {};
+    var autoSet = {}; // normalized -> { label, kind } to dedupe
 
-    function upsert(name, category) {
-      var n = normalize(name);
-      if (!n) return null;
-      if (!byNorm[n]) {
-        byNorm[n] = { name: name, category: category || null, aliases: [] };
-        idx.push(byNorm[n]);
-      } else if (category && !byNorm[n].category) {
-        byNorm[n].category = category;
-      }
-      return byNorm[n];
+    function addAutocomplete(label, kind) {
+      var n = normalize(label);
+      if (!n || autoSet[n]) return;
+      autoSet[n] = { label: label, kind: kind };
     }
 
     (state.merchantsData.merchants || []).forEach(function (m) {
-      var entry = upsert(m.name, m.category);
-      if (entry) {
-        (m.aliases || []).forEach(function (a) { entry.aliases.push(a); });
-      }
+      var canonical = m.name;
+      var n = normalize(canonical);
+      if (!n) return;
+      merchantNormMap[n] = canonical;
+      if (m.dining === true) diningSet[canonical] = true;
+      addAutocomplete(canonical, "merchant");
+      (m.aliases || []).forEach(function (a) {
+        var an = normalize(a);
+        if (an && !merchantNormMap[an]) merchantNormMap[an] = canonical;
+        addAutocomplete(a, "merchant");
+      });
     });
 
     (state.cardsData.banks || []).forEach(function (bank) {
       (bank.cards || []).forEach(function (card) {
-        (card.plans || []).forEach(function (plan) {
-          (plan.rewards || []).forEach(function (r) {
-            (r.merchants || []).forEach(function (m) { upsert(m, null); });
-          });
+        (card.rewards || []).forEach(function (r) {
+          if (r.targetType === "merchant" && r.target) {
+            var n = normalize(r.target);
+            if (n && !merchantNormMap[n]) {
+              merchantNormMap[n] = r.target; // not in merchants.json: canonical = itself
+              addAutocomplete(r.target, "merchant");
+            }
+          } else if (r.targetType === "country" && r.target) {
+            var cn = normalize(r.target);
+            if (cn && !countryNormMap[cn]) {
+              countryNormMap[cn] = r.target;
+              addAutocomplete(r.target, "country");
+            }
+          }
         });
       });
     });
 
-    return idx;
+    state.merchantNormMap = merchantNormMap;
+    state.diningSet = diningSet;
+    state.countryNormMap = countryNormMap;
+    state.autocompleteList = Object.keys(autoSet).map(function (k) { return autoSet[k]; });
+  }
+
+  // Resolve free-text input to a canonical query target.
+  // Country match takes priority only if the text isn't also a known merchant name
+  // (in practice country names and merchant names shouldn't collide, but merchant
+  // wins on tie since that's the more specific match).
+  function matchQuery(raw) {
+    var nq = normalize(raw);
+    if (!nq) return null;
+    if (state.merchantNormMap[nq]) {
+      return { type: "merchant", name: state.merchantNormMap[nq] };
+    }
+    if (state.countryNormMap[nq]) {
+      return { type: "country", name: state.countryNormMap[nq] };
+    }
+    return null;
   }
 
   // ---------- data loading ----------
@@ -587,14 +551,13 @@
         state.usingSampleCards = results[0].sample;
         state.merchantsData = results[1].data;
         state.usingSampleMerchants = results[1].sample;
-        state.merchantIndex = buildMerchantIndex();
+        buildLookups();
 
         if (state.usingSampleCards || state.usingSampleMerchants) {
           document.getElementById("demoBanner").classList.add("show");
         }
 
         buildStep1();
-        buildCategoryGrid();
         restorePrefs();
       })
       .catch(function (err) {
@@ -646,25 +609,15 @@
       if (state.heldCardIds.indexOf(id) === -1) state.heldCardIds.push(id);
     } else {
       state.heldCardIds = state.heldCardIds.filter(function (x) { return x !== id; });
-      delete state.selectedPlans[id];
+      delete state.selectedTiers[id];
     }
     savePrefs();
     refreshStep2Visibility();
   }
 
-  // A card needs an explicit plan choice in step 2 only when it has more than
-  // one plan AND it is not "switchable" (switchable = user can freely switch
-  // between plans any time, so we auto-pick whichever is best per query instead
-  // of asking). Multi-plan cards missing planKind are treated as "tier" per
-  // SCHEMA.md (conservative default: ask rather than assume).
-  function isSwitchableMultiPlan(card) {
-    var plans = card.plans || [];
-    return plans.length > 1 && card.planKind === "switchable";
-  }
-
-  function needsPlanSelection(card) {
-    var plans = card.plans || [];
-    return plans.length > 1 && card.planKind !== "switchable";
+  // A card needs step 2 only when it declares `tiers` (>= 2 entries per SCHEMA.md).
+  function cardNeedsTierSelection(card) {
+    return Array.isArray(card.tiers) && card.tiers.length > 0;
   }
 
   function getTierSelectionEntries() {
@@ -672,7 +625,7 @@
     state.heldCardIds.forEach(function (cardId) {
       var found = findBankByCardId(cardId);
       if (!found) return;
-      if (needsPlanSelection(found.card)) out.push({ cardId: cardId, bank: found.bank, card: found.card });
+      if (cardNeedsTierSelection(found.card)) out.push({ cardId: cardId, bank: found.bank, card: found.card });
     });
     return out;
   }
@@ -699,17 +652,17 @@
       skipNote.classList.add("hidden");
       hideResults();
     } else {
-      // nothing needs manual selection (single-plan and/or switchable cards
-      // only) -> skip step 2 entirely and go straight to step 3
+      // no held card declares tiers -> skip step 2 entirely, go straight to step 3
       step2.classList.add("hidden");
       step3.classList.remove("hidden");
       buildHeldSummary();
-      skipNote.textContent = "你選的卡片都不需要另外選擇方案／等級，已自動判定回饋，可直接輸入商店。";
+      skipNote.textContent = "你選的卡片都不需要另外選擇等級，可直接輸入商店。";
       skipNote.classList.remove("hidden");
+      rerunQueryIfAny();
     }
   }
 
-  // ---------- Step 2: pick plan per held tier-type card ----------
+  // ---------- Step 2: pick tier per held tiered card ----------
 
   function buildStep2(tierEntries) {
     var container = document.getElementById("planGroups");
@@ -718,7 +671,7 @@
     tierEntries.forEach(function (entry) {
       var cardId = entry.cardId;
       var card = entry.card;
-      var plans = card.plans || [];
+      var tiers = card.tiers || [];
 
       var block = document.createElement("div");
       block.className = "plan-block";
@@ -728,30 +681,31 @@
       title.textContent = entry.bank.name + "｜" + card.name;
       block.appendChild(title);
 
-      if (!state.selectedPlans[cardId] || !plans.some(function (p) { return p.id === state.selectedPlans[cardId]; })) {
-        state.selectedPlans[cardId] = plans[0].id;
+      if (!state.selectedTiers[cardId] || !tiers.some(function (t) { return t.id === state.selectedTiers[cardId]; })) {
+        state.selectedTiers[cardId] = tiers[0].id;
       }
-      plans.forEach(function (plan) {
+      tiers.forEach(function (tier) {
         var choiceRow = document.createElement("div");
         choiceRow.className = "plan-choice";
 
         var radio = document.createElement("input");
         radio.type = "radio";
-        radio.name = "plan-" + cardId;
-        radio.id = "plan-" + cardId + "-" + plan.id;
-        radio.value = plan.id;
-        radio.checked = state.selectedPlans[cardId] === plan.id;
+        radio.name = "tier-" + cardId;
+        radio.id = "tier-" + cardId + "-" + tier.id;
+        radio.value = tier.id;
+        radio.checked = state.selectedTiers[cardId] === tier.id;
         radio.addEventListener("change", function () {
-          state.selectedPlans[cardId] = plan.id;
+          state.selectedTiers[cardId] = tier.id;
           savePrefs();
+          rerunQueryIfAny();
         });
 
         var labelWrap = document.createElement("label");
         labelWrap.setAttribute("for", radio.id);
         labelWrap.innerHTML =
           '<div class="plan-name"></div><div class="plan-condition"></div>';
-        labelWrap.querySelector(".plan-name").textContent = plan.name;
-        labelWrap.querySelector(".plan-condition").textContent = plan.condition || "無條件";
+        labelWrap.querySelector(".plan-name").textContent = tier.name;
+        labelWrap.querySelector(".plan-condition").textContent = tier.condition || "無條件";
 
         choiceRow.appendChild(radio);
         choiceRow.appendChild(labelWrap);
@@ -782,54 +736,18 @@
       "已選 " + names.length + " 張卡：" + names.join("、");
   }
 
-  // ---------- Step 3: store name / category ----------
+  // ---------- Step 3: store / country input ----------
 
-  function buildCategoryGrid() {
-    var grid = document.getElementById("categoryGrid");
-    grid.innerHTML = "";
-    CATEGORIES.forEach(function (cat) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "category-btn";
-      btn.textContent = cat.label;
-      btn.dataset.cat = cat.id;
-      btn.addEventListener("click", function () {
-        Array.prototype.forEach.call(grid.querySelectorAll(".category-btn"), function (b) {
-          b.classList.remove("active");
-        });
-        btn.classList.add("active");
-        state.matchedMerchant = null;
-        state.matchedCategory = cat.id;
-        showSelectedTarget();
-        computeAndRenderResults();
-      });
-      grid.appendChild(btn);
-    });
-  }
-
-  function matchMerchants(query) {
+  function matchSuggestions(query) {
     var nq = normalize(query);
     if (!nq) return [];
     var exact = [], prefix = [], substr = [];
-    // Search the combined dictionary (cards.json rewards[].merchants ∪ merchants.json),
-    // not merchants.json alone — a store like IKEA that only appears inside a card's
-    // official channel list must still surface here (v2 core principle).
-    (state.merchantIndex || []).forEach(function (m) {
-      var candidates = [m.name].concat(m.aliases || []);
-      var best = null; // 0 exact, 1 prefix, 2 substr
-      candidates.forEach(function (c) {
-        var nc = normalize(c);
-        if (!nc) return;
-        var rank;
-        if (nc === nq) rank = 0;
-        else if (nc.indexOf(nq) === 0 || nq.indexOf(nc) === 0) rank = 1;
-        else if (nc.indexOf(nq) !== -1 || nq.indexOf(nc) !== -1) rank = 2;
-        else return;
-        if (best === null || rank < best) best = rank;
-      });
-      if (best === 0) exact.push(m);
-      else if (best === 1) prefix.push(m);
-      else if (best === 2) substr.push(m);
+    state.autocompleteList.forEach(function (item) {
+      var nc = normalize(item.label);
+      if (!nc) return;
+      if (nc === nq) exact.push(item);
+      else if (nc.indexOf(nq) === 0 || nq.indexOf(nc) === 0) prefix.push(item);
+      else if (nc.indexOf(nq) !== -1) substr.push(item);
     });
     return exact.concat(prefix).concat(substr);
   }
@@ -842,22 +760,33 @@
 
     input.addEventListener("input", function () {
       var val = input.value;
-      state.matchedMerchant = null;
-      hideSelectedTarget();
-      hideResults();
-      clearCategoryActive();
 
       if (timer) clearTimeout(timer);
       timer = setTimeout(function () {
         if (!val.trim()) {
           box.classList.remove("show");
           noMatchHint.style.display = "none";
+          state.currentQuery = null;
+          hideSelectedTarget();
+          hideResults();
           return;
         }
-        var matches = matchMerchants(val).slice(0, 8);
+
+        var direct = matchQuery(val);
+        if (direct) {
+          state.currentQuery = direct;
+          showSelectedTarget();
+          computeAndRenderResults();
+        } else {
+          state.currentQuery = null;
+          hideSelectedTarget();
+          hideResults();
+        }
+
+        var matches = matchSuggestions(val).slice(0, 8);
         if (matches.length === 0) {
           box.classList.remove("show");
-          noMatchHint.style.display = "block";
+          noMatchHint.style.display = direct ? "none" : "block";
           return;
         }
         noMatchHint.style.display = "none";
@@ -865,14 +794,12 @@
         matches.forEach(function (m) {
           var item = document.createElement("div");
           item.className = "suggestion-item";
-          item.innerHTML =
-            '<span></span><span class="s-cat"></span>';
-          item.querySelector("span").textContent = m.name;
-          item.querySelector(".s-cat").textContent = m.category ? (CATEGORY_LABEL[m.category] || m.category) : "";
+          item.innerHTML = '<span></span><span class="s-cat"></span>';
+          item.querySelector("span").textContent = m.label;
+          item.querySelector(".s-cat").textContent = m.kind === "country" ? "地區" : "";
           item.addEventListener("click", function () {
-            input.value = m.name;
-            state.matchedMerchant = { name: m.name, category: m.category };
-            state.matchedCategory = null;
+            input.value = m.label;
+            state.currentQuery = matchQuery(m.label);
             box.classList.remove("show");
             noMatchHint.style.display = "none";
             showSelectedTarget();
@@ -891,204 +818,147 @@
     });
   }
 
-  function clearCategoryActive() {
-    Array.prototype.forEach.call(
-      document.querySelectorAll(".category-btn"),
-      function (b) { b.classList.remove("active"); }
-    );
-  }
-
   function showSelectedTarget() {
     var el = document.getElementById("selectedTarget");
-    if (state.matchedMerchant) {
-      var catLabel = state.matchedMerchant.category
-        ? (CATEGORY_LABEL[state.matchedMerchant.category] || state.matchedMerchant.category)
-        : null;
-      el.innerHTML =
-        "目前比對商店：<b>" + escapeHtml(state.matchedMerchant.name) + "</b>" +
-        (catLabel ? "（" + escapeHtml(catLabel) + "）" : "");
-    } else if (state.matchedCategory) {
-      el.innerHTML = "目前比對類別：<b>" + escapeHtml(CATEGORY_LABEL[state.matchedCategory] || state.matchedCategory) + "</b>";
+    if (state.currentQuery && state.currentQuery.type === "merchant") {
+      el.innerHTML = "目前比對商店：<b>" + escapeHtml(state.currentQuery.name) + "</b>";
+    } else if (state.currentQuery && state.currentQuery.type === "country") {
+      el.innerHTML = "目前比對地區：<b>" + escapeHtml(state.currentQuery.name) + "</b>";
     } else {
       el.innerHTML = "";
     }
-    el.classList.toggle("hidden", !(state.matchedMerchant || state.matchedCategory));
+    el.classList.toggle("hidden", !state.currentQuery);
   }
 
   function hideSelectedTarget() {
-    state.matchedCategory = null;
     document.getElementById("selectedTarget").classList.add("hidden");
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
+  // re-run the current query's results after a tier selection changes or step 2
+  // is skipped, so a switched tier is reflected without retyping the store name.
+  function rerunQueryIfAny() {
+    if (state.currentQuery) computeAndRenderResults();
   }
 
   // ---------- reward computation ----------
 
-  // Returns { reward, reasonLabel, incomplete } | null.
-  // Priority order per SCHEMA.md v2 "前端比對優先序":
-  //   ① reward.merchants 直接命中該商店（最優先，無論 category）
-  //   ② 商店經 merchants.json 對到 category，且卡有該 category 的「整類通用」回饋
-  //      —— 只採計沒有自己 merchants 限制清單的 reward；一個限定在 7-11/全家的回饋
-  //      不能因為 category 相同就外溢到其他超商，那樣會違背指定通路清單的用意。
-  //   ③ fallback 到 general（同樣只採計整類通用的 general reward）
-  function bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory) {
-    var rewards = plan.rewards || [];
-    if (rewards.length === 0) return null;
-
-    function isCategoryWide(r) {
-      return !r.merchants || r.merchants.length === 0;
-    }
-
-    // priority 1: direct merchant hit inside rewards[].merchants
-    if (targetMerchantName) {
-      var nTarget = normalize(targetMerchantName);
-      var merchantHits = rewards.filter(function (r) {
-        return (r.merchants || []).some(function (m) { return normalize(m) === nTarget; });
-      });
-      if (merchantHits.length > 0) {
-        var bestM = merchantHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
-        return {
-          reward: bestM,
-          reasonLabel: "指定通路命中：" + targetMerchantName,
-          incomplete: bestM.merchantsComplete === false
-        };
+  // Resolve a reward's actual pct for the given card, honoring pctByTier when the
+  // card declares tiers and the user has selected one. Returns null if it truly
+  // cannot be resolved (should not happen in practice since step 2 forces a
+  // selection for every held card that has tiers) so callers can skip gracefully
+  // instead of crashing.
+  function resolvePct(reward, card, cardId) {
+    if (typeof reward.pct === "number") return reward.pct;
+    if (reward.pctByTier) {
+      var tierId = state.selectedTiers[cardId];
+      if (tierId && typeof reward.pctByTier[tierId] === "number") {
+        return reward.pctByTier[tierId];
+      }
+      // defensive fallback: no tier selected yet (e.g. stale state) -> use the
+      // first available tier value rather than breaking the whole result list.
+      var keys = Object.keys(reward.pctByTier);
+      if (keys.length > 0 && typeof reward.pctByTier[keys[0]] === "number") {
+        return reward.pctByTier[keys[0]];
       }
     }
-
-    // priority 2: category-wide reward (no merchants restriction of its own)
-    if (targetCategory) {
-      var catHits = rewards.filter(function (r) { return r.category === targetCategory && isCategoryWide(r); });
-      if (catHits.length > 0) {
-        var bestC = catHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
-        return {
-          reward: bestC,
-          reasonLabel: "類別回饋：" + (CATEGORY_LABEL[targetCategory] || targetCategory),
-          incomplete: false
-        };
-      }
-    }
-
-    // priority 3: fallback to general (category-wide only)
-    var generalHits = rewards.filter(function (r) { return r.category === "general" && isCategoryWide(r); });
-    if (generalHits.length > 0) {
-      var bestG = generalHits.reduce(function (a, b) { return b.pct > a.pct ? b : a; });
-      return { reward: bestG, reasonLabel: "一般消費回饋", incomplete: false };
-    }
-
     return null;
   }
 
-  function computeAndRenderResults() {
-    var targetMerchantName = state.matchedMerchant ? state.matchedMerchant.name : null;
-    var targetCategory = state.matchedMerchant
-      ? state.matchedMerchant.category
-      : state.matchedCategory;
+  // Returns the list of reward rows that match `query` for one held card, split
+  // into "specific" (merchant/dining/country hits) and "general" (基本回饋) —
+  // per SCHEMA.md 前端行為: general rows are always appended after specific rows,
+  // but each group is independently sorted by pct descending.
+  function rowsForCard(cardId, card, bankName, query) {
+    var rewards = card.rewards || [];
+    var specific = [];
+    var general = [];
 
-    if (!targetMerchantName && !targetCategory) {
+    rewards.forEach(function (r) {
+      if (isExpired(r.validUntil)) return;
+
+      var isGeneral = r.targetType === "general";
+      var hit = false;
+
+      if (!isGeneral) {
+        if (query.type === "merchant") {
+          if (r.targetType === "merchant" && r.target) {
+            var rn = normalize(r.target);
+            var canonicalTarget = state.merchantNormMap[rn] || r.target;
+            if (canonicalTarget === query.name) hit = true;
+          } else if (r.targetType === "dining" && state.diningSet[query.name]) {
+            hit = true;
+          }
+        } else if (query.type === "country") {
+          if (r.targetType === "country" && r.target === query.name) hit = true;
+        }
+      } else {
+        hit = true; // every non-expired general reward is always shown, per card
+      }
+
+      if (!hit) return;
+
+      var pct = resolvePct(r, card, cardId);
+      if (pct === null) return; // unresolvable pctByTier, skip rather than break
+
+      var row = {
+        bankName: bankName,
+        cardName: card.name,
+        planLabel: r.plan || "基本",
+        pct: pct,
+        cap: r.cap || "",
+        validUntil: r.validUntil || "",
+        note: r.note || "",
+        isGeneral: isGeneral
+      };
+
+      if (isGeneral) general.push(row);
+      else specific.push(row);
+    });
+
+    return { specific: specific, general: general };
+  }
+
+  function computeAndRenderResults() {
+    var query = state.currentQuery;
+    if (!query) {
       hideResults();
       return;
     }
 
-    var candidates = [];
-    var anyHeldCard = state.heldCardIds.length > 0;
-    var allExpired = true;
+    var specificAll = [];
+    var generalAll = [];
 
     state.heldCardIds.forEach(function (cardId) {
       var found = findBankByCardId(cardId);
       if (!found) return;
-      var card = found.card;
-      var plans = card.plans || [];
-      if (plans.length === 0) return;
-
-      if (isSwitchableMultiPlan(card)) {
-        // switchable: consider every non-expired plan for THIS query and take
-        // whichever plan gives the highest reward for the merchant/category.
-        var nonExpired = plans.filter(function (p) { return !isExpired(p.validUntil); });
-        if (nonExpired.length === 0) return; // all plans expired
-
-        allExpired = false;
-
-        var bestPlan = null, bestPick = null;
-        nonExpired.forEach(function (plan) {
-          var pick = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-          if (pick && (!bestPick || pick.reward.pct > bestPick.reward.pct)) {
-            bestPick = pick;
-            bestPlan = plan;
-          }
-        });
-        if (!bestPick) return;
-
-        candidates.push({
-          bankName: found.bank.name,
-          cardName: card.name,
-          planName: null,
-          recommendedPlanName: bestPlan.name,
-          pct: bestPick.reward.pct,
-          cap: bestPick.reward.cap || "",
-          note: bestPick.reward.note || "",
-          validUntil: bestPlan.validUntil || "",
-          reasonLabel: bestPick.reasonLabel,
-          incomplete: bestPick.incomplete
-        });
-      } else {
-        var plan = plans.length === 1
-          ? plans[0]
-          : plans.find(function (p) { return p.id === state.selectedPlans[cardId]; });
-        if (!plan) return;
-
-        if (isExpired(plan.validUntil)) {
-          return; // excluded, but tracked via allExpired flag below
-        }
-        allExpired = false;
-
-        var pick2 = bestRewardForCardPlan(card, plan, targetMerchantName, targetCategory);
-        if (!pick2) return;
-
-        candidates.push({
-          bankName: found.bank.name,
-          cardName: card.name,
-          planName: plan.name,
-          recommendedPlanName: null,
-          pct: pick2.reward.pct,
-          cap: pick2.reward.cap || "",
-          note: pick2.reward.note || "",
-          validUntil: plan.validUntil || "",
-          reasonLabel: pick2.reasonLabel,
-          incomplete: pick2.incomplete
-        });
-      }
+      var res = rowsForCard(cardId, found.card, found.bank.name, query);
+      specificAll = specificAll.concat(res.specific);
+      generalAll = generalAll.concat(res.general);
     });
+
+    specificAll.sort(function (a, b) { return b.pct - a.pct; });
+    generalAll.sort(function (a, b) { return b.pct - a.pct; });
+    var rows = specificAll.concat(generalAll);
 
     var resultsSection = document.getElementById("resultsSection");
     var list = document.getElementById("resultsList");
     list.innerHTML = "";
 
-    if (anyHeldCard && allExpired) {
+    if (state.heldCardIds.length === 0) {
+      hideResults();
+      return;
+    }
+
+    if (rows.length === 0) {
       var empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.textContent = "方案已到期，待資料更新";
+      empty.textContent = "目前持有的卡片沒有適用於這個商店／地區的回饋資料。";
       list.appendChild(empty);
       resultsSection.classList.remove("hidden");
       return;
     }
 
-    if (candidates.length === 0) {
-      var empty2 = document.createElement("div");
-      empty2.className = "empty-state";
-      empty2.textContent = "目前持有的卡片沒有適用於這個商店／類別的回饋資料。";
-      list.appendChild(empty2);
-      resultsSection.classList.remove("hidden");
-      return;
-    }
-
-    candidates.sort(function (a, b) { return b.pct - a.pct; });
-    var top3 = candidates.slice(0, 3);
-
-    top3.forEach(function (c, idx) {
+    rows.forEach(function (c, idx) {
       var row = document.createElement("div");
       row.className = "result-card";
 
@@ -1107,21 +977,11 @@
       body.innerHTML =
         '<div class="result-cardname"></div>' +
         '<div class="result-bank"></div>' +
-        (c.recommendedPlanName ? '<div class="result-recommend"></div>' : '<div class="result-plan"></div>') +
-        '<div class="result-reason"></div>' +
-        (c.incomplete ? '<div class="result-incomplete"></div>' : '') +
+        '<div class="result-plan"></div>' +
         '<div class="result-meta"></div>';
       body.querySelector(".result-cardname").textContent = c.cardName;
       body.querySelector(".result-bank").textContent = c.bankName;
-      if (c.recommendedPlanName) {
-        body.querySelector(".result-recommend").textContent = "建議方案：" + c.recommendedPlanName;
-      } else {
-        body.querySelector(".result-plan").textContent = "方案：" + c.planName;
-      }
-      body.querySelector(".result-reason").textContent = c.reasonLabel || "";
-      if (c.incomplete) {
-        body.querySelector(".result-incomplete").textContent = "官方清單未完整收錄";
-      }
+      body.querySelector(".result-plan").textContent = "方案：" + c.planLabel;
       var metaEl = body.querySelector(".result-meta");
       metaLines.forEach(function (line) {
         var d = document.createElement("div");
@@ -1155,8 +1015,9 @@
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
+          version: STORAGE_VERSION,
           heldCardIds: state.heldCardIds,
-          selectedPlans: state.selectedPlans
+          selectedTiers: state.selectedTiers
         })
       );
     } catch (e) {
@@ -1164,6 +1025,13 @@
     }
   }
 
+  // Restores prefs saved by this same v3 build. Any older format (v2's
+  // "cardRewardsPrefs.v1" key, or malformed/missing-version data that might land
+  // under this key in the future) is intentionally NOT migrated — SCHEMA.md calls
+  // for resetting to defaults rather than attempting a hard conversion. Because
+  // the storage key itself changed from v1 to v3, old data is simply invisible
+  // here; the version/shape checks below are an extra safety net in case that
+  // ever isn't true (e.g. a future format reusing this key).
   function restorePrefs() {
     var raw;
     try {
@@ -1172,20 +1040,31 @@
       raw = null;
     }
     if (!raw) return;
+
     var parsed;
     try {
       parsed = JSON.parse(raw);
     } catch (e) {
-      return;
+      return; // corrupt JSON -> stay on defaults, no throw
     }
-    if (!parsed || !Array.isArray(parsed.heldCardIds) || parsed.heldCardIds.length === 0) return;
+
+    var looksValid =
+      parsed &&
+      parsed.version === STORAGE_VERSION &&
+      Array.isArray(parsed.heldCardIds) &&
+      parsed.selectedTiers &&
+      typeof parsed.selectedTiers === "object" &&
+      !Array.isArray(parsed.selectedTiers);
+    if (!looksValid) return; // unrecognized/old format -> reset to defaults, no hard conversion
+
+    if (parsed.heldCardIds.length === 0) return;
 
     // only keep ids that still exist in current data
     var validIds = parsed.heldCardIds.filter(function (id) { return findBankByCardId(id); });
     if (validIds.length === 0) return;
 
     state.heldCardIds = validIds;
-    state.selectedPlans = parsed.selectedPlans || {};
+    state.selectedTiers = parsed.selectedTiers || {};
 
     validIds.forEach(function (id) {
       var cb = document.getElementById("card-" + id);
@@ -1202,9 +1081,8 @@
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
     state.heldCardIds = [];
-    state.selectedPlans = {};
-    state.matchedMerchant = null;
-    state.matchedCategory = null;
+    state.selectedTiers = {};
+    state.currentQuery = null;
 
     document.getElementById("restoredBar").classList.add("hidden");
     document.getElementById("restoredBar").classList.remove("show");
@@ -1216,9 +1094,9 @@
     var storeInput = document.getElementById("storeInput");
     if (storeInput) storeInput.value = "";
     document.getElementById("noMatchHint").style.display = "none";
+    hideSelectedTarget();
 
     buildStep1();
-    buildCategoryGrid();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 

@@ -10,27 +10,30 @@
 //
 // 解析假設（2026-07-11 實測，若改版需重新核對）：
 //   - 三頁皆為靜態伺服器渲染頁面，fetch + cheerio 即可，不需 playwright。
-//   - Unicard：
-//     * 一般消費 0.3%（僅帳單e化）／1%（帳單e化＋自動扣繳且成功扣繳）為 tiers（用戶帳戶狀態）。
-//     * 「百大指定消費」為 SCHEMA 明確舉例的 plan 案例：核卡預設【簡單選】（自動涵蓋全部
-//       百大指定消費，加碼較低 +2%）／使用者可切換為【任意選】（自行從清單挑最多8家，
-//       加碼 +2.5%）／訂閱【UP選】（涵蓋全部，加碼較高 +3.5%）。三方案的加碼清單來源
-//       相同（頁面公告之「百大指定消費列表」，2026/7/1~2026/12/31 適用，9 類共 82 家商店
-//       ＋「國外實體」18 個國家，合計約百項），故三個 plan 各自對清單中每一項目建一筆
-//       reward（任意選雖僅能同時生效最多8家，但清單中任一項目「若被選入」皆可拿到
-//       2.5%，故每項目分列一行、note 註明任意選需自行指定最多8家）。
-//     * 「國外實體」清單列的是國家（日本/韓國/...）而非商店 → targetType=country；
-//       其餘 8 類清單為具體商店 → targetType=merchant。
-//   - Pi拍錢包信用卡：基本回饋依「是否申請帳單e化」＋「當月消費金額級距」形成 4 級 tiers
-//     （0.3%／1%／1.8%／2%~30,000以上3%），為 SCHEMA 舉例的「月消費級距」tier 案例。
-//     保費（1.2%，不受上述 tiers 影響）與全家便利商店加碼（5%，指定商店）為獨立常態/期間
-//     限定活動，各自 pct 固定。
-//   - U Bear信用卡：基本回饋依「僅綁定帳單e化或僅申辦自動扣繳其中一項」（0.5%）／
-//     「兩者皆辦」（1%）為 tiers。網路消費加碼（需另外綁定帳單e化才享 +2%，且與基本回饋
-//     的 tiers 條件不同軸，故不重複建 tiers，改以固定 pct=3%（已含基本回饋最高1%＋加碼2%）
-//     並在 note 詳列条件與上限）為一般消費/網路消費（無特定商店，故 targetType=general）。
-//     指定數位訂閱平台（Netflix/ChatGPT/Google Gemini/Steam/Nintendo/PlayStation）為
-//     商店等級加碼 10%，逐一拆成 merchant reward。
+//   - Unicard（使用者拍板改資格）：
+//     * 簡單選/任意選/UP選是 tiers（資格，id：simple/any/up）不是 plan。每個百大項目
+//       一筆 reward、pctByTier 三選組，%為含一般消費基礎 1% 的實際總%（細則對照表
+//       「最高回饋 3% 3.5% 4.5%」列有明示總%，優先取用；備援＝基礎+加碼）。
+//     * 帳單e化＋自動扣繳依 SCHEMA 核心原則 8 假設已完成 → 不建 ebill tier；
+//       一般消費記 1%（僅帳單e化的 0.3% 寫進 note）。
+//     * 百大列表類別對應：「行動支付」（9 個 canonical 支付）→ mobilepay；
+//       「國外實體」（國家清單）→ country；其餘 8 類 → merchant。
+//   - Pi拍錢包信用卡：帳單e化假設已申請（0.3% 寫 note），無 tiers——月消費級距加碼
+//     需事先登錄（核心原則 9）不收。保費 1.2% 與全家便利商店 5% 各自 pct 固定。
+//   - U Bear信用卡：基本回饋 tiers＝「帳單e化或自動扣繳擇一」0.5%／「兩者皆辦」1%
+//     （後者標 assumedAchieved）。網路消費加碼以固定 pct=3%（含基本最高1%＋加碼2%）
+//     為 general reward、note 詳列條件與上限。指定數位訂閱平台
+//     （Netflix/ChatGPT/Gemini/Steam/Nintendo/PlayStation）加碼 10%，逐一拆成 merchant reward。
+//   - 發卡組織檢查（核心原則 10，2026-07-11）：三卡指定頁面均無「不同發卡組織不同%」的
+//     常態回饋（Unicard 的 Visa 境外現金回饋活動需報名、屬登錄型，本就不收）→ 皆不建組織 tier。
+//
+// 依 SCHEMA 核心原則 9 排除的「新卡/新戶/需登錄/限量」型活動（2026-07-11 掃描，不收錄）：
+//   - Unicard：限時辦卡新戶加碼最高15.5%/舊戶5.5%（新戶/限期辦卡型）、開戶代碼CARD500
+//     一般消費加碼10%（新開戶＋活動代碼）、Visa境外實體現金回饋（需報名綁定）。
+//   - Pi拍錢包：月消費級距加碼（滿1萬+0.8%/滿3萬+2%，需登錄1次）、滿額贈500P/1,500P
+//     （滿額贈）、新戶核卡3個月加碼5%＋AirPods滿額贈（新戶）、Pi拍錢包通路單筆滿399
+//     登錄最高5%（需登錄）。
+//   - U Bear：新戶指定五大通路加碼10%（新戶＋限期申辦）。
 //   - 點數換算（皆為頁面原文所載）：玉山e point / Pi拍錢包P幣 皆為「1點=1元」；
 //     U Bear為現金回饋直接折抵帳單。均在 note 註明點數型態。
 
@@ -91,10 +94,15 @@ function near(text, markerIndex, pattern, span = 400) {
 }
 
 // ---------- 玉山Unicard ----------
-const UNI_TIER_EBILL = 'ebill';
-const UNI_TIER_EBILL_AUTOPAY = 'ebill-autopay';
+// 使用者拍板：簡單選/任意選/UP選是「資格」（tiers）不是方案——同一商店在不同選組下
+// %不同，前端要求用戶選定自己的選組。tiers id：simple/any/up。
+// 帳單e化＋自動扣繳屬 assumedAchieved 類條件（SCHEMA 核心原則 8：網站假設已完成），
+// 不另建 ebill tier——一般消費直接記假設達成後的 1%，未達成的 0.3% 寫進 note。
+const UNI_TIER_SIMPLE = 'simple';
+const UNI_TIER_ANY = 'any';
+const UNI_TIER_UP = 'up';
 
-// 百大指定消費列表的 9 個商店類別（不含「國外實體」，該類另外處理為 country）
+// 百大指定消費列表的 10 個類別（「行動支付」→ mobilepay、「國外實體」→ country、其餘 → merchant）
 const UNI_CATEGORY_LABELS = ['行動支付', '電商平台', '國內百貨', '生活採買', '餐飲美食', '加油交通', '航空旅遊', '國外實體', '精選商家', 'ESG消費'];
 
 async function scrapeUnicard() {
@@ -104,17 +112,21 @@ async function scrapeUnicard() {
   const L = toLines(raw);
   const rewards = [];
 
-  // 一般消費（tiers：帳單e化 vs 帳單e化＋自動扣繳）
+  // 一般消費：0.3%（僅帳單e化）／1%（帳單e化＋自動扣繳）。依 assumedAchieved 規則
+  // 假設已完成帳單e化＋自動扣繳 → 記 1%，0.3% 寫進 note。
   const ebillOnly = flat.match(/一般消費享(\d+(?:\.\d+)?)%\s*玉山e ?point回饋，需申辦帳單e化/);
   const ebillAutopay = flat.match(
     /一般消費享(\d+(?:\.\d+)?)%\s*玉山e ?point回饋，需同時申辦帳單e化及申辦玉山銀行臺幣帳戶自動扣繳/
   );
   const generalPeriod = flat.match(/一般消費最高享1%\s*活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})/);
-  if (ebillOnly && ebillAutopay) {
+  const basePct = ebillAutopay ? parseFloat(ebillAutopay[1]) : null;
+  if (basePct !== null) {
     const r = {
       targetType: 'general',
-      pctByTier: { [UNI_TIER_EBILL]: parseFloat(ebillOnly[1]), [UNI_TIER_EBILL_AUTOPAY]: parseFloat(ebillAutopay[1]) },
-      note: `${EPOINT_NOTE}；一般消費，回饋無上限（不含百大指定消費特店分期及歐盟實體交易、繳稅費及四大超商、全聯交易等）；來源：${URLS.unicard}`,
+      pct: basePct,
+      note: `${EPOINT_NOTE}；一般消費回饋無上限，需同時申辦帳單e化及臺幣帳戶自動扣繳且成功扣繳（本站假設已完成${
+        ebillOnly ? `；僅帳單e化為${ebillOnly[1]}%` : ''
+      }）；不含百大指定消費特店分期及歐盟實體交易、繳稅費及四大超商、全聯交易等；來源：${URLS.unicard}`,
     };
     if (generalPeriod) {
       r.validFrom = isoSlash(generalPeriod[1], generalPeriod[2], generalPeriod[3]);
@@ -125,16 +137,27 @@ async function scrapeUnicard() {
     console.error('esun: unicard 頁面抓不到一般消費回饋數字');
   }
 
-  // 百大指定消費加碼（簡單選/任意選/UP選 三方案的加碼%）
+  // 百大指定消費加碼（簡單選/任意選/UP選 三選組的加碼%）
   const listPeriod = flat.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})~(\d{4})\/(\d{1,2})\/(\d{1,2})適用百大指定消費列表如下/);
   const validFrom = listPeriod ? isoSlash(listPeriod[1], listPeriod[2], listPeriod[3]) : undefined;
   const validUntil = listPeriod ? isoSlash(listPeriod[4], listPeriod[5], listPeriod[6]) : undefined;
-  // 「百大指定消費 +X% (歸戶月上限Y點)」在方案對照表中依序出現兩次：
+  // 「百大指定消費 +X% (歸戶月上限Y點)」在選組對照表中依序出現兩次：
   // 第一次對應【簡單選】、第二次對應【UP選】；【任意選】則是獨立的「任選8家指定消費 +X%」句型。
   const planPctMatches = [...flat.matchAll(/百大指定消費\s*\+(\d+(?:\.\d+)?)%\s*\(歸戶月上限([\d,]+)點\)/g)];
   const simplePct = planPctMatches[0];
   const upPct = planPctMatches[1];
   const anyPct = flat.match(/任選8家指定消費\s*\+(\d+(?:\.\d+)?)%\s*\(歸戶月上限([\d,]+)點\)/);
+  // 對照表「最高回饋」列直接給出含基礎 1% 的實際總%（細則原文「最高回饋 3% 3.5% 4.5%」），
+  // 優先採用此明示總%；抓不到再以「基礎+加碼」計算備援。
+  const totalsRow = flat.match(/最高回饋\s*(\d+(?:\.\d+)?)%\s*(\d+(?:\.\d+)?)%\s*(\d+(?:\.\d+)?)%/);
+  const totalOf = (bonusMatch, idx) => {
+    if (totalsRow) return parseFloat(totalsRow[idx]);
+    if (bonusMatch && basePct !== null) return basePct + parseFloat(bonusMatch[1]);
+    return null;
+  };
+  const simpleTotal = totalOf(simplePct, 1);
+  const anyTotal = totalOf(anyPct, 2);
+  const upTotal = totalOf(upPct, 3);
 
   // 百大指定消費列表：類別 label + 緊接一行「、」分隔清單，連續 10 組（含國外實體）
   const listStart = L.indexOf('類別', L.indexOf('百大指定消費列表'));
@@ -162,21 +185,24 @@ async function scrapeUnicard() {
     }
   }
 
-  function pushPlanRewards(planName, pct, capPoints) {
-    if (!pct || !groups.length) return;
-    const cap = capPoints ? `百大指定消費加碼每月歸戶上限${capPoints}點（玉山e point）` : undefined;
+  // 每個百大項目一筆 reward，% 用 pctByTier（simple/any/up 三選組、含基礎 1% 的實際總%）。
+  // 加碼上限依選組不同（簡單選/任意選 1,000 點、UP選 5,000 點），寫進同一 cap 字串。
+  if (simpleTotal !== null && anyTotal !== null && upTotal !== null && groups.length) {
+    const capParts = [];
+    if (simplePct) capParts.push(`簡單選/任意選每月歸戶上限${simplePct[2]}點`);
+    if (upPct) capParts.push(`UP選每月歸戶上限${upPct[2]}點`);
+    const cap = capParts.length ? `百大指定消費加碼部分：${capParts.join('、')}（玉山e point）；基礎1%無上限` : undefined;
     for (const g of groups) {
-      const targetType = g.label === '國外實體' ? 'country' : 'merchant';
+      const targetType = g.label === '行動支付' ? 'mobilepay' : g.label === '國外實體' ? 'country' : 'merchant';
       for (const item of g.items) {
         if (!item) continue;
         const r = {
-          plan: planName,
           target: item,
           targetType,
-          pct,
-          note: `${EPOINT_NOTE}；百大指定消費【${g.label}】${planName}加碼${
-            planName === '任意選' ? '（任意選需自行從百大指定消費清單中最多選8家生效，本項僅代表若被選入時之加碼%）' : ''
-          }；來源：${URLS.unicard}`,
+          pctByTier: { [UNI_TIER_SIMPLE]: simpleTotal, [UNI_TIER_ANY]: anyTotal, [UNI_TIER_UP]: upTotal },
+          note: `${EPOINT_NOTE}；百大指定消費【${g.label}】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+${
+            simplePct ? simplePct[1] : '?'
+          }%／任意選+${anyPct ? anyPct[1] : '?'}%／UP選+${upPct ? upPct[1] : '?'}%）；任意選需自行圈選最多8家始生效；來源：${URLS.unicard}`,
         };
         if (cap) r.cap = cap;
         if (validFrom) r.validFrom = validFrom;
@@ -184,10 +210,9 @@ async function scrapeUnicard() {
         rewards.push(r);
       }
     }
+  } else {
+    console.error('esun: unicard 頁面抓不到百大指定消費三選組的%或清單，略過百大 rewards');
   }
-  if (simplePct) pushPlanRewards('簡單選', parseFloat(simplePct[1]), simplePct[2]);
-  if (anyPct) pushPlanRewards('任意選', parseFloat(anyPct[1]), anyPct[2]);
-  if (upPct) pushPlanRewards('UP選', parseFloat(upPct[1]), upPct[2]);
 
   if (rewards.length < 5) {
     console.error('esun: unicard 頁面抓到的 reward 數量過少，跳過此卡');
@@ -198,19 +223,19 @@ async function scrapeUnicard() {
     name: '玉山Unicard',
     url: URLS.unicard,
     tiers: [
-      { id: UNI_TIER_EBILL, name: '僅申辦帳單e化', condition: '僅申辦帳單e化（Email電子帳單或簡訊帳單）' },
-      { id: UNI_TIER_EBILL_AUTOPAY, name: '帳單e化＋臺幣帳戶自動扣繳', condition: '需同時申辦帳單e化及玉山銀行臺幣帳戶自動扣繳卡費，且成功扣繳卡費' },
+      { id: UNI_TIER_SIMPLE, name: '簡單選', condition: '核卡後預設選組，百大指定消費全部涵蓋，可於玉山Wallet切換' },
+      { id: UNI_TIER_ANY, name: '任意選', condition: '於玉山Wallet自百大指定消費中任選最多8家生效（每月可切換，僅圈選的商店享加碼）' },
+      { id: UNI_TIER_UP, name: 'UP選', condition: '訂閱制：同時符合上月刷卡滿3萬元及上月玉山平均資產滿30萬元可免費訂閱，或以149點玉山e point訂閱；百大指定消費全部涵蓋' },
     ],
     rewards,
   };
 }
 
 // ---------- 玉山Pi拍錢包信用卡 ----------
-const PI_TIER_NO_EBILL = 'no-ebill';
-const PI_TIER_EBILL = 'ebill';
-const PI_TIER_10K = 'ebill-10k-30k';
-const PI_TIER_30K = 'ebill-30k-plus';
-
+// 帳單e化屬 assumedAchieved 類條件（本站假設已申請），0.3% 寫進 note。
+// 「月消費級距加碼」（滿1萬加碼0.8%、滿3萬加碼2%）官方細則明載「活動期間僅需登錄1次
+// 即可參加每月刷卡活動，自登錄當月始計算…不溯及既往」＝需事先登錄的活動型回饋 →
+// 依 SCHEMA 核心原則 9 不收，故本卡無 tiers、一般消費只記常態基本回饋 1%。
 async function scrapePiCard() {
   const html = await fetchHtml(URLS.picard);
   const text = textOf(html);
@@ -220,35 +245,19 @@ async function scrapePiCard() {
   const base = near(text, baseIdx, /基本回饋 ?(\d+(?:\.\d+)?)%P幣無上限 ?\(需申請帳單e化，未申辦帳單e化者享(\d+(?:\.\d+)?)% ?P幣回饋無上限/);
   const periodAnchorIdx = text.indexOf('消費最高享');
   const basePeriod = near(text, periodAnchorIdx, /消費最高享 ?[\d.]+% P幣 活動期間：(\d{4})\/(\d{1,2})\/(\d{1,2})[~～](\d{4})\/(\d{1,2})\/(\d{1,2})/, 200);
-  const tier1 = near(
-    text,
-    text.indexOf('每月國內外一般消費累積滿10'),
-    /每月國內外一般消費累積滿[\d,]+~[\d,]+元 ?加碼(\d+(?:\.\d+)?)%P幣，? ?最高(\d+(?:\.\d+)?)% ?P幣/
-  );
-  const tier2 = near(
-    text,
-    text.indexOf('每月國內外一般消費累積滿30'),
-    /每月國內外一般消費累積滿[\d,]+元\(含\)以上 ?加碼(\d+(?:\.\d+)?)%P幣，? ?最高(\d+(?:\.\d+)?)% ?P幣 ?\(每月每歸戶上限([\d,]+) ?P幣\)/
-  );
 
-  if (base && basePeriod && tier1 && tier2) {
+  if (base && basePeriod) {
     const validFrom = isoSlash(basePeriod[1], basePeriod[2], basePeriod[3]);
     const validUntil = isoSlash(basePeriod[4], basePeriod[5], basePeriod[6]);
     rewards.push({
       targetType: 'general',
-      pctByTier: {
-        [PI_TIER_NO_EBILL]: parseFloat(base[2]),
-        [PI_TIER_EBILL]: parseFloat(base[1]),
-        [PI_TIER_10K]: parseFloat(tier1[2]),
-        [PI_TIER_30K]: parseFloat(tier2[2]),
-      },
-      cap: `消費級距加碼部分每月每歸戶上限${tier2[3]}P幣`,
+      pct: parseFloat(base[1]),
       validFrom,
       validUntil,
-      note: `${PPOINT_NOTE}；一般消費基本回饋依帳單e化狀態，另依當月國內外一般消費累積金額級距加碼（未滿NT$10,000無加碼、NT$10,000~29,999加碼${tier1[1]}%、NT$30,000(含)以上加碼${tier2[1]}%）；來源：${URLS.picard}`,
+      note: `${PPOINT_NOTE}；一般消費基本回饋${base[1]}%無上限，需申請帳單e化（本站假設已申請；未申辦帳單e化者僅${base[2]}%）；官方另有月消費級距加碼（最高3%）與滿額贈，均需事先登錄，不收錄；來源：${URLS.picard}`,
     });
   } else {
-    console.error('esun: pi-card 頁面抓不到完整的基本回饋/消費級距數字，略過一般消費 reward');
+    console.error('esun: pi-card 頁面抓不到基本回饋數字，略過一般消費 reward');
   }
 
   const insIdx = text.indexOf('保費享');
@@ -263,7 +272,7 @@ async function scrapePiCard() {
       pct: parseFloat(insurance[1]),
       validFrom: isoSlash(insurance[2], insurance[3], insurance[4]),
       validUntil: isoSlash(insurance[5], insurance[6], insurance[7]),
-      note: `${PPOINT_NOTE}；保費一次付清享回饋無上限，不受一般消費之帳單e化/消費級距條件限制；不含國外保險/躉繳保費等（來源：${URLS.picard}）`,
+      note: `${PPOINT_NOTE}；保費一次付清享回饋無上限，免登錄；不含國外保險/躉繳保費等（來源：${URLS.picard}）`,
     });
   } else {
     console.error('esun: pi-card 頁面抓不到保費回饋數字，略過保費 reward');
@@ -298,12 +307,6 @@ async function scrapePiCard() {
     id: 'esun-pi',
     name: '玉山Pi拍錢包信用卡',
     url: URLS.picard,
-    tiers: [
-      { id: PI_TIER_NO_EBILL, name: '未申請帳單e化', condition: '未申請玉山信用卡帳單e化' },
-      { id: PI_TIER_EBILL, name: '已申請帳單e化', condition: '已申請帳單e化，當月國內外一般消費累積未滿NT$10,000' },
-      { id: PI_TIER_10K, name: '帳單e化＋當月消費NT$10,000~29,999', condition: '已申請帳單e化，當月國內外一般消費累積滿NT$10,000~29,999元' },
-      { id: PI_TIER_30K, name: '帳單e化＋當月消費NT$30,000以上', condition: '已申請帳單e化，當月國內外一般消費累積滿NT$30,000(含)以上' },
-    ],
     rewards,
   };
 }
@@ -392,7 +395,7 @@ async function scrapeUBear() {
     url: URLS.ubear,
     tiers: [
       { id: UBEAR_TIER_EITHER, name: '僅綁定帳單e化或僅申辦自動扣繳其中一項', condition: '僅綁定帳單e化(Email電子帳單或簡訊帳單)，或僅申辦玉山銀行臺幣帳戶自動扣繳卡費（擇一）' },
-      { id: UBEAR_TIER_BOTH, name: '帳單e化＋自動扣繳皆申辦', condition: '同時綁定帳單e化及申辦玉山銀行臺幣帳戶自動扣繳卡費，且成功扣繳卡費' },
+      { id: UBEAR_TIER_BOTH, name: '帳單e化＋自動扣繳皆申辦', condition: '同時綁定帳單e化及申辦玉山銀行臺幣帳戶自動扣繳卡費，且成功扣繳卡費', assumedAchieved: true },
     ],
     rewards,
   };

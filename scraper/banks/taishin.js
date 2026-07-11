@@ -25,20 +25,29 @@
 //     頁面未標活動迄日 → 不填 validUntil。
 //   - 好饗刷【指定飯店】正文精簡列表不完整，改用頁尾注意事項「＊【好饗刷...指定飯店
 //     適用品牌】」段落的完整品牌清單。
-//   - Pay著刷（台新Pay/LINE Pay等綁定支付）依付款工具而非特定商店給回饋，官方僅列
-//     「等，詳見官網」的範例商店，非完整清單 → 以 targetType=general（非 merchant）
-//     呈現，example 商店寫入 note。玩旅刷【海外消費】亦同理（涵蓋所有海外交易，非單一
-//     國家）→ targetType=general，note 說明含歐洲國家。
+//   - Pay著刷依付款工具給回饋 → targetType=mobilepay、target=canonical 支付名，4 筆：
+//     台新Pay/台新Pay+ 各 3.8%、LINE Pay/全盈+PAY 各 2.3%（LEVEL2；LEVEL1 一律 1.3%）。
+//     台新Pay 可用商店（場域）清單放 data/mobilepay.json，不在 cards.json 建商店型 reward。
+//   - 玩旅刷【海外消費】＝國外消費不分國家 → targetType=country、target=「海外」。
+//   - 假日刷為「節假日不限通路」的一般消費型，依「plan+general 禁用」規則不填 plan、
+//     方案條件寫進 note。
 //   - 大全聯信用卡／街口聯名卡的活動頁是靜態伺服器渲染 → fetch 即可。
-//   - 大全聯：店內消費（大全聯量販賣場）不受扣繳身分影響，pct 固定；店外消費依
-//     「全支付」（固定 1.5%，不受扣繳身分影響）與「其他一般消費」（依扣繳身分
-//     0.8%／0.3%）分列，故只有「其他一般消費」用 pctByTier，其餘固定 pct。
-//   - 街口聯名卡無「用戶帳戶狀態」等級概念，也無需使用者於 App 切換的方案（精選通路
-//     所有商店同時生效），故不填 tiers、不填 plan；街口APP繳費之基本 0.15% 與滿額
-//     升級 2%（達NT$1,000門檻另手動領券、每月限量）皆為固定 pct 的獨立 general reward，
-//     以 note 說明門檻／限量，不建 tiers（非用戶事先可勾選的帳戶狀態，且限量有中籤風險）。
+//   - 大全聯：tiers＝發卡組織（jcb/other，見 scrapePxmart 前註解）；台新帳戶扣繳維度
+//     依 assumedAchieved 折入數值。全支付店外 1.5% 不受扣繳/組織影響。
+//   - 街口聯名卡無 tiers、無 plan（精選通路所有商店同時生效，非用戶可選方案）。
 //   - 點數換算（皆為頁面原文所載）：台新Point(信用卡)官網直接以 % 表述；
 //     大全聯福利點「10點=NT$1」；街口幣「1元街口幣=新臺幣1元」。均在 note 註明點數型態。
+//
+// 依 SCHEMA 核心原則 9 排除的「新卡/新戶/需登錄/限量」型活動（2026-07-11 掃描，不收錄）：
+//   - Richart：新申辦限定 LEVEL2 試用（核卡60天內）、保費新戶最高8%（領券）、
+//     LINE Pay領券最高3.8%（需綁台新官方LINE領券）、童玩券最高11%（領券）、
+//     北捷券最高50點（領券）、一般消費達檻機車停車/機場接送（滿額贈非%回饋）。
+//   - 大全聯：週末卡友日滿額贈NT$100抵用券（贈券型；官方「最高12%」標語中的5%即此）、
+//     全聯卡友日滿額贈（2026/6/26-8/6限期滿額贈點）、天天卡友日滿額贈抵用券、
+//     生日禮、JCB禮遇（外部組織網頁＋限量）。
+//   - 街口：街口APP繳費滿額升級2%（需手動領券、每月限量55,000名先領先贏）、
+//     新戶消費最高13.5%（已結束/新戶限定）、推薦好友辦卡、街口鈦金商務卡/晶緻卡
+//     Mastercard/JCB獨享優惠（限量預約/登錄型，且細節在外部組織網頁、超出一層）。
 
 const cheerio = require('cheerio');
 const { fetchHtml, sleep, UA } = require('../lib/util');
@@ -178,30 +187,33 @@ async function scrapeRichart(page, cardName) {
     console.error('taishin: Richart 權益頁找不到 Chill刷活動期間，跳過 Chill刷方案');
   }
 
-  // --- Pay著刷（行動支付綁定，非特定商店限制）---
+  // --- Pay著刷（行動支付綁定 → targetType=mobilepay，target 用 SCHEMA canonical 支付名）---
+  // 細則原文（2026-07-11 核對）：「台新Pay 及 台新Pay+ 綁定支付享 3.8%」
+  //                          「LINE Pay 及 全盈+Pay(7/8起新增)綁定支付享 2.3%」
+  // 台新Pay 場域清單（範例商店＋官網合作通路頁）放在 data/mobilepay.json，不在此建商店型 reward。
   const tsPay = flat.match(/台新Pay\s*及\s*台新Pay\+\s*綁定支付享\s*([\d.]+)\s*%/);
   const linePay = flat.match(/LINE Pay\s*及\s*全盈\+Pay[^綁]*綁定支付享\s*([\d.]+)\s*%/);
-  const tsPayExamples = flat.match(/台新Pay｜([^*]+?)，詳見台新Pay官網/);
-  const twPayExamples = flat.match(/台新Pay\(TWQR、台灣Pay\)｜([^*]+?)，詳見台灣Pay場域/);
   if (tsPay) {
-    const examples = [
-      ...splitPipeComma(tsPayExamples ? tsPayExamples[1] : ''),
-      ...splitPipeComma(twPayExamples ? twPayExamples[1] : ''),
-    ];
-    rewards.push({
-      plan: 'Pay著刷',
-      targetType: 'general',
-      pctByTier: { [RICHART_TIER_AUTOPAY]: parseFloat(tsPay[1]), [RICHART_TIER_NONE]: LEVEL1_PCT },
-      note: `${POINT_NOTE_RICHART}；台新Pay及台新Pay+綁定支付（不限特定商店，依付款工具判定）；範例通路：${examples.join('、')} 等，完整清單詳台新Pay官網／台灣Pay官方場域公告（來源：${rightsUrl}）`,
-    });
+    for (const payName of ['台新Pay', '台新Pay+']) {
+      rewards.push({
+        plan: 'Pay著刷',
+        target: payName,
+        targetType: 'mobilepay',
+        pctByTier: { [RICHART_TIER_AUTOPAY]: parseFloat(tsPay[1]), [RICHART_TIER_NONE]: LEVEL1_PCT },
+        note: `${POINT_NOTE_RICHART}；${payName}綁定支付；細則原文「台新Pay 及 台新Pay+ 綁定支付享 ${tsPay[1]}%」；可用商店見 data/mobilepay.json 場域清單（來源：${rightsUrl}）`,
+      });
+    }
   }
   if (linePay) {
-    rewards.push({
-      plan: 'Pay著刷',
-      targetType: 'general',
-      pctByTier: { [RICHART_TIER_AUTOPAY]: parseFloat(linePay[1]), [RICHART_TIER_NONE]: LEVEL1_PCT },
-      note: `${POINT_NOTE_RICHART}；LINE Pay及全盈+Pay綁定支付（不限特定商店）`,
-    });
+    for (const payName of ['LINE Pay', '全盈+PAY']) {
+      rewards.push({
+        plan: 'Pay著刷',
+        target: payName,
+        targetType: 'mobilepay',
+        pctByTier: { [RICHART_TIER_AUTOPAY]: parseFloat(linePay[1]), [RICHART_TIER_NONE]: LEVEL1_PCT },
+        note: `${POINT_NOTE_RICHART}；${payName}綁定支付；細則原文「LINE Pay 及 全盈+Pay(7/8起新增)綁定支付享 ${linePay[1]}%」；限交易地為臺灣且交易幣別為新臺幣（來源：${rightsUrl}）`,
+      });
+    }
   }
 
   // --- 天天刷／大筆刷／好饗刷／數趣刷／玩旅刷（label + 緊接一行商店清單，重複 N 組） ---
@@ -300,13 +312,16 @@ async function scrapeRichart(page, cardName) {
   }
 
   // 玩旅刷（第一行是「海外消費」敘述、非 label+清單配對；其後才是航空公司/海外交通網路/訂房平台/旅行社）
+  // 細則原文「海外消費(含實體及線上、歐洲國家交易)」＝國外消費不分國家 → targetType=country、
+  // target=「海外」（SCHEMA 規則）。不可記成 general（否則任何國內商店查詢都會誤中玩旅刷）。
   const travel = readPct3Lines('玩旅刷');
   if (travel) {
     rewards.push({
       plan: '玩旅刷',
-      targetType: 'general',
+      target: '海外',
+      targetType: 'country',
       pctByTier: { [RICHART_TIER_AUTOPAY]: travel.pct, [RICHART_TIER_NONE]: LEVEL1_PCT },
-      note: `${POINT_NOTE_RICHART}；玩旅刷【海外消費】含所有海外實體及線上交易、歐洲國家交易，不限指定商店（來源：${rightsUrl}）`,
+      note: `${POINT_NOTE_RICHART}；玩旅刷【海外消費】含實體及線上、歐洲國家交易（海外＝交易幣別為外幣或交易國別非臺灣），不限指定商店（來源：${rightsUrl}）`,
     });
     const subs = collectSubPairs(travel.idx + 4); // idx+3 是「海外消費(...)」單行敘述，故從 +4 開始配對
     for (const s of subs) {
@@ -314,14 +329,14 @@ async function scrapeRichart(page, cardName) {
     }
   }
 
-  // 假日刷
+  // 假日刷：細則為「節假日不限通路消費享2%」＝一般消費型。依規則 plan+general 組合禁用，
+  // 故不填 plan 欄位，方案名寫進 note（前端會顯示為「基本」行、note 說明需切換假日刷）。
   const holiday = readPct3Lines('假日刷');
   if (holiday) {
     rewards.push({
-      plan: '假日刷',
       targetType: 'general',
       pctByTier: { [RICHART_TIER_AUTOPAY]: holiday.pct, [RICHART_TIER_NONE]: LEVEL1_PCT },
-      note: `${POINT_NOTE_RICHART}；限國內節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）`,
+      note: `${POINT_NOTE_RICHART}；「假日刷」方案：需切換至假日刷且限國內節假日消費，不限通路（含保費、LINE Pay及全盈+Pay綁定）`,
     });
   }
 
@@ -351,7 +366,7 @@ async function scrapeRichart(page, cardName) {
     name: cardName || '台新Richart卡',
     url: CARD_URL('cg047'),
     tiers: [
-      { id: RICHART_TIER_AUTOPAY, name: '已設定台新帳戶扣繳', condition: '成功設定以台新帳戶（活期儲蓄存款或Richart數位存款帳戶）自動扣繳台新信用卡帳款，於完成設定之次期帳單結帳後生效（LEVEL2）' },
+      { id: RICHART_TIER_AUTOPAY, name: '已設定台新帳戶扣繳', condition: '成功設定以台新帳戶（活期儲蓄存款或Richart數位存款帳戶）自動扣繳台新信用卡帳款，於完成設定之次期帳單結帳後生效（LEVEL2）', assumedAchieved: true },
       { id: RICHART_TIER_NONE, name: '未設定扣繳（僅核卡）', condition: '核卡消費即享，未設定台新帳戶自動扣繳（LEVEL1）' },
     ],
     rewards,
@@ -359,8 +374,16 @@ async function scrapeRichart(page, cardName) {
 }
 
 // ---------- 大全聯信用卡 ----------
-const PX_TIER_AUTOPAY = 'autopay';
-const PX_TIER_NONE = 'none';
+// 發卡組織資格（SCHEMA 核心原則 10，使用者實例即本卡）：JCB 版另有「週年大回饋」加碼
+// （2026-07-11 查證，cg010 頁連出之活動頁）——大全聯店內：基本1.2%＋週年加碼1.8%（單筆滿
+// 1,000元）＋全支付加碼4%（綁定全支付且單筆滿1,000元）＝最高 7%（頁面明示「天天 最高7%
+// 回饋」，2026/7/1-12/31，原文「不限新舊戶」、無需登錄）。標語「最高12%」的另 5% 是週末
+// 卡友日「滿額贈NT$100抵用券」（週六日全支付自助結帳單筆滿2,000）＝贈券型滿額贈，依核心
+// 原則 9 不收，故 JCB 記 7% 並在 note 說明組成與條件。Visa/MasterCard 等其他組織無此加碼
+// ＝1.2%。原「台新帳戶扣繳」維度依 assumedAchieved 假設折入數值（其他一般消費記已扣繳的
+// 0.8%，未扣繳 0.3% 寫進 note）。
+const PX_TIER_JCB = 'jcb';
+const PX_TIER_OTHER = 'other';
 
 async function scrapePxmart(page, cardName) {
   const links = await renderCardLinks(page, 'cg010');
@@ -383,32 +406,76 @@ async function scrapePxmart(page, cardName) {
   const outStoreValues = [...outStoreSection.matchAll(/每消費100元給\d+點\(最高([\d.]+)%\)/g)].map((m) => parseFloat(m[1]));
   const [qpayPct, autopayPct, defaultPct] = outStoreValues;
 
+  // JCB 週年大回饋活動頁（cg010 頁連出、一層內）：解析 JCB 版大全聯店內加碼後的實際總%
+  let jcb = null; // { pct, validUntil, note }
+  const jcbLink = links.find((l) => /JCB卡最高[\d.]+%/.test(l.text) && l.href.includes('/future/'));
+  if (jcbLink) {
+    try {
+      const jcbHtml = await fetchHtml(jcbLink.href);
+      const $j = cheerio.load(jcbHtml);
+      $j('script,style').remove();
+      const jt = $j('body').text().replace(/\s+/g, ' ').trim();
+      const total = jt.match(/天天 最高([\d.]+)%回饋\(適用消費期間(\d{4})\/(\d{1,2})\/(\d{1,2})-(\d{4})\/(\d{1,2})\/(\d{1,2})\)/);
+      const anniv = jt.match(/單筆滿([\d,]+)元 每消費100元給\d+點 \(最高([\d.]+)%\)/);
+      const qpayBonus = jt.match(/綁定全支付消費 單筆滿([\d,]+)元 享每消費100元 ?\d+點 \(最高([\d.]+)%\)/);
+      if (total && anniv && qpayBonus) {
+        jcb = {
+          pct: parseFloat(total[1]),
+          validUntil: isoFrom(total[5], total[6], total[7]),
+          note:
+            `JCB版週年加碼：基本1.2%＋週年加碼${anniv[2]}%（單筆滿${anniv[1]}元，每月上限1千福利點）` +
+            `＋全支付加碼${qpayBonus[2]}%（綁定全支付且單筆滿${qpayBonus[1]}元，每月上限3千福利點）＝最高${total[1]}%，` +
+            `不限新舊戶、無需登錄；未滿額/未用全支付時遞減；官方標語12%另含週末卡友日滿額贈抵用券（贈券型，不列入%）；來源：${jcbLink.href}`,
+        };
+      } else {
+        console.error('taishin: 大全聯JCB週年活動頁結構已變，解析不到加碼數字，本次輸出不含 JCB 差異');
+      }
+    } catch (e) {
+      console.error(`taishin: 大全聯JCB週年活動頁抓取失敗（${e.message}），本次輸出不含 JCB 差異`);
+    }
+  } else {
+    console.error('taishin: cg010 頁面找不到 JCB 週年活動連結，本次輸出不含 JCB 差異');
+  }
+
   const rewards = [];
   if (instore) {
-    rewards.push({
+    const basePct = parseFloat(instore[1]);
+    const r = {
       target: '大全聯',
       targetType: 'merchant',
-      pct: parseFloat(instore[1]),
       validUntil,
-      note: `${POINT_NOTE_PX}；大全聯量販賣場內消費（含實體卡/全支付/PX Pay/台新Pay綁定），回饋無上限，不受扣繳身分影響，需綁定PX Pay會員；來源：${link.href}`,
-    });
+      note: `${POINT_NOTE_PX}；大全聯量販賣場內消費（含實體卡/全支付/PX Pay/台新Pay綁定），基本回饋無上限，不受扣繳身分影響，需綁定PX Pay會員；來源：${link.href}`,
+    };
+    if (jcb) {
+      r.pctByTier = { [PX_TIER_JCB]: jcb.pct, [PX_TIER_OTHER]: basePct };
+      r.note += `；${jcb.note}`;
+      if (jcb.validUntil) r.validUntil = jcb.validUntil;
+    } else {
+      r.pct = basePct;
+    }
+    rewards.push(r);
   }
   if (qpayPct !== undefined) {
+    // 回饋對象是「全支付」這個支付工具（店外消費）→ targetType=mobilepay（SCHEMA canonical 支付名）
     const r = {
-      targetType: 'general',
+      target: '全支付',
+      targetType: 'mobilepay',
       pct: qpayPct,
       validUntil,
-      note: `${POINT_NOTE_PX}；全支付店外消費（不含大全聯/全聯），不受扣繳身分影響；來源：${link.href}`,
+      note: `${POINT_NOTE_PX}；全支付店外消費（不含大全聯/全聯），不受扣繳身分與發卡組織影響；來源：${link.href}`,
     };
     if (capNote) r.cap = capNote;
     rewards.push(r);
   }
-  if (autopayPct !== undefined && defaultPct !== undefined) {
+  if (autopayPct !== undefined) {
+    // 台新帳戶扣繳屬 assumedAchieved 類條件 → 折入數值：記已扣繳的 %，未扣繳 % 寫 note
     const r = {
       targetType: 'general',
-      pctByTier: { [PX_TIER_AUTOPAY]: autopayPct, [PX_TIER_NONE]: defaultPct },
+      pct: autopayPct,
       validUntil,
-      note: `${POINT_NOTE_PX}；其他一般消費（不含全支付、大全聯、全聯）；來源：${link.href}`,
+      note: `${POINT_NOTE_PX}；其他一般消費（不含全支付、大全聯、全聯），需設定台新帳戶扣繳卡款（本站假設已設定${
+        defaultPct !== undefined ? `；未設定為${defaultPct}%` : ''
+      }）；來源：${link.href}`,
     };
     if (capNote) r.cap = capNote;
     rewards.push(r);
@@ -418,16 +485,19 @@ async function scrapePxmart(page, cardName) {
     console.error('taishin: 大全聯活動頁抓不到任何回饋數字，跳過此卡');
     return null;
   }
-  return {
+  const card = {
     id: 'taishin-pxmart',
     name: cardName || '大全聯信用卡',
     url: CARD_URL('cg010'),
-    tiers: [
-      { id: PX_TIER_AUTOPAY, name: '已設定台新帳戶扣繳', condition: '有設定台新帳戶扣繳台新信用卡帳款' },
-      { id: PX_TIER_NONE, name: '未設定台新帳戶扣繳', condition: '未設定台新帳戶扣繳台新信用卡帳款' },
-    ],
     rewards,
   };
+  if (jcb) {
+    card.tiers = [
+      { id: PX_TIER_JCB, name: 'JCB卡', condition: '持大全聯信用卡JCB版（發卡組織為JCB）' },
+      { id: PX_TIER_OTHER, name: '其他發卡組織', condition: '持大全聯信用卡Visa/MasterCard等非JCB版本' },
+    ];
+  }
+  return card;
 }
 
 // ---------- 街口聯名卡 ----------
@@ -452,7 +522,8 @@ async function scrapeJko(page, cardName) {
   const validUntil = period ? isoFrom(period[4], period[5], period[6]) : undefined;
   const general = flat.match(/【一般消費享\s*([\d.]+)\s*%街口幣\s*無上限】/);
   const billsBase = flat.match(/街口APP繳費享基本([\d.]+)%回饋無上限/);
-  const billsBonus = flat.match(/滿NT\$?([\d,]+)[，,]\s*升級再享([\d.]+)%回饋/);
+  // 街口APP繳費「滿額升級2%」：需手動領券且每月限量55,000名（先領先贏）→ 依核心原則 9
+  // （限量名額/登錄型活動不收）排除，只收常態的基本 0.15%。
 
   const rewards = [];
   if (general) {
@@ -471,16 +542,6 @@ async function scrapeJko(page, cardName) {
       validFrom,
       validUntil,
       note: `${POINT_NOTE_JKO}；街口APP繳費（水電瓦斯/電信/稅費/保費/學雜費等）基本回饋，無上限`,
-    });
-  }
-  if (billsBonus) {
-    rewards.push({
-      targetType: 'general',
-      pct: parseFloat(billsBonus[2]),
-      validFrom,
-      validUntil,
-      cap: '每月每人上限20元街口券（每月限量55,000名，額滿即無法領取，須手動領取）',
-      note: `${POINT_NOTE_JKO}；街口APP繳費當月滿NT$${billsBonus[1]}升級之加碼回饋（達檻後仍需手動領券）`,
     });
   }
 

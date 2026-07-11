@@ -14,8 +14,25 @@
 4. **實際%，不是標語%**：必須細讀細則，記錄每個商店「實際拿得到」的%。
    例：Chill刷標語「最高10%」，細則中蝦皮實為 3.3% → 記 3.3%。細則沒有給出可證明適用
    該商店的具體% → 不收該筆或 note 標「未確認」，絕不記標語數字。
-5. **消費類別廢除，只留餐飲**：不再有 18 類 taxonomy。回饋對象只有四種 targetType（見下）。
+5. **消費類別廢除，只留餐飲**：不再有 18 類 taxonomy。回饋對象共五種 targetType（見下）。
 6. **國外消費統整到地名**：日本、韓國、美國、歐洲…（照頁面實際出現的地區寫）。
+7. **行動支付是獨立概念，不是商店**（使用者 2026-07-11 拍板）。canonical 支付清單：
+   玉山Wallet電子支付、LINE Pay、全支付、街口支付、悠遊付、全盈+PAY、iPASS MONEY、
+   icash Pay、支付寶、Pi 拍錢包、台新Pay、台新Pay+。
+   - 回饋對象是支付工具的（如 Pay著刷、CUBE 全支付方案、Unicard 任意選的 LINE Pay）
+     → `targetType: "mobilepay"`、target=支付名。
+   - **查詢規則**：支付型回饋只出現在「用戶直接查該支付名」的結果；商店查詢時，
+     只有該店確定收某支付（見 data/mobilepay.json 的 acceptedMerchants）才把該支付的
+     回饋列進該店結果（例：IKEA 收台新Pay → 查 IKEA 列 Pay著刷 3.8%；全聯不收台新Pay
+     → 查全聯不列）。沒有 acceptedMerchants 資料的支付（如 LINE Pay）只能直接查支付名。
+8. **資格假設**：網站假設用戶每張卡都已完成「帳單e化＋自動扣繳」，前端需在最前頭明白告知。
+   此類達成條件的 tier 標 `assumedAchieved: true`，前端自動選定、不再詢問。
+9. **不收「新卡／新戶／需登錄」型活動**（使用者 2026-07-11 拍板）：限新戶、首刷禮、
+   需事先登錄／限量名額的活動一律不收錄進 rewards；只收持卡人常態可得的回饋。
+10. **發卡組織（Visa/MasterCard/JCB/American Express）影響回饋時也是資格**：
+   若同一張卡不同發卡組織回饋不同（例：大全聯信用卡 JCB 版有大全聯消費 12%、其他組織
+   沒有），將發卡組織寫成該卡的 tiers 讓用戶在「選擇你的資格」選取；不影響回饋的卡
+   不需要此 tier。若一張卡同時有多個會被詢問的資格維度，tiers 以「組合」列舉。
 
 ## 收錄卡清單（10 張，URL 為使用者指定）
 
@@ -75,13 +92,18 @@
 
 ### 欄位規則
 
-- `tiers`（card 層級，選填）：卡有「等級」概念才填（≥2 個）。`id` 短英文、`name` 顯示名、
-  `condition` 達成條件說明。無等級概念的卡省略整個欄位。
+- `tiers`（card 層級，選填）：卡有「資格」概念才填（≥2 個）。`id` 短英文、`name` 顯示名、
+  `condition` 達成條件說明。無資格概念的卡省略整個欄位。
+  - `assumedAchieved: true`（選填）：該資格屬於「帳單e化／自動扣繳」類達成條件，依網站
+    假設視為已完成——前端自動選定此 tier、該卡不出現在資格選擇中。一張卡最多一個。
+  - **玉山 Unicard 的簡單選/任意選/UP選是資格（tiers）不是方案**（使用者拍板）：用戶要在
+    「選擇你的資格」中選取；其 % 必須含一般消費基礎 1%（加碼+基礎的實際總%）。
 - `rewards[]` 為卡的**扁平**回饋清單，每筆：
   - `plan`（選填字串）：所屬方案名（使用者可自選的方案）。非方案型回饋（基本回饋、
     全卡通用活動）省略。
   - `targetType`（必填）：`"merchant"`（指定商店）｜`"dining"`（餐飲，唯一保留的類別）｜
-    `"country"`（國外地區）｜`"general"`（一般消費）。
+    `"country"`（國外地區）｜`"mobilepay"`（行動支付，target=canonical 支付名）｜
+    `"general"`（一般消費）。
   - `target`：targetType=merchant 時必填＝商店名（照官方頁原文寫法）；country 時必填＝
     地名（日本/韓國/美國/歐洲…；官方只寫「國外/海外消費」不分國家時用 `"海外"`）；
     dining/general 省略。
@@ -108,16 +130,44 @@
   (2) `dining: true` 標記餐飲商店，讓用戶查該店時能命中 dining 型回饋。
 - 對照表以「實際出現在 cards.json 的商店名」為基礎建立，再補常見俗稱。
 
+## data/mobilepay.json（行動支付定義檔）
+
+```json
+{
+  "payments": [
+    { "name": "台新Pay", "aliases": ["taishin pay"],
+      "acceptedMerchants": ["IKEA", "…（官方場域清單，逐家）"],
+      "source": "（清單來源 URL）" },
+    { "name": "LINE Pay", "aliases": ["linepay", "line pay"], "acceptedMerchants": [] }
+  ]
+}
+```
+
+- 12 個 canonical 支付都要有一筆。`acceptedMerchants`＝該支付的官方可用商店清單（有官方
+  來源才填，逐家、商店名需可經 merchants.json 解析；查不到完整清單就留空陣列＋note 說明）。
+- cards.json 中 targetType=mobilepay 的 target 必須能對上本檔某筆的 name 或 alias。
+
 ## 前端行為（index.html 實作依據）
 
+0. **頁面最前頭的假設聲明**：明白告知「本站假設你的每張卡都已完成帳單e化＋自動扣繳」。
 1. 步驟一：勾選持有的卡（10 張）。
-2. 步驟二：只對有 `tiers` 的卡詢問用戶等級（單選）；沒有任何卡需要選就跳過。
-3. 查詢：輸入商店名 → 正規化（小寫、去空白與連字號）後經 merchants.json 統一為 canonical，
-   再比對 rewards：
-   - targetType=merchant 且 target（同樣經對照表統一後）相符 → 命中
-   - 商店標記 dining=true → 也命中 dining 型 rewards
-   - 每張卡的 general 回饋列為「基本回饋」行（墊底參考）
-   - 也可直接輸入地名（日本、韓國…）查 country 型回饋
-4. 結果**全列出**（不取前三名），每行＝一個（卡×方案）組合：卡名｜方案名（無方案顯示「基本」）｜
-   實際%（依所選等級解析 pctByTier）｜上限｜期限｜備註。同卡不同方案分列。% 由高到低排序。
+2. 步驟二：標題「**選擇你的資格**」。規則：
+   - 卡的 assumedAchieved tier 已是該卡**回饋最高**的 tier → 自動選定、不出現在此步驟
+     （例：Richart 扣繳/未扣繳，假設已扣繳即最佳）。
+   - 卡還有比 assumedAchieved 更高的資格 tier（例：CUBE Level 3 財管貴賓、DAWHO 存款
+     等級）→ 仍出現在此步驟詢問，**預設選 assumedAchieved 那個**（無 assumedAchieved
+     則預設最低）。
+   - 沒有任何卡需要選就跳過此步驟。
+3. 查詢：輸入 → 正規化（小寫、去空白與連字號）後經 merchants.json 統一為 canonical：
+   - **輸入是商店** → 命中：merchant 型 target（同樣統一後）相符；dining=true 商店同時命中
+     dining 型；各卡 general 為「基本」行；**加上**：mobilepay 型回饋中，該支付的
+     acceptedMerchants（經對照表統一後）含此商店者（顯示為「支付名＋方案名」）。
+   - **輸入是支付名**（對上 mobilepay.json 的 name/aliases）→ 只列該支付的 mobilepay 型回饋。
+   - **輸入是地名** → country 型回饋。
+   - mobilepay 型回饋**不得**出現在與該支付無關的商店查詢結果中。
+4. 結果區標題為「**信用卡回饋查詢結果**」。每行＝一個（卡×方案）組合：卡名｜方案名
+   （無方案顯示「基本」）｜實際%（依所選資格解析 pctByTier）｜上限｜期限｜備註。
+   同卡不同方案分列。**整個列表嚴格按 % 由高到低排序**（基本回饋行也參與同一排序）。
+   **只列 2% 以上（含）的回饋**，並在結果區明白告知用戶「僅顯示回饋 2% 以上的結果」。
 5. `validUntil` 過期的 reward 不列（或摺疊標示「已到期」）。
+6. 每筆 reward 每次查詢最多一列（同店多種官方寫法解析到同一筆時必須去重）。

@@ -43,6 +43,14 @@
     color: var(--muted);
     font-size: 0.9rem;
   }
+  header.site-header p.assumption-note {
+    margin: 8px 0 0;
+    padding: 8px 12px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    border-radius: 8px;
+    font-size: 0.88rem;
+  }
   .banner {
     display: none;
     background: #fff7e6;
@@ -257,6 +265,11 @@
     padding: 24px 8px;
     font-size: 0.92rem;
   }
+  .filter-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: -4px 0 12px;
+  }
   .btn {
     display: inline-block;
     padding: 10px 18px;
@@ -328,6 +341,7 @@
   <header class="site-header">
     <h1>台灣信用卡回饋比較</h1>
     <p class="sub">選你有的卡，輸入商店，馬上看哪張卡回饋最高</p>
+    <p class="assumption-note">本站假設你的每張卡都已完成<b>帳單e化＋自動扣繳</b>。</p>
   </header>
 
   <div id="demoBanner" class="banner">目前為示範資料，實際回饋請以各銀行公告為準。</div>
@@ -346,7 +360,7 @@
 
   <!-- Step 2 -->
   <section class="card hidden" id="step2">
-    <h2><span class="step-num">2</span>選擇你的等級／資格</h2>
+    <h2><span class="step-num">2</span>選擇你的資格</h2>
     <div id="planGroups"></div>
     <div class="btn-row">
       <button class="btn primary" id="toStep3Btn">下一步：輸入商店</button>
@@ -355,22 +369,23 @@
 
   <!-- Step 3 -->
   <section class="card hidden" id="step3">
-    <h2><span class="step-num">3</span>輸入商店名稱</h2>
+    <h2><span class="step-num">3</span>輸入商店、支付或地區</h2>
     <div class="held-summary" id="heldSummary"></div>
     <div class="held-summary hidden" id="skipStep2Note"></div>
     <div class="autocomplete-wrap">
-      <input type="text" class="store-input" id="storeInput" placeholder="例如：momo、全家、星巴克…" autocomplete="off" />
+      <input type="text" class="store-input" id="storeInput" placeholder="例如：蝦皮、鼎泰豐、LINE Pay、日本…" autocomplete="off" />
       <div class="suggestions" id="suggestions"></div>
     </div>
     <div class="no-match-hint" id="noMatchHint" style="display:none;">
-      找不到符合的商店或國家／地區，請確認輸入是否正確，或換個寫法試試（例如商店的中文全名、英文名、常見簡稱）。
+      找不到符合的商店、行動支付或國家／地區，請確認輸入是否正確，或換個寫法試試（例如商店的中文全名、英文名、常見簡稱）。
     </div>
     <div class="selected-target hidden" id="selectedTarget"></div>
   </section>
 
   <!-- Results -->
   <section class="card hidden" id="resultsSection">
-    <h2>比較結果</h2>
+    <h2>信用卡回饋查詢結果</h2>
+    <p class="filter-note">僅顯示回饋 2% 以上的結果</p>
     <div id="resultsList"></div>
   </section>
 
@@ -391,15 +406,19 @@
   var state = {
     cardsData: null,
     merchantsData: null,
+    mobilepayData: null,
     usingSampleCards: false,
     usingSampleMerchants: false,
+    usingSampleMobilepay: false,
     merchantNormMap: {},      // normalize(name|alias) -> canonical merchant name
     diningSet: {},            // canonical merchant name -> true if dining=true in merchants.json
     countryNormMap: {},       // normalize(countryName) -> canonical country name (as written in cards.json)
-    autocompleteList: [],     // [{ label, kind: 'merchant'|'country' }] for suggestions
+    paymentNormMap: {},       // normalize(payment name|alias) -> canonical payment name (mobilepay.json)
+    paymentAccepted: {},      // canonical payment name -> { canonical merchant name: true }
+    autocompleteList: [],     // [{ label, kind: 'merchant'|'country'|'payment' }]
     heldCardIds: [],          // array of card id
     selectedTiers: {},        // cardId -> tierId (only for cards that have `tiers`)
-    currentQuery: null        // { type: 'merchant'|'country', name: canonical name } | null
+    currentQuery: null        // { type: 'merchant'|'country'|'payment', name: canonical } | null
   };
 
   // ---------- utils ----------
@@ -442,18 +461,22 @@
 
   // Build the lookup structures required by SCHEMA.md's 前端行為 section:
   //  - merchantNormMap: every normalized name/alias in merchants.json, PLUS every
-  //    merchant-type reward target in cards.json that isn't already covered, maps
-  //    to one canonical display name. merchants.json is indexed first so its name
-  //    wins as canonical when a card's reward target is one of its aliases.
+  //    merchant-type reward target in cards.json not already covered, mapping to
+  //    one canonical display name (merchants.json name wins when both mention a store).
   //  - diningSet: canonical merchant name -> true, from merchants.json dining flag.
   //  - countryNormMap: normalized country name -> canonical country name, collected
   //    from every targetType="country" reward target across cards.json.
-  //  - autocompleteList: union of merchant canonical names ∪ merchants.json aliases
-  //    ∪ country names (SCHEMA.md 前端行為 §6).
+  //  - paymentNormMap / paymentAccepted: from mobilepay.json. acceptedMerchants
+  //    entries are themselves resolved through merchantNormMap so the store query
+  //    comparison happens on canonical names on both sides.
+  //  - autocompleteList: merchant names/aliases ∪ cards.json merchant targets ∪
+  //    country names ∪ mobilepay.json payment names/aliases.
   function buildLookups() {
     var merchantNormMap = {};
     var diningSet = {};
     var countryNormMap = {};
+    var paymentNormMap = {};
+    var paymentAccepted = {};
     var autoSet = {}; // normalized -> { label, kind } to dedupe
 
     function addAutocomplete(label, kind) {
@@ -496,21 +519,43 @@
       });
     });
 
+    ((state.mobilepayData && state.mobilepayData.payments) || []).forEach(function (p) {
+      var canonical = p.name;
+      var n = normalize(canonical);
+      if (!n) return;
+      if (!paymentNormMap[n]) paymentNormMap[n] = canonical;
+      addAutocomplete(canonical, "payment");
+      (p.aliases || []).forEach(function (a) {
+        var an = normalize(a);
+        if (an && !paymentNormMap[an]) paymentNormMap[an] = canonical;
+        addAutocomplete(a, "payment");
+      });
+      var acc = {};
+      (p.acceptedMerchants || []).forEach(function (m) {
+        var canonStore = merchantNormMap[normalize(m)] || m;
+        acc[canonStore] = true;
+      });
+      paymentAccepted[canonical] = acc;
+    });
+
     state.merchantNormMap = merchantNormMap;
     state.diningSet = diningSet;
     state.countryNormMap = countryNormMap;
+    state.paymentNormMap = paymentNormMap;
+    state.paymentAccepted = paymentAccepted;
     state.autocompleteList = Object.keys(autoSet).map(function (k) { return autoSet[k]; });
   }
 
   // Resolve free-text input to a canonical query target.
-  // Country match takes priority only if the text isn't also a known merchant name
-  // (in practice country names and merchant names shouldn't collide, but merchant
-  // wins on tie since that's the more specific match).
+  // Merchant wins on collision (most specific), then payment, then country.
   function matchQuery(raw) {
     var nq = normalize(raw);
     if (!nq) return null;
     if (state.merchantNormMap[nq]) {
       return { type: "merchant", name: state.merchantNormMap[nq] };
+    }
+    if (state.paymentNormMap[nq]) {
+      return { type: "payment", name: state.paymentNormMap[nq] };
     }
     if (state.countryNormMap[nq]) {
       return { type: "country", name: state.countryNormMap[nq] };
@@ -544,16 +589,19 @@
   function init() {
     Promise.all([
       loadJson("data/cards.json", "data/cards.sample.json"),
-      loadJson("data/merchants.json", "data/merchants.sample.json")
+      loadJson("data/merchants.json", "data/merchants.sample.json"),
+      loadJson("data/mobilepay.json", "data/mobilepay.sample.json")
     ])
       .then(function (results) {
         state.cardsData = results[0].data;
         state.usingSampleCards = results[0].sample;
         state.merchantsData = results[1].data;
         state.usingSampleMerchants = results[1].sample;
+        state.mobilepayData = results[2].data;
+        state.usingSampleMobilepay = results[2].sample;
         buildLookups();
 
-        if (state.usingSampleCards || state.usingSampleMerchants) {
+        if (state.usingSampleCards || state.usingSampleMerchants || state.usingSampleMobilepay) {
           document.getElementById("demoBanner").classList.add("show");
         }
 
@@ -615,9 +663,92 @@
     refreshStep2Visibility();
   }
 
-  // A card needs step 2 only when it declares `tiers` (>= 2 entries per SCHEMA.md).
+  // ---------- tier (資格) rules, per SCHEMA.md 前端行為 §2 ----------
+
+  function assumedTier(card) {
+    var tiers = card.tiers || [];
+    for (var i = 0; i < tiers.length; i++) {
+      if (tiers[i].assumedAchieved === true) return tiers[i];
+    }
+    return null;
+  }
+
+  // "回饋最高" check for a tier: dominance across ALL rewards that use pctByTier —
+  // the tier's value must be >= every other tier's value in every such reward.
+  // Chosen over "compare only the general reward's pctByTier" because hiding a
+  // card from step 2 is only safe when no possible query could ever pay more on
+  // a different tier; comparing just the general reward could hide a card whose
+  // merchant/mobilepay reward is better on another tier (e.g. CUBE Level 3).
+  // Missing tier keys are treated as 0.
+  function tierDominates(card, tierId) {
+    var tiers = card.tiers || [];
+    var rewards = card.rewards || [];
+    for (var i = 0; i < rewards.length; i++) {
+      var byTier = rewards[i].pctByTier;
+      if (!byTier) continue;
+      var v = typeof byTier[tierId] === "number" ? byTier[tierId] : 0;
+      for (var j = 0; j < tiers.length; j++) {
+        var other = typeof byTier[tiers[j].id] === "number" ? byTier[tiers[j].id] : 0;
+        if (other > v) return false;
+      }
+    }
+    return true;
+  }
+
+  // Sum of a tier's pctByTier values across all rewards — used only to pick the
+  // "lowest reward" default when a card has no assumedAchieved tier.
+  function tierRewardScore(card, tierId) {
+    var score = 0;
+    (card.rewards || []).forEach(function (r) {
+      if (r.pctByTier && typeof r.pctByTier[tierId] === "number") score += r.pctByTier[tierId];
+    });
+    return score;
+  }
+
+  function defaultTierId(card) {
+    var tiers = card.tiers || [];
+    if (tiers.length === 0) return null;
+    var at = assumedTier(card);
+    if (at) return at.id; // default to the assumed-achieved tier when present
+    var best = tiers[0].id, bestScore = tierRewardScore(card, tiers[0].id);
+    for (var i = 1; i < tiers.length; i++) {
+      var s = tierRewardScore(card, tiers[i].id);
+      if (s < bestScore) { bestScore = s; best = tiers[i].id; }
+    }
+    return best; // no assumedAchieved -> default to the lowest-reward tier
+  }
+
+  // A card appears in step 2 only when it has tiers AND its assumedAchieved tier
+  // (if any) is NOT already its best tier. If the assumed tier dominates, it is
+  // auto-selected and the card is skipped.
   function cardNeedsTierSelection(card) {
-    return Array.isArray(card.tiers) && card.tiers.length > 0;
+    var tiers = card.tiers || [];
+    if (tiers.length === 0) return false;
+    var at = assumedTier(card);
+    if (at && tierDominates(card, at.id)) return false;
+    return true;
+  }
+
+  // Make sure every held card with tiers has a valid selection:
+  //  - auto-selected cards (assumed tier dominates) are FORCED to the assumed tier;
+  //  - cards shown in step 2 get the default (assumed tier, else lowest) unless a
+  //    valid stored/selected value already exists.
+  function ensureTierSelections() {
+    state.heldCardIds.forEach(function (cardId) {
+      var found = findBankByCardId(cardId);
+      if (!found) return;
+      var card = found.card;
+      var tiers = card.tiers || [];
+      if (tiers.length === 0) { delete state.selectedTiers[cardId]; return; }
+      var at = assumedTier(card);
+      if (at && tierDominates(card, at.id)) {
+        state.selectedTiers[cardId] = at.id;
+        return;
+      }
+      var current = state.selectedTiers[cardId];
+      var valid = tiers.some(function (t) { return t.id === current; });
+      if (!valid) state.selectedTiers[cardId] = defaultTierId(card);
+    });
   }
 
   function getTierSelectionEntries() {
@@ -643,6 +774,7 @@
       return;
     }
 
+    ensureTierSelections();
     var tierEntries = getTierSelectionEntries();
 
     if (tierEntries.length > 0) {
@@ -652,17 +784,17 @@
       skipNote.classList.add("hidden");
       hideResults();
     } else {
-      // no held card declares tiers -> skip step 2 entirely, go straight to step 3
+      // no held card needs a qualification choice -> skip step 2 entirely
       step2.classList.add("hidden");
       step3.classList.remove("hidden");
       buildHeldSummary();
-      skipNote.textContent = "你選的卡片都不需要另外選擇等級，可直接輸入商店。";
+      skipNote.textContent = "你選的卡片都不需要另外選擇資格，可直接輸入商店。";
       skipNote.classList.remove("hidden");
       rerunQueryIfAny();
     }
   }
 
-  // ---------- Step 2: pick tier per held tiered card ----------
+  // ---------- Step 2: pick tier (資格) per held card that needs it ----------
 
   function buildStep2(tierEntries) {
     var container = document.getElementById("planGroups");
@@ -681,9 +813,6 @@
       title.textContent = entry.bank.name + "｜" + card.name;
       block.appendChild(title);
 
-      if (!state.selectedTiers[cardId] || !tiers.some(function (t) { return t.id === state.selectedTiers[cardId]; })) {
-        state.selectedTiers[cardId] = tiers[0].id;
-      }
       tiers.forEach(function (tier) {
         var choiceRow = document.createElement("div");
         choiceRow.className = "plan-choice";
@@ -736,7 +865,7 @@
       "已選 " + names.length + " 張卡：" + names.join("、");
   }
 
-  // ---------- Step 3: store / country input ----------
+  // ---------- Step 3: store / payment / country input ----------
 
   function matchSuggestions(query) {
     var nq = normalize(query);
@@ -750,6 +879,12 @@
       else if (nc.indexOf(nq) !== -1) substr.push(item);
     });
     return exact.concat(prefix).concat(substr);
+  }
+
+  function kindLabel(kind) {
+    if (kind === "country") return "地區";
+    if (kind === "payment") return "行動支付";
+    return "";
   }
 
   function initAutocomplete() {
@@ -796,7 +931,7 @@
           item.className = "suggestion-item";
           item.innerHTML = '<span></span><span class="s-cat"></span>';
           item.querySelector("span").textContent = m.label;
-          item.querySelector(".s-cat").textContent = m.kind === "country" ? "地區" : "";
+          item.querySelector(".s-cat").textContent = kindLabel(m.kind);
           item.addEventListener("click", function () {
             input.value = m.label;
             state.currentQuery = matchQuery(m.label);
@@ -820,14 +955,17 @@
 
   function showSelectedTarget() {
     var el = document.getElementById("selectedTarget");
-    if (state.currentQuery && state.currentQuery.type === "merchant") {
-      el.innerHTML = "目前比對商店：<b>" + escapeHtml(state.currentQuery.name) + "</b>";
-    } else if (state.currentQuery && state.currentQuery.type === "country") {
-      el.innerHTML = "目前比對地區：<b>" + escapeHtml(state.currentQuery.name) + "</b>";
+    var q = state.currentQuery;
+    if (q && q.type === "merchant") {
+      el.innerHTML = "目前比對商店：<b>" + escapeHtml(q.name) + "</b>";
+    } else if (q && q.type === "payment") {
+      el.innerHTML = "目前比對行動支付：<b>" + escapeHtml(q.name) + "</b>";
+    } else if (q && q.type === "country") {
+      el.innerHTML = "目前比對地區：<b>" + escapeHtml(q.name) + "</b>";
     } else {
       el.innerHTML = "";
     }
-    el.classList.toggle("hidden", !state.currentQuery);
+    el.classList.toggle("hidden", !q);
   }
 
   function hideSelectedTarget() {
@@ -835,27 +973,24 @@
   }
 
   // re-run the current query's results after a tier selection changes or step 2
-  // is skipped, so a switched tier is reflected without retyping the store name.
+  // is skipped, so a switched tier is reflected without retyping.
   function rerunQueryIfAny() {
     if (state.currentQuery) computeAndRenderResults();
   }
 
   // ---------- reward computation ----------
 
-  // Resolve a reward's actual pct for the given card, honoring pctByTier when the
-  // card declares tiers and the user has selected one. Returns null if it truly
-  // cannot be resolved (should not happen in practice since step 2 forces a
-  // selection for every held card that has tiers) so callers can skip gracefully
-  // instead of crashing.
-  function resolvePct(reward, card, cardId) {
+  // Resolve a reward's actual pct for the given card, honoring pctByTier with the
+  // user-selected (or auto-selected) tier. Returns null when unresolvable so
+  // callers can skip the row gracefully instead of crashing.
+  function resolvePct(reward, cardId) {
     if (typeof reward.pct === "number") return reward.pct;
     if (reward.pctByTier) {
       var tierId = state.selectedTiers[cardId];
       if (tierId && typeof reward.pctByTier[tierId] === "number") {
         return reward.pctByTier[tierId];
       }
-      // defensive fallback: no tier selected yet (e.g. stale state) -> use the
-      // first available tier value rather than breaking the whole result list.
+      // defensive fallback: stale/absent selection -> first available tier value
       var keys = Object.keys(reward.pctByTier);
       if (keys.length > 0 && typeof reward.pctByTier[keys[0]] === "number") {
         return reward.pctByTier[keys[0]];
@@ -864,58 +999,110 @@
     return null;
   }
 
-  // Returns the list of reward rows that match `query` for one held card, split
-  // into "specific" (merchant/dining/country hits) and "general" (基本回饋) —
-  // per SCHEMA.md 前端行為: general rows are always appended after specific rows,
-  // but each group is independently sorted by pct descending.
-  function rowsForCard(cardId, card, bankName, query) {
-    var rewards = card.rewards || [];
-    var specific = [];
-    var general = [];
+  function canonicalMerchant(name) {
+    return state.merchantNormMap[normalize(name)] || name;
+  }
 
-    rewards.forEach(function (r) {
+  function canonicalPayment(name) {
+    return state.paymentNormMap[normalize(name)] || name;
+  }
+
+  // Matching rules per SCHEMA.md 前端行為 §3 (v3, 2026-07-11):
+  //  merchant query: merchant target match / dining (if store dining=true) /
+  //    mobilepay rewards whose payment acceptedMerchants contains the store
+  //    (label "支付名｜方案名") / plan-less general rewards as「基本」rows.
+  //    Defensive rule (bug fix): a general reward that carries a `plan` is NEVER
+  //    a「基本」row — it must qualify via a legal targetType hit or not show at all
+  //    (a targetType=general reward can't, so it never shows anywhere).
+  //  payment query: mobilepay rewards whose target is this payment, plus merchant
+  //    rewards whose plan name equals the payment name (e.g. CUBE plan「全支付」).
+  //    Per spec's「只列」, no 基本 rows here.
+  //  country query: country target match + plan-less general 基本 rows (base
+  //    reward still applies abroad; the spec's store-query bullet defines 基本
+  //    rows and the country bullet doesn't forbid them — kept from round 1).
+  //
+  //  Duplicate suppression (bug fix 2026-07-11, 新光三越 case) — two layers:
+  //  1. seenRewards (Set of reward object references, shared across the whole
+  //     query): the same reward entity can never emit more than one row.
+  //  2. In computeAndRenderResults, rows whose every user-visible column
+  //     (card, 方案, %, 上限, 期限) is identical are collapsed to one. Needed
+  //     because the scraper legally splits one benefit into several reward
+  //     entries whose different official spellings (「新光三越(含skm pay)」/
+  //     「SKM Park Outlets」) all canonicalize to the same store — distinct
+  //     objects, so layer 1 alone cannot catch them. Any genuinely different
+  //     benefit (different %, cap or validity) still shows as its own row.
+  function rowsForCard(cardId, card, bankName, query, seenRewards) {
+    var rows = [];
+    (card.rewards || []).forEach(function (r) {
       if (isExpired(r.validUntil)) return;
+      if (seenRewards && seenRewards.has(r)) return; // entity already emitted
 
-      var isGeneral = r.targetType === "general";
+      var planLabel = null;
+      var extraMeta = null;
       var hit = false;
 
-      if (!isGeneral) {
-        if (query.type === "merchant") {
-          if (r.targetType === "merchant" && r.target) {
-            var rn = normalize(r.target);
-            var canonicalTarget = state.merchantNormMap[rn] || r.target;
-            if (canonicalTarget === query.name) hit = true;
-          } else if (r.targetType === "dining" && state.diningSet[query.name]) {
-            hit = true;
-          }
-        } else if (query.type === "country") {
-          if (r.targetType === "country" && r.target === query.name) hit = true;
+      if (r.targetType === "general") {
+        // only plan-less generals may become 基本 rows, and only for
+        // merchant/country queries (payment queries list payment rewards only)
+        if (!r.plan && (query.type === "merchant" || query.type === "country")) {
+          hit = true;
+          planLabel = "基本";
         }
-      } else {
-        hit = true; // every non-expired general reward is always shown, per card
+      } else if (query.type === "merchant") {
+        if (r.targetType === "merchant" && r.target &&
+            canonicalMerchant(r.target) === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        } else if (r.targetType === "dining" && state.diningSet[query.name]) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        } else if (r.targetType === "mobilepay" && r.target) {
+          var pay = canonicalPayment(r.target);
+          var acc = state.paymentAccepted[pay];
+          if (acc && acc[query.name]) {
+            hit = true;
+            planLabel = r.plan ? pay + "｜" + r.plan : pay;
+          }
+        }
+      } else if (query.type === "payment") {
+        if (r.targetType === "mobilepay" && r.target &&
+            canonicalPayment(r.target) === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        } else if (r.targetType === "merchant" && r.plan &&
+                   canonicalPayment(r.plan) === query.name &&
+                   state.paymentNormMap[normalize(r.plan)]) {
+          // merchant reward whose plan name IS this payment (e.g. CUBE「全支付」)
+          hit = true;
+          planLabel = r.plan;
+          extraMeta = "適用商店：" + canonicalMerchant(r.target);
+        }
+      } else if (query.type === "country") {
+        if (r.targetType === "country" && r.target === query.name) {
+          hit = true;
+          planLabel = r.plan || "基本";
+        }
       }
 
       if (!hit) return;
 
-      var pct = resolvePct(r, card, cardId);
-      if (pct === null) return; // unresolvable pctByTier, skip rather than break
+      var pct = resolvePct(r, cardId);
+      if (pct === null) return;
 
-      var row = {
+      if (seenRewards) seenRewards.add(r);
+      rows.push({
+        cardId: cardId,
         bankName: bankName,
         cardName: card.name,
-        planLabel: r.plan || "基本",
+        planLabel: planLabel,
         pct: pct,
         cap: r.cap || "",
         validUntil: r.validUntil || "",
         note: r.note || "",
-        isGeneral: isGeneral
-      };
-
-      if (isGeneral) general.push(row);
-      else specific.push(row);
+        extraMeta: extraMeta
+      });
     });
-
-    return { specific: specific, general: general };
+    return rows;
   }
 
   function computeAndRenderResults() {
@@ -925,20 +1112,38 @@
       return;
     }
 
-    var specificAll = [];
-    var generalAll = [];
-
+    var rows = [];
+    var seenRewards = new Set(); // layer 1: one row max per reward entity
     state.heldCardIds.forEach(function (cardId) {
       var found = findBankByCardId(cardId);
       if (!found) return;
-      var res = rowsForCard(cardId, found.card, found.bank.name, query);
-      specificAll = specificAll.concat(res.specific);
-      generalAll = generalAll.concat(res.general);
+      rows = rows.concat(rowsForCard(cardId, found.card, found.bank.name, query, seenRewards));
     });
 
-    specificAll.sort(function (a, b) { return b.pct - a.pct; });
-    generalAll.sort(function (a, b) { return b.pct - a.pct; });
-    var rows = specificAll.concat(generalAll);
+    // single strict ordering: % descending, 基本 rows participate in the same
+    // sort (user decision 2026-07-11 — no separate trailing section)
+    rows.sort(function (a, b) { return b.pct - a.pct; });
+
+    // layer 2: collapse rows that are identical in every user-visible column
+    // (see rowsForCard's duplicate-suppression comment). note is deliberately
+    // excluded from the key — rows differing only in note render as duplicates
+    // to the user; the first (kept) row's note is shown.
+    var seenRowKeys = {};
+    rows = rows.filter(function (row) {
+      var key = row.cardId + "|" + row.planLabel + "|" + row.pct + "|" +
+                row.cap + "|" + row.validUntil + "|" + (row.extraMeta || "");
+      if (seenRowKeys[key]) return false;
+      seenRowKeys[key] = true;
+      return true;
+    });
+
+    // display-layer threshold (user decision 2026-07-11): only show rewards
+    // >= 2%. data is untouched — rows below the threshold are hidden, and the
+    // results section carries a permanent notice (.filter-note in the HTML).
+    var MIN_DISPLAY_PCT = 2;
+    var hadRowsBelowThreshold = rows.length > 0;
+    rows = rows.filter(function (row) { return row.pct >= MIN_DISPLAY_PCT; });
+    hadRowsBelowThreshold = hadRowsBelowThreshold && rows.length === 0;
 
     var resultsSection = document.getElementById("resultsSection");
     var list = document.getElementById("resultsList");
@@ -952,7 +1157,9 @@
     if (rows.length === 0) {
       var empty = document.createElement("div");
       empty.className = "empty-state";
-      empty.textContent = "目前持有的卡片沒有適用於這個商店／地區的回饋資料。";
+      empty.textContent = hadRowsBelowThreshold
+        ? "此查詢對象有回饋，但均低於 2%，依顯示規則不列出。"
+        : "目前持有的卡片沒有適用於這個查詢對象的回饋資料。";
       list.appendChild(empty);
       resultsSection.classList.remove("hidden");
       return;
@@ -970,6 +1177,7 @@
       body.className = "result-body";
 
       var metaLines = [];
+      if (c.extraMeta) metaLines.push(c.extraMeta);
       if (c.cap) metaLines.push("上限：" + c.cap);
       if (c.note) metaLines.push("備註：" + c.note);
       if (c.validUntil) metaLines.push("活動期限：" + c.validUntil);
@@ -1025,13 +1233,10 @@
     }
   }
 
-  // Restores prefs saved by this same v3 build. Any older format (v2's
-  // "cardRewardsPrefs.v1" key, or malformed/missing-version data that might land
-  // under this key in the future) is intentionally NOT migrated — SCHEMA.md calls
-  // for resetting to defaults rather than attempting a hard conversion. Because
-  // the storage key itself changed from v1 to v3, old data is simply invisible
-  // here; the version/shape checks below are an extra safety net in case that
-  // ever isn't true (e.g. a future format reusing this key).
+  // Restores prefs saved by this same v3 build. Older formats (v2's key, or
+  // malformed/version-mismatched data) are NOT migrated — reset to defaults per
+  // SCHEMA.md. ensureTierSelections() then re-applies the assumedAchieved /
+  // default-tier rules on top of whatever selections were restored.
   function restorePrefs() {
     var raw;
     try {
@@ -1055,11 +1260,10 @@
       parsed.selectedTiers &&
       typeof parsed.selectedTiers === "object" &&
       !Array.isArray(parsed.selectedTiers);
-    if (!looksValid) return; // unrecognized/old format -> reset to defaults, no hard conversion
+    if (!looksValid) return; // unrecognized/old format -> defaults, no hard conversion
 
     if (parsed.heldCardIds.length === 0) return;
 
-    // only keep ids that still exist in current data
     var validIds = parsed.heldCardIds.filter(function (id) { return findBankByCardId(id); });
     if (validIds.length === 0) return;
 

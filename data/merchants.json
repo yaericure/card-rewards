@@ -544,10 +544,6 @@
       "aliases": []
     },
     {
-      "name": "LINE Pay",
-      "aliases": []
-    },
-    {
       "name": "LINEGO",
       "aliases": []
     },
@@ -769,15 +765,7 @@
       "aliases": []
     },
     {
-      "name": "iPASS MONEY",
-      "aliases": []
-    },
-    {
       "name": "iRent",
-      "aliases": []
-    },
-    {
-      "name": "icash Pay",
       "aliases": []
     },
     {
@@ -876,15 +864,7 @@
       "aliases": []
     },
     {
-      "name": "全支付",
-      "aliases": []
-    },
-    {
       "name": "全球迪士尼飯店",
-      "aliases": []
-    },
-    {
-      "name": "全盈+PAY",
       "aliases": []
     },
     {
@@ -1256,10 +1236,6 @@
       "aliases": []
     },
     {
-      "name": "悠遊付",
-      "aliases": []
-    },
-    {
       "name": "悠遊卡自動加值",
       "aliases": []
     },
@@ -1281,10 +1257,6 @@
     },
     {
       "name": "捷絲旅",
-      "aliases": []
-    },
-    {
-      "name": "支付寶",
       "aliases": []
     },
     {
@@ -1495,11 +1467,10 @@
     },
     {
       "name": "特斯拉",
-      "aliases": []
-    },
-    {
-      "name": "玉山Wallet電子支付",
-      "aliases": []
+      "aliases": [
+        "Tesla",
+        "tesla"
+      ]
     },
     {
       "name": "王品瘋Pay",
@@ -1656,10 +1627,6 @@
       "aliases": []
     },
     {
-      "name": "街口支付",
-      "aliases": []
-    },
-    {
       "name": "詹記麻辣火鍋",
       "aliases": [],
       "dining": true
@@ -1763,6 +1730,54 @@
       "name": "龜記",
       "aliases": [],
       "dining": true
+    },
+    {
+      "name": "神腦",
+      "aliases": [
+        "神腦國際",
+        "senao"
+      ]
+    },
+    {
+      "name": "麥當勞",
+      "aliases": [
+        "mcdonalds",
+        "mcdonald's"
+      ],
+      "dining": true
+    },
+    {
+      "name": "馬光中醫診所",
+      "aliases": [
+        "馬光中醫"
+      ]
+    },
+    {
+      "name": "日本LAWSON",
+      "aliases": [
+        "lawson",
+        "羅森"
+      ]
+    },
+    {
+      "name": "BicCamera",
+      "aliases": [
+        "bic camera",
+        "必客"
+      ]
+    },
+    {
+      "name": "韓國GS25",
+      "aliases": [
+        "gs25"
+      ]
+    },
+    {
+      "name": "DAISO",
+      "aliases": [
+        "大創",
+        "daiso japan"
+      ]
     }
   ]
 }

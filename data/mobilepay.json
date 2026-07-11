@@ -1,0 +1,93 @@
+{
+  "payments": [
+    {
+      "name": "台新Pay",
+      "aliases": ["taishinpay", "taishin pay", "台新pay", "twqr", "台灣pay", "台灣Pay"],
+      "acceptedMerchants": [
+        "全家",
+        "7-11",
+        "新光三越",
+        "Richart Mart",
+        "康是美",
+        "IKEA",
+        "NET",
+        "神腦",
+        "燦坤",
+        "全國電子",
+        "麥當勞",
+        "美廉社",
+        "大樹藥局",
+        "馬光中醫診所"
+      ],
+      "source": "https://mkp.taishinbank.com.tw/s/2022/taishinpay/cooperation-scan_pay.html",
+      "note": "清單不完整：官方合作通路頁（Richart權益頁連出）的商店以無文字的 logo 圖片呈現，無法機器擷取全清單；上列為 Richart 權益頁 Pay著刷段落列名的範例商店（原文以「等」結尾，含台新Pay與TWQR/台灣Pay場域）加上合作通路頁唯一可擷取的文字商店（馬光中醫診所）。完整場域以台新Pay官網及台灣Pay場域公告為準。2026-07-11 查證。"
+    },
+    {
+      "name": "台新Pay+",
+      "aliases": ["taishinpay+", "taishin pay+", "台新pay+", "台新電子支付"],
+      "acceptedMerchants": ["日本LAWSON", "BicCamera", "韓國GS25", "DAISO"],
+      "source": "https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html",
+      "note": "清單不完整：Richart 權益頁原文「台新Pay+｜日韓交易…含日本LAWSON、BicCamera；韓國GS25、DAISO等，詳見台新Pay+官網」——僅列日韓範例商店（原文以「等」結尾）。完整場域以台新Pay+官網公告為準。2026-07-11 查證。"
+    },
+    {
+      "name": "LINE Pay",
+      "aliases": ["linepay", "line pay", "賴配"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單（適用通路依 LINE Pay 公告為準），僅能直接查支付名。"
+    },
+    {
+      "name": "全支付",
+      "aliases": ["pxpay plus", "全支付pay"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "街口支付",
+      "aliases": ["jkopay", "jko pay", "街口"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "悠遊付",
+      "aliases": ["easy wallet", "easywallet"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "全盈+PAY",
+      "aliases": ["全盈+pay", "全盈pay", "全盈支付", "全盈+Pay"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "iPASS MONEY",
+      "aliases": ["ipass money", "ipassmoney", "一卡通money", "一卡通MONEY"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "icash Pay",
+      "aliases": ["icashpay", "icash pay"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "支付寶",
+      "aliases": ["alipay"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "Pi 拍錢包",
+      "aliases": ["pi拍錢包", "pi 拍錢包", "pi wallet", "拍錢包"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    },
+    {
+      "name": "玉山Wallet電子支付",
+      "aliases": ["玉山wallet", "玉山 wallet", "esun wallet"],
+      "acceptedMerchants": [],
+      "note": "未確認：查無官方完整可用商店清單，僅能直接查支付名。"
+    }
+  ]
+}

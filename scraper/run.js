@@ -11,7 +11,7 @@ const OUT_DIR = path.join(__dirname, 'output');
 const DATA_FILE = path.join(__dirname, '..', 'data', 'cards.json');
 const BANK_IDS = ['taishin', 'esun', 'fubon', 'cathay', 'sinopac'];
 
-const TARGET_TYPES = ['merchant', 'dining', 'country', 'general'];
+const TARGET_TYPES = ['merchant', 'dining', 'country', 'mobilepay', 'general'];
 
 function validateBank(bank, id) {
   const errs = [];

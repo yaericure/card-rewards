@@ -25,10 +25,17 @@
 //   - 「指定海外消費」（趣旅行）官方描述為海外實體消費（交易地點非台灣或交易幣別非台幣，
 //     不分國家），依 SCHEMA 2026-07-11 補充規則用 targetType=country、target="海外" 收錄，
 //     pctByTier 依 Level 分級。
-//   - 「全支付國內合作通路」（全支付方案）官方定義為開放式定義（凡貼TWQR標誌之全支付合作商店），
-//     非封閉商家清單，沿用 v2 做法以「全支付」作代表性 merchant target，並於 note 說明其開放性。
+//   - 「全支付國內合作通路」（全支付方案）回饋對象是「全支付」支付工具本身（凡貼TWQR標誌之
+//     合作商店皆適用，不綁特定商店），依 SCHEMA 規則7 用 targetType=mobilepay、target="全支付"
+//     （canonical 支付名）；同方案的全聯/大全聯兩筆是「用全支付在特定商店消費」→ 維持 merchant。
+//   - card.tiers 的 Level 2（CUBE App繳費或自動扣繳）屬「帳單e化／自動扣繳」類條件，依 SCHEMA
+//     規則8 標 assumedAchieved: true；Level 3（財富管理貴賓）維持詢問。
 //   - 「慶生月」（限壽星生日月）與「童樂匯」（限與未成年子女共同開戶之家長資格）維持 v2 的排除
 //     決定：兩者皆非「人人可切換」的方案，屬另一種資格限制，不收錄。
+//   - 發卡組織資格檢查（SCHEMA 第10點，2026-07-11 檢視）：CUBE 為單一發卡組織（頁面僅出現
+//     VISA），無依發卡組織而異的%——不需發卡組織 tiers。
+//   - 排除新卡/新戶/需登錄活動檢查（SCHEMA 第9點，2026-07-11 檢視）：CUBE 權益方案為 App 內
+//     隨時切換的常態權益（非活動登錄），現收 rewards 皆無「需事先登錄／限量名額／限新戶」條件。
 //   - 全部方案回饋皆以小樹點(信用卡)發放，1點=1元，已在 note 註明。
 
 const cheerio = require('cheerio');
@@ -42,7 +49,10 @@ const POINT_NOTE = '小樹點(信用卡)回饋，1點=1元';
 
 const TIERS = [
   { id: 'lv1', name: 'Level 1', condition: '核卡即享' },
-  { id: 'lv2', name: 'Level 2', condition: '以CUBE App繳費或申請自動扣繳，次月生效' },
+  // Level 2 為「帳單e化／自動扣繳」類達成條件，依 SCHEMA 規則8（網站假設用戶每張卡已完成
+  // 帳單e化＋自動扣繳）標 assumedAchieved: true，前端自動選定此 tier、不再詢問；
+  // Level 3（財富管理貴賓）非此類條件，維持列出供用戶自選（每卡最多一個 assumedAchieved）
+  { id: 'lv2', name: 'Level 2', condition: '以CUBE App繳費或申請自動扣繳，次月生效', assumedAchieved: true },
   { id: 'lv3', name: 'Level 3', condition: '財富管理貴賓，次月生效' },
 ];
 
@@ -303,17 +313,18 @@ async function scrape() {
         validUntil: v.validUntil,
         noteSuffix: '；全支付不分CUBE權益分級，統一回饋；須選定「全支付」方案並以全支付綁定CUBE信用卡刷卡消費方可獲回饋',
       });
-      // 全支付國內合作通路：官方定義為開放式通路（凡貼TWQR標誌並以全支付綁定CUBE卡消費之合作商店），
-      // 非封閉清單，以「全支付」作代表性商家名稱
+      // 全支付國內合作通路：回饋對象是「全支付」這個支付工具本身（凡貼TWQR標誌之全支付合作
+      // 商店皆適用，不綁特定商店），依 SCHEMA 規則7 用 targetType=mobilepay、target=canonical
+      // 支付名「全支付」
       const merchants = extractMerchants(node.titleNode, '全支付國內通路');
       if (merchants && merchants.length) {
         rewards.push({
           plan: '全支付',
           target: '全支付',
-          targetType: 'merchant',
+          targetType: 'mobilepay',
           pct,
           validUntil: v.validUntil,
-          note: `${POINT_NOTE}；全支付方案／全支付國內合作通路，官方定義為開放式通路（登記於我國境內且以新台幣交易、貼有TWQR標誌等，並得接受全支付綁定CUBE信用卡支付之通路），非封閉清單（來源：${CHANNEL_URL}），已收錄「全支付」作為代表性商家名稱；不分CUBE權益分級，統一回饋`,
+          note: `${POINT_NOTE}；全支付方案／全支付國內合作通路：以全支付綁定CUBE信用卡刷卡消費，適用於官方定義之開放式通路（登記於我國境內且以新台幣交易、貼有TWQR標誌等，並得接受全支付支付之通路，來源：${CHANNEL_URL}）；不分CUBE權益分級，統一回饋`,
         });
       }
     } else {

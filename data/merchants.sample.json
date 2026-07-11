@@ -5,6 +5,7 @@
     { "name": "鼎泰豐", "aliases": ["dintaifung", "din tai fung"], "dining": true },
     { "name": "星巴克", "aliases": ["starbucks"], "dining": true },
     { "name": "全聯福利中心", "aliases": ["全聯", "pxmart"] },
+    { "name": "IKEA", "aliases": ["宜家", "宜家家居"] },
     { "name": "全家便利商店", "aliases": ["全家", "familymart", "family"] },
     { "name": "7-ELEVEN", "aliases": ["711", "7-11", "小七", "統一超商"] }
   ]

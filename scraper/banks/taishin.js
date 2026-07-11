@@ -146,20 +146,40 @@ async function scrapeRichart(page, cardName) {
   // 詳細段落出現一次）之後的位置為搜尋起點，避免誤抓摘要區塊。
   const SEARCH_FROM = L.indexOf('瘋聚會');
 
+  // 範圍限定詞處理（SCHEMA「範圍限定詞的處理」，2026-07-11）：多店合寫拆筆、
+  // 日期/分店限定詞移入 note。精確比對官方原文、比對不到保留原樣（避免通用規則誤拆）。
+  // 依規則保留原文者：「A(含B)」且 B 為附屬服務/支付/通路（新光三越(含skm pay)、
+  // 誠品生活(含線上)、Apple 直營(含官網)、臺虎精釀(含啜飲室)）；純別名註記
+  // （酷澎(Coupang)、Autopass(車麻吉)）。
+  const RICHART_TARGET_RULES = {
+    '統一時代(含DREAM PLAZA)': [
+      { target: '統一時代百貨台北店', extraNote: '官方原文「統一時代(含DREAM PLAZA)」，兩店拆列' },
+      { target: 'DREAM PLAZA', extraNote: '官方原文「統一時代(含DREAM PLAZA)」，兩店拆列' },
+    ],
+    '智生活(7/8起新增)': [{ target: '智生活', extraNote: '官方註記7/8起新增' }],
+    'Mitsui Shopping Park LaLaport(南港/台中)': [
+      { target: 'Mitsui Shopping Park LaLaport', extraNote: '分店：南港/台中' },
+    ],
+    'MITSUI OUTLET PARK (林口/台中港/台南)': [{ target: 'MITSUI OUTLET PARK', extraNote: '分店：林口/台中港/台南' }],
+  };
+
   function pushMerchants(plan, merchants, autopayPct, opts = {}) {
     for (const m of merchants) {
       if (!m) continue;
-      const r = {
-        plan,
-        target: m,
-        targetType: 'merchant',
-        pctByTier: { [RICHART_TIER_AUTOPAY]: autopayPct, [RICHART_TIER_NONE]: LEVEL1_PCT },
-      };
-      if (opts.validFrom) r.validFrom = opts.validFrom;
-      if (opts.validUntil) r.validUntil = opts.validUntil;
-      if (opts.cap) r.cap = opts.cap;
-      r.note = `${POINT_NOTE_RICHART}；${opts.note || `${plan}方案`}（來源：${rightsUrl}）`;
-      rewards.push(r);
+      for (const spec of RICHART_TARGET_RULES[m] || [{ target: m }]) {
+        const r = {
+          plan,
+          target: spec.target,
+          targetType: 'merchant',
+          pctByTier: { [RICHART_TIER_AUTOPAY]: autopayPct, [RICHART_TIER_NONE]: LEVEL1_PCT },
+        };
+        if (opts.validFrom) r.validFrom = opts.validFrom;
+        if (opts.validUntil) r.validUntil = opts.validUntil;
+        if (opts.cap) r.cap = opts.cap;
+        const extra = spec.extraNote ? `；${spec.extraNote}` : '';
+        r.note = `${POINT_NOTE_RICHART}；${opts.note || `${plan}方案`}${extra}（來源：${rightsUrl}）`;
+        rewards.push(r);
+      }
     }
   }
 

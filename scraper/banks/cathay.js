@@ -151,21 +151,64 @@ function parseFlatPct(titleText) {
   return m ? parseFloat(m[1]) : null;
 }
 
+// 範圍限定詞處理（SCHEMA「範圍限定詞的處理」節，2026-07-11 使用者案例：統一時代台北店
+// (不含DREAM PLAZA)）：target 必須是乾淨的單一商店名，「不含X」「限X」「限實體門市」等
+// 範圍限定詞移入 note；「A/B」多店合寫拆成多筆。以下對照表為 2026-07-11 對官方頁面原文
+// 逐一人工核定；未列入的新原文由 normalizeTarget 的 generic fallback 處理「(不含…)」「(限…)」。
+const TARGET_OVERRIDES = {
+  '統一時代台北店(不含DREAM PLAZA)': { target: '統一時代百貨台北店', qualifier: '不含DREAM PLAZA' },
+  '全聯福利中心 實體門市(不含大全聯)': { target: '全聯福利中心', qualifier: '限實體門市、不含大全聯' },
+  'PChome 24h購物(不含儲值及電子票券)': { target: 'PChome 24h購物', qualifier: '不含儲值及電子票券' },
+  '小樹購(不含電子票券)': { target: '小樹購', qualifier: '不含電子票券' },
+  '車麻吉(不含加油、充電)': { target: '車麻吉', qualifier: '不含加油、充電' },
+  'uTagGo(不含月租停車)': { target: 'uTagGo', qualifier: '不含月租停車' },
+  'Coupang 酷澎(台灣)': { target: 'Coupang 酷澎', qualifier: '限台灣站' },
+  '淘寶/天貓': { split: ['淘寶', '天貓'] },
+  'Mitsui Shopping Park LaLaport(南港、台中)': { target: 'Mitsui Shopping Park LaLaport', qualifier: '限南港、台中' },
+  'MITSUI OUTLET PARK(林口、台中港、台南)': { target: 'MITSUI OUTLET PARK', qualifier: '限林口、台中港、台南' },
+  'Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)': { target: 'Apple錢包指定交通卡', qualifier: '限SUICA、PASMO、ICOCA' },
+  '台灣中油-直營站': { target: '台灣中油', qualifier: '限直營站' },
+  '統一速邁樂(限本島)加油站': { target: '統一速邁樂加油站', qualifier: '限本島' },
+  '7-ELEVEN (7-11) 實體門市': { target: '7-ELEVEN', qualifier: '限實體門市' },
+  '全家便利商店 實體門市': { target: '全家便利商店', qualifier: '限實體門市' },
+  '萊爾富實體門市': { target: '萊爾富', qualifier: '限實體門市' },
+  '台塑生醫實體門市': { target: '台塑生醫', qualifier: '限實體門市' },
+  '長庚生技實體門市': { target: '長庚生技', qualifier: '限實體門市' },
+  '台塑蔬菜實體門市': { target: '台塑蔬菜', qualifier: '限實體門市' },
+  // 「大阪環球影城(USJ)」的 (USJ) 為別名非範圍限定詞，依 SCHEMA（A(含B)/附屬可保留原文）不列入
+};
+
+// 官方原文 → [{ target, qualifier? }, ...]（多店合寫回傳多項）
+function normalizeTarget(raw) {
+  const o = TARGET_OVERRIDES[raw];
+  if (o) {
+    if (o.split) return o.split.map((t) => ({ target: t, qualifier: `官方合寫「${raw}」拆列` }));
+    return [{ target: o.target, qualifier: o.qualifier }];
+  }
+  // generic fallback：A(不含B)／A(限B) → target=A（含括號後殘餘字尾）、限定詞進 note
+  const m = raw.match(/^(.+?)\s*[（(]((?:不含|限)[^）)]*)[）)]\s*(.*)$/);
+  if (m) return [{ target: (m[1] + (m[3] || '')).trim(), qualifier: m[2] }];
+  return [{ target: raw }];
+}
+
 // 將單一方案節點的各 categoryName 商家清單，逐店拆成 reward 物件推入 out[]
 // （v3 schema 的 reward 只定義 validUntil，不含 validFrom，故此處不收 validFrom）
 function pushMerchantRewards(out, { titleNode, categories, planName, pctOrByTier, validUntil, noteSuffix }) {
   for (const categoryName of categories) {
     const merchants = extractMerchants(titleNode, categoryName);
     if (!merchants || !merchants.length) continue;
-    for (const target of merchants) {
-      out.push({
-        plan: planName,
-        target,
-        targetType: 'merchant',
-        ...pctOrByTier,
-        validUntil,
-        note: `${POINT_NOTE}；${planName}方案／${categoryName}（官方逐一列舉，來源：${CHANNEL_URL}）${noteSuffix || ''}`,
-      });
+    for (const raw of merchants) {
+      for (const { target, qualifier } of normalizeTarget(raw)) {
+        const qualNote = qualifier ? `；${qualifier}（官方原文「${raw}」）` : '';
+        out.push({
+          plan: planName,
+          target,
+          targetType: 'merchant',
+          ...pctOrByTier,
+          validUntil,
+          note: `${POINT_NOTE}；${planName}方案／${categoryName}（官方逐一列舉，來源：${CHANNEL_URL}）${qualNote}${noteSuffix || ''}`,
+        });
+      }
     }
   }
 }

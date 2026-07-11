@@ -113,6 +113,14 @@
     dining/general 省略。
   - **一筆 reward 只對應一家商店**：官方清單列 N 家 → 拆成 N 筆 reward（各自可有相同
     pct/cap/validUntil）。這讓「同卡同商店不同方案分列」與跨銀行商店名統一都變簡單。
+  - **範圍限定詞的處理**（2026-07-11 使用者案例：CUBE 樂饗購「統一時代台北店(不含DREAM
+    PLAZA)」）：target 必須是乾淨的單一商店名——
+    - 官方寫「A(不含B)」→ target=A、「不含B」寫進 note；B 若是獨立商店，不得讓 B 經
+      對照表連到這筆（查 B 不能命中）。
+    - 官方寫「A(含B)」且 B 為附屬服務/支付（如新光三越(含skm pay)）→ 可保留原文。
+    - 官方寫「A/B」「A(B店/C店)」等多店合寫 → 拆成多筆 reward。
+    - merchants.json 對照表中，被「不含」排除過的商店（如 DREAM PLAZA）必須是獨立條目，
+      不得與主店（統一時代百貨台北店）互為 alias。
   - `pct`（數字）或 `pctByTier`（物件，key 必須是該卡 tiers 的 id，值為數字）——二選一必填。
   - `cap`、`validUntil`（YYYY-MM-DD）、`note`：同 v2 規則（有期限必填 validUntil；
     不確定的標「未確認」，絕不編造）。

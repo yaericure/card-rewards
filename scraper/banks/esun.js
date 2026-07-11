@@ -185,6 +185,24 @@ async function scrapeUnicard() {
     }
   }
 
+  // 範圍限定詞處理（SCHEMA「範圍限定詞的處理」，2026-07-11）：多店合寫拆筆、
+  // 「不含X」/交易類型限定移入 note。精確比對官方原文、比對不到保留原樣（避免通用規則誤拆）。
+  // 依規則保留原文者：純別名/位置註記（遠東Garden City(大巨蛋)、55688(台灣大車隊、機場接送)）；
+  // 「A(含B)」B 為同品牌通路（誠品生活(含誠品書店與誠品線上)——書店/線上為誠品自家通路，
+  // 不確定是否應獨立拆筆，保留原樣）。
+  const UNI_TARGET_RULES = {
+    '統一時代百貨(台北店/DREAM PLAZA)': [
+      { target: '統一時代百貨台北店', extraNote: '官方原文「統一時代百貨(台北店/DREAM PLAZA)」，兩店拆列' },
+      { target: 'DREAM PLAZA', extraNote: '官方原文「統一時代百貨(台北店/DREAM PLAZA)」，兩店拆列' },
+    ],
+    '漢神百貨(不含漢神巨蛋)': [{ target: '漢神百貨', extraNote: '不含漢神巨蛋' }],
+    '台灣中油(直營店)': [{ target: '台灣中油', extraNote: '限直營店' }],
+    '新光三越百貨(含SKM Park Outlets高雄草衙)': [
+      { target: '新光三越百貨', extraNote: '官方原文「新光三越百貨(含SKM Park Outlets高雄草衙)」，兩店拆列' },
+      { target: 'SKM Park Outlets高雄草衙', extraNote: '官方原文「新光三越百貨(含SKM Park Outlets高雄草衙)」，兩店拆列' },
+    ],
+  };
+
   // 每個百大項目一筆 reward，% 用 pctByTier（simple/any/up 三選組、含基礎 1% 的實際總%）。
   // 加碼上限依選組不同（簡單選/任意選 1,000 點、UP選 5,000 點），寫進同一 cap 字串。
   if (simpleTotal !== null && anyTotal !== null && upTotal !== null && groups.length) {
@@ -196,18 +214,21 @@ async function scrapeUnicard() {
       const targetType = g.label === '行動支付' ? 'mobilepay' : g.label === '國外實體' ? 'country' : 'merchant';
       for (const item of g.items) {
         if (!item) continue;
-        const r = {
-          target: item,
-          targetType,
-          pctByTier: { [UNI_TIER_SIMPLE]: simpleTotal, [UNI_TIER_ANY]: anyTotal, [UNI_TIER_UP]: upTotal },
-          note: `${EPOINT_NOTE}；百大指定消費【${g.label}】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+${
-            simplePct ? simplePct[1] : '?'
-          }%／任意選+${anyPct ? anyPct[1] : '?'}%／UP選+${upPct ? upPct[1] : '?'}%）；任意選需自行圈選最多8家始生效；來源：${URLS.unicard}`,
-        };
-        if (cap) r.cap = cap;
-        if (validFrom) r.validFrom = validFrom;
-        if (validUntil) r.validUntil = validUntil;
-        rewards.push(r);
+        for (const spec of UNI_TARGET_RULES[item] || [{ target: item }]) {
+          const extra = spec.extraNote ? `；${spec.extraNote}` : '';
+          const r = {
+            target: spec.target,
+            targetType,
+            pctByTier: { [UNI_TIER_SIMPLE]: simpleTotal, [UNI_TIER_ANY]: anyTotal, [UNI_TIER_UP]: upTotal },
+            note: `${EPOINT_NOTE}；百大指定消費【${g.label}】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+${
+              simplePct ? simplePct[1] : '?'
+            }%／任意選+${anyPct ? anyPct[1] : '?'}%／UP選+${upPct ? upPct[1] : '?'}%）；任意選需自行圈選最多8家始生效${extra}；來源：${URLS.unicard}`,
+          };
+          if (cap) r.cap = cap;
+          if (validFrom) r.validFrom = validFrom;
+          if (validUntil) r.validUntil = validUntil;
+          rewards.push(r);
+        }
       }
     }
   } else {

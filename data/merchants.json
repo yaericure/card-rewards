@@ -97,7 +97,9 @@
       "name": "LaLaport",
       "aliases": [
         "Mitsui Shopping Park LaLaport(南港/台中)",
-        "Mitsui Shopping Park LaLaport(南港、台中)"
+        "Mitsui Shopping Park LaLaport(南港、台中)",
+        "Mitsui Shopping Park LaLaport",
+        "Mitsui Shopping Park LaLaport(南港/台中)"
       ]
     },
     {
@@ -136,19 +138,18 @@
       ]
     },
     {
-      "name": "台灣中油(直營店)",
+      "name": "台灣中油",
       "aliases": [
         "中油直營",
-        "台灣中油-直營站"
+        "台灣中油-直營站",
+        "台灣中油(直營店)"
       ]
     },
     {
       "name": "新光三越",
       "aliases": [
         "新光三越(含skm pay)",
-        "新光三越百貨(含SKM Park Outlets高雄草衙)",
-        "SKM Park",
-        "SKM Park Outlets"
+        "新光三越百貨"
       ]
     },
     {
@@ -166,6 +167,8 @@
     {
       "name": "PChome",
       "aliases": [
+        "PChome 24h購物(不含儲值及電子票券)",
+        "PChome 24h購物",
         "PChome 24h購物(不含儲值及電子票券)"
       ]
     },
@@ -235,21 +238,13 @@
     {
       "name": "淘寶",
       "aliases": [
-        "淘寶網",
-        "淘寶/天貓"
+        "淘寶網"
       ]
     },
     {
       "name": "Global Mall環球購物中心",
       "aliases": [
         "環球購物中心"
-      ]
-    },
-    {
-      "name": "統一時代百貨(台北店/DREAM PLAZA)",
-      "aliases": [
-        "統一時代(含DREAM PLAZA)",
-        "統一時代台北店(不含DREAM PLAZA)"
       ]
     },
     {
@@ -355,8 +350,10 @@
       "aliases": []
     },
     {
-      "name": "Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)",
-      "aliases": []
+      "name": "Apple錢包指定交通卡",
+      "aliases": [
+        "Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)"
+      ]
     },
     {
       "name": "BELLAVITA",
@@ -773,8 +770,10 @@
       "aliases": []
     },
     {
-      "name": "uTagGo(不含月租停車)",
-      "aliases": []
+      "name": "uTagGo",
+      "aliases": [
+        "uTagGo(不含月租停車)"
+      ]
     },
     {
       "name": "丁丁藥局",
@@ -1026,12 +1025,16 @@
       "aliases": []
     },
     {
-      "name": "台塑生醫實體門市",
-      "aliases": []
+      "name": "台塑生醫",
+      "aliases": [
+        "台塑生醫實體門市"
+      ]
     },
     {
-      "name": "台塑蔬菜實體門市",
-      "aliases": []
+      "name": "台塑蔬菜",
+      "aliases": [
+        "台塑蔬菜實體門市"
+      ]
     },
     {
       "name": "台塑購物網",
@@ -1190,8 +1193,10 @@
       "aliases": []
     },
     {
-      "name": "小樹購(不含電子票券)",
-      "aliases": []
+      "name": "小樹購",
+      "aliases": [
+        "小樹購(不含電子票券)"
+      ]
     },
     {
       "name": "小米台灣",
@@ -1317,8 +1322,10 @@
       "aliases": []
     },
     {
-      "name": "智生活(7/8起新增)",
-      "aliases": []
+      "name": "智生活",
+      "aliases": [
+        "智生活(7/8起新增)"
+      ]
     },
     {
       "name": "東京華納兄弟哈利波特影城",
@@ -1602,8 +1609,10 @@
       "aliases": []
     },
     {
-      "name": "萊爾富實體門市",
-      "aliases": []
+      "name": "萊爾富",
+      "aliases": [
+        "萊爾富實體門市"
+      ]
     },
     {
       "name": "萬客什鍋",
@@ -1677,8 +1686,10 @@
       "aliases": []
     },
     {
-      "name": "長庚生技實體門市",
-      "aliases": []
+      "name": "長庚生技",
+      "aliases": [
+        "長庚生技實體門市"
+      ]
     },
     {
       "name": "長榮航空",
@@ -1777,6 +1788,45 @@
       "aliases": [
         "大創",
         "daiso japan"
+      ]
+    },
+    {
+      "name": "統一時代百貨台北店",
+      "aliases": [
+        "統一時代",
+        "統一時代百貨",
+        "統一時代台北店",
+        "uni-president department store"
+      ]
+    },
+    {
+      "name": "DREAM PLAZA",
+      "aliases": [
+        "dreamplaza",
+        "統一時代高雄店"
+      ]
+    },
+    {
+      "name": "SKM Park Outlets高雄草衙",
+      "aliases": [
+        "skm park",
+        "skm park outlets",
+        "高雄草衙"
+      ]
+    },
+    {
+      "name": "天貓",
+      "aliases": [
+        "tmall",
+        "天貓淘寶海外"
+      ]
+    },
+    {
+      "name": "統一速邁樂加油站",
+      "aliases": [
+        "統一速邁樂",
+        "速邁樂",
+        "統一精工"
       ]
     }
   ]

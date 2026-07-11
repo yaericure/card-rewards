@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-11T08:20:58.198Z",
+  "updatedAt": "2026-07-11T08:40:53.220Z",
   "banks": [
     {
       "id": "taishin",
@@ -1107,13 +1107,13 @@
             },
             {
               "plan": "天天刷",
-              "target": "智生活(7/8起新增)",
+              "target": "智生活",
               "targetType": "merchant",
               "pctByTier": {
                 "autopay": 3.3,
                 "none": 1.3
               },
-              "note": "台新Point(信用卡)點數回饋；天天刷【日常採買】量販/超市/生活雜貨（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
+              "note": "台新Point(信用卡)點數回饋；天天刷【日常採買】量販/超市/生活雜貨；官方註記7/8起新增（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
             },
             {
               "plan": "天天刷",
@@ -1487,13 +1487,23 @@
             },
             {
               "plan": "大筆刷",
-              "target": "統一時代(含DREAM PLAZA)",
+              "target": "統一時代百貨台北店",
               "targetType": "merchant",
               "pctByTier": {
                 "autopay": 3.3,
                 "none": 1.3
               },
-              "note": "台新Point(信用卡)點數回饋；大筆刷【指定百貨】（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
+              "note": "台新Point(信用卡)點數回饋；大筆刷【指定百貨】；官方原文「統一時代(含DREAM PLAZA)」，兩店拆列（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
+            },
+            {
+              "plan": "大筆刷",
+              "target": "DREAM PLAZA",
+              "targetType": "merchant",
+              "pctByTier": {
+                "autopay": 3.3,
+                "none": 1.3
+              },
+              "note": "台新Point(信用卡)點數回饋；大筆刷【指定百貨】；官方原文「統一時代(含DREAM PLAZA)」，兩店拆列（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
             },
             {
               "plan": "大筆刷",
@@ -1507,23 +1517,23 @@
             },
             {
               "plan": "大筆刷",
-              "target": "Mitsui Shopping Park LaLaport(南港/台中)",
+              "target": "Mitsui Shopping Park LaLaport",
               "targetType": "merchant",
               "pctByTier": {
                 "autopay": 3.3,
                 "none": 1.3
               },
-              "note": "台新Point(信用卡)點數回饋；大筆刷【指定百貨】（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
+              "note": "台新Point(信用卡)點數回饋；大筆刷【指定百貨】；分店：南港/台中（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
             },
             {
               "plan": "大筆刷",
-              "target": "MITSUI OUTLET PARK (林口/台中港/台南)",
+              "target": "MITSUI OUTLET PARK",
               "targetType": "merchant",
               "pctByTier": {
                 "autopay": 3.3,
                 "none": 1.3
               },
-              "note": "台新Point(信用卡)點數回饋；大筆刷【指定Outlet】（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
+              "note": "台新Point(信用卡)點數回饋；大筆刷【指定Outlet】；分店：林口/台中港/台南（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
             },
             {
               "plan": "大筆刷",
@@ -3951,14 +3961,27 @@
               "validUntil": "2026-12-31"
             },
             {
-              "target": "新光三越百貨(含SKM Park Outlets高雄草衙)",
+              "target": "新光三越百貨",
               "targetType": "merchant",
               "pctByTier": {
                 "simple": 3,
                 "any": 3.5,
                 "up": 4.5
               },
-              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；官方原文「新光三越百貨(含SKM Park Outlets高雄草衙)」，兩店拆列；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+              "cap": "百大指定消費加碼部分：簡單選/任意選每月歸戶上限1,000點、UP選每月歸戶上限5,000點（玉山e point）；基礎1%無上限",
+              "validFrom": "2026-07-01",
+              "validUntil": "2026-12-31"
+            },
+            {
+              "target": "SKM Park Outlets高雄草衙",
+              "targetType": "merchant",
+              "pctByTier": {
+                "simple": 3,
+                "any": 3.5,
+                "up": 4.5
+              },
+              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；官方原文「新光三越百貨(含SKM Park Outlets高雄草衙)」，兩店拆列；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
               "cap": "百大指定消費加碼部分：簡單選/任意選每月歸戶上限1,000點、UP選每月歸戶上限5,000點（玉山e point）；基礎1%無上限",
               "validFrom": "2026-07-01",
               "validUntil": "2026-12-31"
@@ -4016,14 +4039,14 @@
               "validUntil": "2026-12-31"
             },
             {
-              "target": "漢神百貨(不含漢神巨蛋)",
+              "target": "漢神百貨",
               "targetType": "merchant",
               "pctByTier": {
                 "simple": 3,
                 "any": 3.5,
                 "up": 4.5
               },
-              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；不含漢神巨蛋；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
               "cap": "百大指定消費加碼部分：簡單選/任意選每月歸戶上限1,000點、UP選每月歸戶上限5,000點（玉山e point）；基礎1%無上限",
               "validFrom": "2026-07-01",
               "validUntil": "2026-12-31"
@@ -4133,14 +4156,27 @@
               "validUntil": "2026-12-31"
             },
             {
-              "target": "統一時代百貨(台北店/DREAM PLAZA)",
+              "target": "統一時代百貨台北店",
               "targetType": "merchant",
               "pctByTier": {
                 "simple": 3,
                 "any": 3.5,
                 "up": 4.5
               },
-              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；官方原文「統一時代百貨(台北店/DREAM PLAZA)」，兩店拆列；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+              "cap": "百大指定消費加碼部分：簡單選/任意選每月歸戶上限1,000點、UP選每月歸戶上限5,000點（玉山e point）；基礎1%無上限",
+              "validFrom": "2026-07-01",
+              "validUntil": "2026-12-31"
+            },
+            {
+              "target": "DREAM PLAZA",
+              "targetType": "merchant",
+              "pctByTier": {
+                "simple": 3,
+                "any": 3.5,
+                "up": 4.5
+              },
+              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【國內百貨】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；官方原文「統一時代百貨(台北店/DREAM PLAZA)」，兩店拆列；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
               "cap": "百大指定消費加碼部分：簡單選/任意選每月歸戶上限1,000點、UP選每月歸戶上限5,000點（玉山e point）；基礎1%無上限",
               "validFrom": "2026-07-01",
               "validUntil": "2026-12-31"
@@ -4354,14 +4390,14 @@
               "validUntil": "2026-12-31"
             },
             {
-              "target": "台灣中油(直營店)",
+              "target": "台灣中油",
               "targetType": "merchant",
               "pctByTier": {
                 "simple": 3,
                 "any": 3.5,
                 "up": 4.5
               },
-              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【加油交通】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
+              "note": "玉山e point點數回饋（1點=1元）；百大指定消費【加油交通】，%含一般消費基礎1%（假設已完成帳單e化＋自動扣繳）＋選組加碼（簡單選+2%／任意選+2.5%／UP選+3.5%）；任意選需自行圈選最多8家始生效；限直營店；來源：https://www.esunbank.com/zh-tw/personal/credit-card/intro/bank-card/unicard#3",
               "cap": "百大指定消費加碼部分：簡單選/任意選每月歸戶上限1,000點、UP選每月歸戶上限5,000點（玉山e point）；基礎1%無上限",
               "validFrom": "2026-07-01",
               "validUntil": "2026-12-31"
@@ -5532,7 +5568,7 @@
             },
             {
               "plan": "玩數位",
-              "target": "PChome 24h購物(不含儲值及電子票券)",
+              "target": "PChome 24h購物",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5540,11 +5576,11 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／網購平台（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／網購平台（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；不含儲值及電子票券（官方原文「PChome 24h購物(不含儲值及電子票券)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "玩數位",
-              "target": "小樹購(不含電子票券)",
+              "target": "小樹購",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5552,11 +5588,11 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／網購平台（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／網購平台（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；不含電子票券（官方原文「小樹購(不含電子票券)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "玩數位",
-              "target": "Coupang 酷澎(台灣)",
+              "target": "Coupang 酷澎",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5564,11 +5600,11 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／國際電商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／國際電商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限台灣站（官方原文「Coupang 酷澎(台灣)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "玩數位",
-              "target": "淘寶/天貓",
+              "target": "淘寶",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5576,7 +5612,19 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／國際電商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／國際電商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；官方合寫「淘寶/天貓」拆列（官方原文「淘寶/天貓」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+            },
+            {
+              "plan": "玩數位",
+              "target": "天貓",
+              "targetType": "merchant",
+              "pctByTier": {
+                "lv1": 2,
+                "lv2": 3,
+                "lv3": 3.3
+              },
+              "validUntil": "2026-12-31",
+              "note": "小樹點(信用卡)回饋，1點=1元；玩數位方案／國際電商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；官方合寫「淘寶/天貓」拆列（官方原文「淘寶/天貓」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "樂饗購",
@@ -5664,7 +5712,7 @@
             },
             {
               "plan": "樂饗購",
-              "target": "統一時代台北店(不含DREAM PLAZA)",
+              "target": "統一時代百貨台北店",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5672,7 +5720,7 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；樂饗購方案／國內指定百貨（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；樂饗購方案／國內指定百貨（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；不含DREAM PLAZA（官方原文「統一時代台北店(不含DREAM PLAZA)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "樂饗購",
@@ -5748,7 +5796,7 @@
             },
             {
               "plan": "樂饗購",
-              "target": "Mitsui Shopping Park LaLaport(南港、台中)",
+              "target": "Mitsui Shopping Park LaLaport",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5756,7 +5804,7 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；樂饗購方案／國內指定百貨（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；樂饗購方案／國內指定百貨（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限南港、台中（官方原文「Mitsui Shopping Park LaLaport(南港、台中)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "樂饗購",
@@ -5976,7 +6024,7 @@
             },
             {
               "plan": "樂饗購",
-              "target": "MITSUI OUTLET PARK(林口、台中港、台南)",
+              "target": "MITSUI OUTLET PARK",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -5984,7 +6032,7 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；樂饗購方案／國內指定百貨（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；樂饗購方案／國內指定百貨（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限林口、台中港、台南（官方原文「MITSUI OUTLET PARK(林口、台中港、台南)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "樂饗購",
@@ -6083,7 +6131,7 @@
             },
             {
               "plan": "趣旅行",
-              "target": "Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)",
+              "target": "Apple錢包指定交通卡",
               "targetType": "merchant",
               "pctByTier": {
                 "lv1": 2,
@@ -6091,7 +6139,7 @@
                 "lv3": 3.3
               },
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；趣旅行方案／指定國內外交通（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
+              "note": "小樹點(信用卡)回饋，1點=1元；趣旅行方案／指定國內外交通（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限SUICA、PASMO、ICOCA（官方原文「Apple錢包指定交通卡 (SUICA 、PASMO、ICOCA)」）；回饋依CUBE App當月權益分級而異：Level1 2%／Level2 3%／Level3 3.3%"
             },
             {
               "plan": "趣旅行",
@@ -6759,19 +6807,19 @@
             },
             {
               "plan": "集精選",
-              "target": "車麻吉(不含加油、充電)",
+              "target": "車麻吉",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／停車費（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；集精選不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／停車費（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；不含加油、充電（官方原文「車麻吉(不含加油、充電)」）；集精選不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "集精選",
-              "target": "uTagGo(不含月租停車)",
+              "target": "uTagGo",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／停車費（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；集精選不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／停車費（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；不含月租停車（官方原文「uTagGo(不含月租停車)」）；集精選不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "集精選",
@@ -6791,35 +6839,35 @@
             },
             {
               "plan": "集精選",
-              "target": "全聯福利中心 實體門市(不含大全聯)",
+              "target": "全聯福利中心",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／量販超市（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；集精選不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／量販超市（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市、不含大全聯（官方原文「全聯福利中心 實體門市(不含大全聯)」）；集精選不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "集精選",
-              "target": "台灣中油-直營站",
+              "target": "台灣中油",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／指定加油（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；集精選不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／指定加油（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限直營站（官方原文「台灣中油-直營站」）；集精選不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "集精選",
-              "target": "7-ELEVEN (7-11) 實體門市",
+              "target": "7-ELEVEN",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；集精選不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「7-ELEVEN (7-11) 實體門市」）；集精選不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "集精選",
-              "target": "全家便利商店 實體門市",
+              "target": "全家便利商店",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；集精選不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；集精選方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「全家便利商店 實體門市」）；集精選不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "集精選",
@@ -6855,35 +6903,35 @@
             },
             {
               "plan": "台塑家",
-              "target": "統一速邁樂(限本島)加油站",
+              "target": "統一速邁樂加油站",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／加油站（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／加油站（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限本島（官方原文「統一速邁樂(限本島)加油站」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "台塑家",
-              "target": "台塑生醫實體門市",
+              "target": "台塑生醫",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／健康生活（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／健康生活（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「台塑生醫實體門市」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "台塑家",
-              "target": "長庚生技實體門市",
+              "target": "長庚生技",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／健康生活（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／健康生活（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「長庚生技實體門市」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "台塑家",
-              "target": "台塑蔬菜實體門市",
+              "target": "台塑蔬菜",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／健康生活（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／健康生活（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「台塑蔬菜實體門市」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "台塑家",
@@ -6895,27 +6943,27 @@
             },
             {
               "plan": "台塑家",
-              "target": "7-ELEVEN (7-11) 實體門市",
+              "target": "7-ELEVEN",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「7-ELEVEN (7-11) 實體門市」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "台塑家",
-              "target": "全家便利商店 實體門市",
+              "target": "全家便利商店",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「全家便利商店 實體門市」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "台塑家",
-              "target": "萊爾富實體門市",
+              "target": "萊爾富",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
-              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；台塑家不分CUBE權益分級，統一回饋"
+              "note": "小樹點(信用卡)回饋，1點=1元；台塑家方案／指定超商（官方逐一列舉，來源：https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube-list.model.json）；限實體門市（官方原文「萊爾富實體門市」）；台塑家不分CUBE權益分級，統一回饋"
             },
             {
               "plan": "全支付",

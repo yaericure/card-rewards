@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-11T09:18:25.510Z",
+  "updatedAt": "2026-08-02T07:41:25.324Z",
   "banks": [
     {
       "id": "taishin",
@@ -361,18 +361,6 @@
             },
             {
               "plan": "Chill刷",
-              "target": "茶之魔手",
-              "targetType": "merchant",
-              "pctByTier": {
-                "autopay": 10,
-                "none": 1.3
-              },
-              "validFrom": "2026-07-08",
-              "validUntil": "2026-09-30",
-              "note": "台新Point(信用卡)點數回饋；Chill刷【日常續命】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
-            },
-            {
-              "plan": "Chill刷",
               "target": "UG TEA",
               "targetType": "merchant",
               "pctByTier": {
@@ -637,6 +625,18 @@
             },
             {
               "plan": "Chill刷",
+              "target": "Samsung(7/30–8/31限時加碼!!)",
+              "targetType": "merchant",
+              "pctByTier": {
+                "autopay": 3.3,
+                "none": 1.3
+              },
+              "validFrom": "2026-07-08",
+              "validUntil": "2026-09-30",
+              "note": "台新Point(信用卡)點數回饋；Chill刷【數位外掛】期間限定加碼（來源：https://mkp.taishinbank.com.tw/TsCms/marketing/expose/WM_20260708095300794/index.html#section-3）"
+            },
+            {
+              "plan": "Chill刷",
               "target": "Apple 直營(含官網)",
               "targetType": "merchant",
               "pctByTier": {
@@ -757,7 +757,7 @@
             },
             {
               "plan": "Chill刷",
-              "target": "好在乎",
+              "target": "POPCARE好在乎",
               "targetType": "merchant",
               "pctByTier": {
                 "autopay": 5,
@@ -6823,7 +6823,7 @@
             },
             {
               "plan": "集精選",
-              "target": "家樂福",
+              "target": "家樂福(萬家福、樂家康)",
               "targetType": "merchant",
               "pct": 2,
               "validUntil": "2026-12-31",
